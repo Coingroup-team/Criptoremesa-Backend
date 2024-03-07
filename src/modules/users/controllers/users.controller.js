@@ -187,7 +187,7 @@ usersController.requestLevelOne1stQ = async (req, res, next) => {
       log.failed = true;
       log.params = req.params;
       log.query = req.query;
-      log.body = req.body;
+      log.body = null;
       log.status = 401;
       log.response = { message: "Unauthorized" };
       await authenticationPGRepository.insertLogMsg(log);
@@ -205,7 +205,7 @@ usersController.requestLevelOne1stQ = async (req, res, next) => {
         log.failed = finalResp.failed;
         log.params = req.params;
         log.query = req.query;
-        log.body = req.body;
+        log.body = null;
         log.status = finalResp.status;
         log.response = finalResp.data;
         await authenticationPGRepository.insertLogMsg(log);
@@ -244,7 +244,7 @@ usersController.requestLevelOne2ndQ = async (req, res, next) => {
       log.failed = true;
       log.params = req.params;
       log.query = req.query;
-      log.body = req.body;
+      log.body = null;
       log.status = 401;
       log.response = { message: "Unauthorized" };
       await authenticationPGRepository.insertLogMsg(log);
@@ -262,7 +262,7 @@ usersController.requestLevelOne2ndQ = async (req, res, next) => {
         log.failed = finalResp.failed;
         log.params = req.params;
         log.query = req.query;
-        log.body = req.body;
+        log.body = null;
         log.status = finalResp.status;
         log.response = finalResp.data;
         await authenticationPGRepository.insertLogMsg(log);
@@ -301,7 +301,7 @@ usersController.requestLevelOne3rdQ = async (req, res, next) => {
       log.failed = true;
       log.params = req.params;
       log.query = req.query;
-      log.body = req.body;
+      log.body = null;
       log.status = 401;
       log.response = { message: "Unauthorized" };
       await authenticationPGRepository.insertLogMsg(log);
@@ -319,7 +319,7 @@ usersController.requestLevelOne3rdQ = async (req, res, next) => {
         log.failed = finalResp.failed;
         log.params = req.params;
         log.query = req.query;
-        log.body = req.body;
+        log.body = null;
         log.status = finalResp.status;
         log.response = finalResp.data;
         await authenticationPGRepository.insertLogMsg(log);
@@ -358,7 +358,7 @@ usersController.requestLevelTwo = async (req, res, next) => {
       log.failed = true;
       log.params = req.params;
       log.query = req.query;
-      log.body = req.body;
+      log.body = null;
       log.status = 401;
       log.response = { message: "Unauthorized" };
       await authenticationPGRepository.insertLogMsg(log);
@@ -376,7 +376,7 @@ usersController.requestLevelTwo = async (req, res, next) => {
         log.failed = finalResp.failed;
         log.params = req.params;
         log.query = req.query;
-        log.body = req.body;
+        log.body = null;
         log.status = finalResp.status;
         log.response = finalResp.data;
         await authenticationPGRepository.insertLogMsg(log);

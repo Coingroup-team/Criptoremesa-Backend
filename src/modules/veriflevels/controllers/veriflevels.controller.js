@@ -636,7 +636,7 @@ veriflevelsController.getVerifLevelRequirements = async (req, res, next) => {
         log.query = req.query;
         log.body = req.body;
         log.status = finalResp.status;
-        log.response = finalResp.data;
+        log.response = null;
         await authenticationPGRepository.insertLogMsg(log);
 
         logger.silly(log)

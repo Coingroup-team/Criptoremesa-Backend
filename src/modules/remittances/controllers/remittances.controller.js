@@ -244,7 +244,7 @@ remittancesController.startRemittance = async (req, res, next) => {
         log.failed = finalResp.failed;
         log.params = req.params;
         log.query = req.query;
-        log.body = req.body;
+        log.body = null;
         log.status = finalResp.status;
         log.response = finalResp.data;
         await authenticationPGRepository.insertLogMsg(log);
