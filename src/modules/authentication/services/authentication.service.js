@@ -21,6 +21,7 @@ const logConst = {
 
 authenticationService.login = async (req, res, next) => {
   try {
+    /* Todo esto se comenta porque es innecesario hacerlo si no se está usando el catcha
     // filling log object info
     let log = logConst;
 
@@ -32,21 +33,21 @@ authenticationService.login = async (req, res, next) => {
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
     );
-    */
+  
     const resp = null;/*await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
-    );*/
+    );
     if (resp)
       log.country = resp.country_name
         ? resp.country_name
         : "Probably Localhost";
-    if (await authenticationPGRepository.getSessionById(req.sessionID))
+    if (await authenticationPGRepository.getSessionById(req.sessionID)) // si cambiamos de postgres a redis lo de las sesiones, esto se puede optimizar
       log.session = req.sessionID;
 
     log.params = req.params;
     log.query = req.query;
     log.body = req.body;
-
+    */
     
 
     // logger.info(`[${context}]: Verifying captcha`);

@@ -657,32 +657,27 @@ remittancesService.tumipayRemittance = async (req, res, next) => {
   }
 };
 
-remittancesService.getInfoByOriginAndDestination = async (req, res, next) => {
-  try {
-    logger.info(`[${context}]: Getting remittance info by origin and destination`);
-    ObjLog.log(`[${context}]: Getting remittance info by origin and destination`);
+remittancesService.getInfoByOriginAndDestination = async (countryIsoCodOrigin, countryIsoCodDestiny) => {
+  logger.info(`[${context}]: Getting remittance info by origin and destination`);
+  ObjLog.log(`[${context}]: Getting remittance info by origin and destination`);
 
-    let data
-    const pairInfo = req.params.countryIsoCodOrigin + req.params.countryIsoCodDestiny
-    const redisInfo = await getFromRedis(pairInfo)
+  let data = await remittancesPGRepository.getInfoByOriginAndDestination(countryIsoCodOrigin, countryIsoCodDestiny);
+  const pairInfo = countryIsoCodOrigin + countryIsoCodDestiny
+  const redisInfo = await getFromRedis(pairInfo)
 
-    if (redisInfo) {
-      // redisClient.del(pairInfo);
-      data = JSON.parse(redisInfo)
-    } else {
-      data =  await remittancesPGRepository.getInfoByOriginAndDestination(req.params.countryIsoCodOrigin, req.params.countryIsoCodDestiny);
-      redisClient.set(pairInfo, JSON.stringify(data));
-    }
-
-    return {
-      data,
-      status: 200,
-      success: true,
-      failed: false
-    }
+  if (redisInfo) {
+    // redisClient.del(pairInfo);
+    data = JSON.parse(redisInfo)
+  } else {
+    data =  await remittancesPGRepository.getInfoByOriginAndDestination(req.params.countryIsoCodOrigin, req.params.countryIsoCodDestiny);
+    redisClient.set(pairInfo, JSON.stringify(data));
   }
-  catch (error) {
-    next(error);
+
+  return {
+    data,
+    status: 200,
+    success: true,
+    failed: false
   }
 }
 

@@ -713,26 +713,11 @@ remittancesController.getInfoByOriginAndDestination = async (req, res, next) => 
         `[${context}]: Sending service to get info by origin and destination`
       );
 
-      let finalResp = await remittancesService.getInfoByOriginAndDestination(
-        req,
-        res,
-        next
-      );
+      const countryIsoCodOrigin = req.params.countryIsoCodOrigin;
+      const countryIsoCodDestiny = req.params.countryIsoCodDestiny;
 
-      if (finalResp) {
-        //logging on DB
-        log.success = finalResp.success;
-        log.failed = finalResp.failed;
-        log.params = req.params;
-        log.query = req.query;
-        log.body = null;
-        log.status = finalResp.status;
-        log.response = finalResp.data;
-        await authenticationPGRepository.insertLogMsg(log);
-
-        //sendind response to FE
-        res.status(finalResp.status).json(finalResp.data);
-      }
+      let finalResp = await remittancesService.getInfoByOriginAndDestination(countryIsoCodOrigin, countryIsoCodDestiny);
+      res.status(200).json(finalResp.data);
     }
   } catch (error) {
     next(error);
