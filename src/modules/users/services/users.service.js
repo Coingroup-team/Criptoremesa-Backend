@@ -1676,5 +1676,33 @@ usersService.saveExtraInfoThirdModal = async (idUser, industry, range) => {
   return resp;
 };
 
+usersService.getFullInfo = async (req, res, next) => {
+  try {
+    logger.info(`[${context}]: Getting full info`);
+    ObjLog.log(`[${context}]: Getting full info`);
+    let data = await authenticationPGRepository.getUserByEmail(req.params.email_user.toLowerCase());
+
+    if (data)
+      return {
+        data,
+        status: 200,
+        success: true,
+        failed: false,
+      };
+    else
+      return {
+        data: {
+          mesage: "An error has ocurred.",
+        },
+        status: 500,
+        success: false,
+        failed: true,
+      };
+  }
+  catch (error) {
+    next(error);
+  }
+}
+
 export default usersService;
 export { events };
