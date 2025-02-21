@@ -196,4 +196,9 @@ usersRouter.post(
   usersController.saveExtraInfoThirdModal
 );
 
+usersRouter.get(
+  "/full-info/:email_user",
+  usersController.getFullInfo
+);
+
 export default usersRouter;

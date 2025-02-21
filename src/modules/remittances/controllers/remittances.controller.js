@@ -206,6 +206,11 @@ remittancesController.startRemittance = async (req, res, next) => {
   try {
     // filling log object info
     let log = logConst;
+    log.ip = req.header("Client-Ip");
+    log.route = req.method + " " + req.originalUrl;
+    log.is_auth = req.isAuthenticated();
+    log.params = req.params;
+    log.query = req.query;
 
     // protecting route in production but not in development
     if (!req.isAuthenticated() && env.ENVIROMENT === ENVIROMENTS.PRODUCTION) {
@@ -224,12 +229,17 @@ remittancesController.startRemittance = async (req, res, next) => {
       logger.info(`[${context}]: Sending service to start remittance`);
       //ObjLog.log(`[${context}]: Sending service to start remittance`);
 
-      remittancesService.startRemittance(req, res, next);
+      let remittance = JSON.parse(req.body.remittance);
+      remittance.captures[0].path = req.file.filename;
+
+      remittancesService.startRemittance(remittance);
 
       //sendind response to FE
       res.status(200).json({
         message: "Creating remitance"
       });
+
+      await authenticationPGRepository.insertLogMsg(log);
       
     }
   } catch (error) {
@@ -656,6 +666,11 @@ remittancesController.getInfoByOriginAndDestination = async (req, res, next) => 
   try {
     // filling log object info
     let log = logConst;
+    log.ip = req.header("Client-Ip");
+    log.route = req.method + " " + req.originalUrl;
+    log.is_auth = req.isAuthenticated();
+    log.params = req.params;
+    log.query = req.query;
 
     // protecting route in production but not in development
     if (!req.isAuthenticated() && env.ENVIROMENT === ENVIROMENTS.PRODUCTION) {
@@ -680,6 +695,7 @@ remittancesController.getInfoByOriginAndDestination = async (req, res, next) => 
 
       let finalResp = await remittancesService.getInfoByOriginAndDestination(req, res, next);
       res.status(200).json(finalResp.data);
+      await authenticationPGRepository.insertLogMsg(log);
     }
   } catch (error) {
     next(error);

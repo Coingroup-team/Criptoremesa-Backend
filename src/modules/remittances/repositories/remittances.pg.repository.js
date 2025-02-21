@@ -60,13 +60,13 @@ remittancesPGRepository.startRemittance = async (body) => {
       `SELECT * FROM sp_lnk_cr_remittances_init('${JSON.stringify(body)}')`
       );
       
-      if (resp.rows[0].sp_lnk_cr_remittances_init) {
-      await poolSM.query(
-        `SELECT * FROM sec_cust.cryptomiles_assign(${resp.rows[0].sp_lnk_cr_remittances_init.id_remittance})`
-      );
+      // if (resp.rows[0].sp_lnk_cr_remittances_init) {
+      // await poolSM.query(
+      //   `SELECT * FROM sec_cust.cryptomiles_assign(${resp.rows[0].sp_lnk_cr_remittances_init.id_remittance})`
+      // );
       return resp.rows[0].sp_lnk_cr_remittances_init;
-    }
-    else return null;
+    // }
+    // else return null;
   } catch (error) {
     throw error;
   }

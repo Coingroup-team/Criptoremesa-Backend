@@ -37,7 +37,7 @@ remittancesRouter.get(
 
 remittancesRouter.post(
   "/",
-  // guard.verifyAdmin("/login"),
+  upload.single('firstCapture'),
   remittancesController.startRemittance
 );
 

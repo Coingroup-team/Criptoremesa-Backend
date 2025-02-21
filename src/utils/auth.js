@@ -146,7 +146,7 @@ passport.use(
         // if (guard.getUsernameField() === "email")
         user = await authenticationPGRepository.getUserByEmail(email.toLowerCase());
 
-        console.log('USER OBTENIDO🔴:',user)
+        // console.log('USER OBTENIDO🔴:',user)
 
         if (user && user.wholesale_partner_info) {
           user.wholesale_partner_info.logo = fs.readFileSync(
