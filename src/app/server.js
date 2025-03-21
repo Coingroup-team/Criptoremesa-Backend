@@ -19,6 +19,11 @@ import bodyParser from "body-parser";
 import whatsapp from "../utils/whatsapp";
 import queue from 'express-queue';
 import * as Sentry from "@sentry/node";
+import { createBullBoard } from '@bull-board/api';
+import { BullAdapter } from '@bull-board/api/bullAdapter';
+import { ExpressAdapter } from '@bull-board/express';
+import { messageQueue } from "../utils/silt.queue"; // Importamos la cola
+
 
 //jobs
 import transactionsJob from '../utils/jobs/transactions'
@@ -108,6 +113,18 @@ app.get("/", async (req, res, next) => {
   res.status(200).send("Server running");
   next();
 });
+
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/admin/queues');
+
+const { addQueue, removeQueue, setQueues } = createBullBoard({
+    queues: [new BullAdapter(messageQueue)], // Usamos la cola que exportamos
+    serverAdapter,
+});
+
+app.use('/admin/queues', serverAdapter.getRouter());
+
+console.log('🔵 Bull Board está corriendo en: /admin/queues');
 
 app.use("/cr", routerIndex);
 
