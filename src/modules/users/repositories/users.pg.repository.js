@@ -444,6 +444,7 @@ usersPGRepository.requestLevelTwo = async (body) => {
     if (resp.rows[0]) return resp.rows[0];
     else return null;
   } catch (error) {
+    console.error(error);
     throw error;
   }
 };

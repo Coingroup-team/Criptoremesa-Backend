@@ -27,13 +27,19 @@ authenticationService.login = async (req, res, next) => {
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
     log.route = req.method + " " + req.originalUrl;
+    
+    /*
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
     );
-    if (resp)
-      log.country = resp.country_name
-        ? resp.country_name
-        : "Probably Localhost";
+    */
+    // const resp = null;/*await authenticationPGRepository.getIpInfo(
+    //   req.header("Client-Ip")
+    // );*/
+    // if (resp)
+    //   log.country = resp.country_name
+    //     ? resp.country_name
+    //     : "Probably Localhost";
     if (await authenticationPGRepository.getSessionById(req.sessionID))
       log.session = req.sessionID;
 
@@ -93,7 +99,8 @@ authenticationService.login = async (req, res, next) => {
         logger.info(`[${context}]: Sending module to verify`);
         ObjLog.log(`[${context}]: Sending module to verify`);
 
-        auth.verify(req, res, next);
+    auth.verify(req, res, next);
+    await authenticationPGRepository.insertLogMsg(log);
     //   }
     // }
   } catch (error) {

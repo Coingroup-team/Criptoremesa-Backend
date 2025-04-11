@@ -60,13 +60,13 @@ remittancesPGRepository.startRemittance = async (body) => {
       `SELECT * FROM sp_lnk_cr_remittances_init('${JSON.stringify(body)}')`
       );
       
-      if (resp.rows[0].sp_lnk_cr_remittances_init) {
-      await poolSM.query(
-        `SELECT * FROM sec_cust.cryptomiles_assign(${resp.rows[0].sp_lnk_cr_remittances_init.id_remittance})`
-      );
+      // if (resp.rows[0].sp_lnk_cr_remittances_init) {
+      // await poolSM.query(
+      //   `SELECT * FROM sec_cust.cryptomiles_assign(${resp.rows[0].sp_lnk_cr_remittances_init.id_remittance})`
+      // );
       return resp.rows[0].sp_lnk_cr_remittances_init;
-    }
-    else return null;
+    // }
+    // else return null;
   } catch (error) {
     throw error;
   }
@@ -212,5 +212,23 @@ remittancesPGRepository.getInfoForRateApi = async (emailUser) => {
     throw error;
   }
 };
+
+remittancesPGRepository.getInfoByOriginAndDestination = async (countryIsoCodOrigin, countryIsoCodDestiny) => {
+  try {
+    logger.info(`[${context}]: Getting remittance info by origin and destination from db`);
+    ObjLog.log(`[${context}]: Getting remittance info by origin and destination from db`);
+
+    await poolSM.query("SET SCHEMA 'prc_mng'");
+    const resp = await poolSM.query(
+      `SELECT * FROM sp_get_remittance_info('${countryIsoCodOrigin}', '${countryIsoCodDestiny}')`
+    );
+    if (resp.rows[0].sp_get_remittance_info)
+      return resp.rows[0].sp_get_remittance_info;
+    else return null;
+  }
+  catch (error) {
+    throw error;
+  }
+}
 
 export default remittancesPGRepository;

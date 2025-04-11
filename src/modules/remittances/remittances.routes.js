@@ -37,7 +37,7 @@ remittancesRouter.get(
 
 remittancesRouter.post(
   "/",
-  // guard.verifyAdmin("/login"),
+  upload.single('firstCapture'),
   remittancesController.startRemittance
 );
 
@@ -75,6 +75,18 @@ remittancesRouter.get(
   "/countries/minAmounts",
   // guard.verifyAdmin("/login"),
   remittancesController.getMinAmounts
+);
+
+remittancesRouter.post(
+  "/tumipay",
+  // guard.verifyAdmin("/login"),
+  remittancesController.tumipayRemittance
+);
+
+remittancesRouter.get(
+  "/info/:countryIsoCodOrigin/:countryIsoCodDestiny",
+  // guard.verifyAdmin("/login"),
+  remittancesController.getInfoByOriginAndDestination
 );
 
 export default remittancesRouter;

@@ -26,7 +26,14 @@ export const env = {
     NOTIFY_ENV: process.env.NOTIFY_ENV,
     CURRENCY_FREAKS_API_KEY: process.env.CURRENCY_FREAKS_API_KEY,
     BINANCE_API_KEY: process.env.BINANCE_API_KEY,
-    BINANCE_SECRET_KEY: process.env.BINANCE_SECRET_KEY
+    BINANCE_SECRET_KEY: process.env.BINANCE_SECRET_KEY,
+    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_PORT: process.env.REDIS_PORT,
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+    REDIS_DB: process.env.REDIS_DB,
+    REDIS_DB_SESSION: process.env.REDIS_DB_SESSION,
+    REDIS_READ_TIMEOUT: process.env.REDIS_READ_TIMEOUT,
+    REDIS_DB_REM_QUEUE: process.env.REDIS_DB_REM_QUEUE,
 };
 
 export const ENVIROMENTS = {

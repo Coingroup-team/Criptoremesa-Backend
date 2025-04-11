@@ -1581,4 +1581,25 @@ usersController.saveExtraInfoThirdModal = async (req, res, next) => {
   }
 };
 
+usersController.getFullInfo = async (req, res, next) => {
+  try {
+    // filling log object info
+    let log = logConst;
+    log.ip = req.header("Client-Ip");
+    log.route = req.method + " " + req.originalUrl;
+    log.is_auth = req.isAuthenticated();
+    log.params = req.params;
+    log.query = req.query;
+  
+    // calling service
+    logger.info(`[${context}]: Getting full info`);
+    ObjLog.log(`[${context}]: Getting full info`);
+    let finalResp = await usersService.getFullInfo(req, res, next);
+    res.status(finalResp.status).json(finalResp.data);
+    await authenticationPGRepository.insertLogMsg(log);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default usersController;
