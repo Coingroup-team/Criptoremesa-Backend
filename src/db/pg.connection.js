@@ -9,6 +9,7 @@ const connectionDbSixmap = {
   database: env.PG_DB_SM_NAME,
   password: env.PG_DB_SM_PASSWORD,
   port: env.PG_DB_SM_PORT,
+  keepAlive: true,
   //   currentSchema: "sec_sixmap_users",
 };
 
@@ -18,6 +19,7 @@ const connectionDbCriptoremesa = {
   database: env.PG_DB_CR_NAME,
   password: env.PG_DB_CR_PASSWORD,
   port: env.PG_DB_CR_PORT,
+  keepAlive: true,
   //   currentSchema: "sec_sixmap_users",
 };
 
@@ -43,6 +45,10 @@ poolSM
     clientSM.end();
   });
 
+  poolSM.on('error', (err, client) => {
+    console.error('[PG POOL SM] Error inesperado en cliente idle:', err.message);
+  });
+
 export const poolCR = new Pool(connectionDbCriptoremesa);
 const clientCR = new Client(connectionDbCriptoremesa);
 
@@ -63,4 +69,8 @@ poolCR
     logger.error(`PGDBCR is not connected: ${err}`);
     ObjLog.log(`PGDBCR is not connected: ${err}`);
     clientCR.end();
+  });
+
+  poolCR.on('error', (err, client) => {
+    console.error('[PG POOL CR] Error inesperado en cliente idle:', err.message);
   });
