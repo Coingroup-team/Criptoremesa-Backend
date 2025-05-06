@@ -230,7 +230,7 @@ remittancesController.startRemittance = async (req, res, next) => {
       //ObjLog.log(`[${context}]: Sending service to start remittance`);
 
       let remittance = JSON.parse(req.body.remittance);
-      remittance.captures[0].path = req.file.filename;
+      remittance.captures[0].path = req.file.path;
 
       remittancesService.startRemittance(remittance);
 
