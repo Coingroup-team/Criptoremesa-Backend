@@ -496,7 +496,7 @@ remittancesService.getInfoByOriginAndDestination = async (req, res, next) => {
   logger.info(`[${context}]: Getting remittance info by origin and destination`);
   ObjLog.log(`[${context}]: Getting remittance info by origin and destination`);
 
-  let data = await remittancesPGRepository.getInfoByOriginAndDestination(req.params.countryIsoCodOrigin, req.params.countryIsoCodDestiny);
+  let data;
   const pairInfo = req.params.countryIsoCodOrigin + req.params.countryIsoCodDestiny
   const redisInfo = await getFromRedis(pairInfo)
 
