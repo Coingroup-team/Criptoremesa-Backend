@@ -59,7 +59,8 @@ app.use(
       "https://3.143.246.144:5011",
       "https://3.143.246.144:4053",
       "https://bhtest.bithonor.com",
-      "https://qa.bithonor.com"
+      "https://qa.bithonor.com",
+      "https://qa.bithonor.es"
     ],
     methods: "GET,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
@@ -68,6 +69,7 @@ app.use(
   })
 );
 app.use(helmet());
+app.set("trust proxy", 1);
 app.use(
   session({
     store: new pgSession({
