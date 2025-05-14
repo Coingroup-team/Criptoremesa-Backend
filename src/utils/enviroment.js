@@ -34,6 +34,7 @@ export const env = {
     REDIS_DB_SESSION: process.env.REDIS_DB_SESSION,
     REDIS_READ_TIMEOUT: process.env.REDIS_READ_TIMEOUT,
     REDIS_DB_REM_QUEUE: process.env.REDIS_DB_REM_QUEUE,
+    REDIS_DB_SILT_QUEUE: process.env.REDIS_DB_SILT_QUEUE,
 };
 
 export const ENVIROMENTS = {

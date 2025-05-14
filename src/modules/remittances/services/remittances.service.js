@@ -9,7 +9,7 @@ import fs from 'fs'
 import formidable from "formidable";
 import axios from 'axios'
 import transbankService from "../../transbank/services/transbank.service";
-import { addRemittanceToQueue } from "../queue/createRemittance.queue";
+import { addRemittanceToQueue } from "../../../utils/queues/createRemittance.queue";
 
 const remittancesService = {};
 const context = "remittances Service";

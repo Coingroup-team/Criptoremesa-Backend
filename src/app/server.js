@@ -22,7 +22,8 @@ import * as Sentry from "@sentry/node";
 import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { ExpressAdapter } from '@bull-board/express';
-import { messageQueue } from "../utils/silt.queue"; // Importamos la cola
+import { siltQueue } from '../utils/queues/silt.queue'; // Importamos la cola
+import { remittanceQueue } from "../utils/queues/createRemittance.queue"; // Importamos la cola
 
 
 //jobs
@@ -120,7 +121,7 @@ const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/admin/queues');
 
 const { addQueue, removeQueue, setQueues } = createBullBoard({
-    queues: [new BullAdapter(messageQueue)], // Usamos la cola que exportamos
+    queues: [new BullAdapter(siltQueue), new BullAdapter(remittanceQueue)], // Usamos la cola que exportamos
     serverAdapter,
 });
 

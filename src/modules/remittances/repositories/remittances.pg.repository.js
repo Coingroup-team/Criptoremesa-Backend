@@ -54,10 +54,9 @@ remittancesPGRepository.startRemittance = async (body) => {
   try {
     logger.info(`[${context}]: Starting remittance on db`);
     ObjLog.log(`[${context}]: Starting remittance on db`);
-    await poolSM.query("SET SCHEMA 'msg_app'");
 
     const resp = await poolSM.query(
-      `SELECT * FROM sp_lnk_cr_remittances_init('${JSON.stringify(body)}')`
+      'SELECT * FROM msg_app.sp_lnk_cr_remittances_init($1)', [JSON.stringify(body)]
       );
       
       // if (resp.rows[0].sp_lnk_cr_remittances_init) {
@@ -68,6 +67,7 @@ remittancesPGRepository.startRemittance = async (body) => {
     // }
     // else return null;
   } catch (error) {
+    console.log("ERROR EN LA COLA DE BULL", error);
     throw error;
   }
 };

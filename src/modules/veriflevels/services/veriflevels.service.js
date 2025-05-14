@@ -4,7 +4,7 @@ import veriflevelsPGRepository from "../repositories/veriflevels.pg.repository";
 import veriflevelsHTTPRepository from "../repositories/veriflevels.http.repository";
 import fs from "fs";
 import authenticationPGRepository from "../../authentication/repositories/authentication.pg.repository";
-import { addSiltRequestToQueue } from "../../../utils/silt.queue";
+import { addSiltRequestToQueue } from "../../../utils/queues/silt.queue";
 
 const veriflevelsService = {};
 const context = "veriflevels Service";
