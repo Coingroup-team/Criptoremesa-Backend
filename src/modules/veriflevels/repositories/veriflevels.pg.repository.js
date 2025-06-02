@@ -229,21 +229,38 @@ veriflevelsPGRepository.validateRemittance = async (remittance) => {
 };
 
 veriflevelsPGRepository.levelOneVerfificationSilt = async (
-  dateBirth,
-  emailUser,
-  docType,
-  countryIsoCodeDoc,
-  identDocNumber,
-  docPath,
-  selfie,
-  gender,
-  nationalityCountryIsoCode,
-  siltID,
-  siltStatus,
-  manualReviewStatus
+siltRequest
 ) => {
-  logger.info(`[${context}]: prooving from DB`);
-  ObjLog.log(`[${context}]: prooving from DB`);
+  logger.info(`[${context}]: Sending SILT request to DB`);
+  ObjLog.log(`[${context}]: Sending SILT request to DB`);
+
+  const {
+    dateBirth,
+    emailUser,
+    docType,
+    countryIsoCodeDoc,
+    identDocNumber,
+    docPath,
+    selfie,
+    gender,
+    nationalityCountryIsoCode,
+    siltID,
+    siltStatus,
+    manualReviewStatus,
+  } = siltRequest;
+
+  // console.log(`dateBirth: ${dateBirth}`);
+  // console.log(`emailUser: ${emailUser}`);
+  // console.log(`docType: ${docType}`);
+  // console.log(`identDocNumber: ${identDocNumber}`);
+  // console.log(`docPath: ${docPath}`);
+  // console.log(`selfie: ${selfie}`);
+  // console.log(`gender: ${gender}`);
+  // console.log(`siltID: ${siltID}`);
+  // console.log(`siltStatus: ${siltStatus}`);
+  // console.log(`manualReviewStatus: ${manualReviewStatus}`);
+  // console.log(`countryIsoCodeDoc: ${countryIsoCodeDoc}`);
+  // console.log(`nationalityCountryIsoCode: ${nationalityCountryIsoCode}`);
 
   await poolSM.query({
     text: `select sec_cust.sp_request_level_one_silt($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,

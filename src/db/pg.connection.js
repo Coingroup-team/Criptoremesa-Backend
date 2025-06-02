@@ -9,6 +9,7 @@ const connectionDbSixmap = {
   database: env.PG_DB_SM_NAME,
   password: env.PG_DB_SM_PASSWORD,
   port: env.PG_DB_SM_PORT,
+  max: 8,
   keepAlive: true,
   //   currentSchema: "sec_sixmap_users",
 };
@@ -19,6 +20,7 @@ const connectionDbCriptoremesa = {
   database: env.PG_DB_CR_NAME,
   password: env.PG_DB_CR_PASSWORD,
   port: env.PG_DB_CR_PORT,
+  max: 8,
   keepAlive: true,
   //   currentSchema: "sec_sixmap_users",
 };

@@ -54,20 +54,20 @@ remittancesPGRepository.startRemittance = async (body) => {
   try {
     logger.info(`[${context}]: Starting remittance on db`);
     ObjLog.log(`[${context}]: Starting remittance on db`);
-    await poolSM.query("SET SCHEMA 'msg_app'");
 
     const resp = await poolSM.query(
-      `SELECT * FROM sp_lnk_cr_remittances_init('${JSON.stringify(body)}')`
+      'SELECT * FROM msg_app.sp_lnk_cr_remittances_init($1)', [JSON.stringify(body)]
       );
       
-      if (resp.rows[0].sp_lnk_cr_remittances_init) {
-      await poolSM.query(
-        `SELECT * FROM sec_cust.cryptomiles_assign(${resp.rows[0].sp_lnk_cr_remittances_init.id_remittance})`
-      );
+      // if (resp.rows[0].sp_lnk_cr_remittances_init) {
+      // await poolSM.query(
+      //   `SELECT * FROM sec_cust.cryptomiles_assign(${resp.rows[0].sp_lnk_cr_remittances_init.id_remittance})`
+      // );
       return resp.rows[0].sp_lnk_cr_remittances_init;
-    }
-    else return null;
+    // }
+    // else return null;
   } catch (error) {
+    console.log("ERROR EN LA COLA DE BULL", error);
     throw error;
   }
 };
@@ -212,5 +212,23 @@ remittancesPGRepository.getInfoForRateApi = async (emailUser) => {
     throw error;
   }
 };
+
+remittancesPGRepository.getInfoByOriginAndDestination = async (countryIsoCodOrigin, countryIsoCodDestiny) => {
+  try {
+    logger.info(`[${context}]: Getting remittance info by origin and destination from db`);
+    ObjLog.log(`[${context}]: Getting remittance info by origin and destination from db`);
+
+    await poolSM.query("SET SCHEMA 'prc_mng'");
+    const resp = await poolSM.query(
+      `SELECT * FROM sp_get_remittance_info('${countryIsoCodOrigin}', '${countryIsoCodDestiny}')`
+    );
+    if (resp.rows[0].sp_get_remittance_info)
+      return resp.rows[0].sp_get_remittance_info;
+    else return null;
+  }
+  catch (error) {
+    throw error;
+  }
+}
 
 export default remittancesPGRepository;

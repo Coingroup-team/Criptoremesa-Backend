@@ -1,38 +1,37 @@
-/**
- * Ecosystem file para PM2
- */
+/** PM2 ecosystem */
 module.exports = {
-    apps: [
-      {
-        name: "prod-be-bh",
-        script: "node_modules/.bin/babel-node",
-        args: "src/index.js",
-        cwd: __dirname,
-  
-        // Escalabilidad
-        instances: 1,             // o "max" para cluster mode
-        exec_mode: "fork",   // "fork" o "cluster"
-  
-        // Reinicio automático
-        autorestart: true,
-        min_uptime: "10s",
-        max_restarts: 10,
-        exp_backoff_restart_delay: 100, // retardo exponencial
-  
-        // Logs locales
-        error_file: "./logs/err.log",
-        out_file: "./logs/out.log",
-        merge_logs: true,
-        log_date_format: "YYYY-MM-DD HH:mm Z",
-  
-        // Variables de entorno
-        // env: {
-        //   NODE_ENV: "development"
-        // },
-        // env_production: {
-        //   NODE_ENV: "production"
-        // }
-      }
-    ]
-  };
-  
+  apps: [
+    {
+      name: 'pre-prod-be-bh:api',
+      script: 'node_modules/.bin/babel-node',
+      args: 'src/index.js',
+      instances: 1,
+      exec_mode: 'fork',
+      autorestart: true,
+      error_file: './logs/api-err.log',
+      out_file:   './logs/api-out.log',
+    },
+    {
+      name: 'pre-prod-be-bh:rem-worker',
+      script: 'node_modules/.bin/babel-node',
+      args: 'src/utils/workers/createRemittance.worker.js',
+      instances: 1,          // ¡no escalar!
+      exec_mode: 'fork',
+      autorestart: true,
+      watch: false,          // nada de watch en workers
+      error_file: './logs/rem-err.log',
+      out_file:   './logs/rem-out.log',
+    },
+    {
+      name: 'pre-prod-be-bh:silt-worker',
+      script: 'node_modules/.bin/babel-node',
+      args: 'src/utils/workers/silt.worker.js',
+      instances: 1,
+      exec_mode: 'fork',
+      autorestart: true,
+      watch: false,
+      error_file: './logs/silt-err.log',
+      out_file:   './logs/silt-out.log',
+    },
+  ],
+};

@@ -4,6 +4,7 @@ import veriflevelsPGRepository from "../repositories/veriflevels.pg.repository";
 import veriflevelsHTTPRepository from "../repositories/veriflevels.http.repository";
 import fs from "fs";
 import authenticationPGRepository from "../../authentication/repositories/authentication.pg.repository";
+import { addSiltRequestToQueue } from "../../../utils/queues/silt.queue";
 
 const veriflevelsService = {};
 const context = "veriflevels Service";
@@ -305,7 +306,7 @@ veriflevelsService.levelOneVerfificationSilt = async (
   logger.info(`[${context}]: storing silt request in BD`);
   ObjLog.log(`[${context}]: storing silt request in BD`);
 
-  await veriflevelsPGRepository.levelOneVerfificationSilt(
+  const siltRequest = {
     dateBirth,
     emailUser,
     docType,
@@ -318,7 +319,9 @@ veriflevelsService.levelOneVerfificationSilt = async (
     siltID,
     siltStatus,
     manualReviewStatus
-  );
+  }
+
+  addSiltRequestToQueue(siltRequest);
 };
 
 export default veriflevelsService;

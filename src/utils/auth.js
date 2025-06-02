@@ -41,9 +41,9 @@ async function resp(user) {
     let countryResp = null;
     let sess = null;
 
-    const resp = await authenticationPGRepository.getIpInfo(
+    const resp = null /*await authenticationPGRepository.getIpInfo(
       expressObj.req.header("Client-Ip")
-    );
+    );*/
     if (resp) countryResp = resp.country_name;
 
     if (
@@ -59,7 +59,7 @@ async function resp(user) {
                         message: 
                         "There is already an active session with this user. Try again in a few minutes.",
                       };
-      await authenticationPGRepository.insertLogMsg(log);
+      //await authenticationPGRepository.insertLogMsg(log);
 
       expressObj.res.status(401).send({
         message:
@@ -84,7 +84,7 @@ async function resp(user) {
                         verif_level_apb: user.verif_level_apb,
                         atcPhone: response ? response.atcPhone : "NA",
                       };
-      await authenticationPGRepository.insertLogMsg(log);
+      //await authenticationPGRepository.insertLogMsg(log);
 
       expressObj.res.status(400).send({
         user_blocked: user.user_blocked,
@@ -101,7 +101,7 @@ async function resp(user) {
                         user,
                         captchaSuccess: true,
                       };
-      await authenticationPGRepository.insertLogMsg(log);
+      //await authenticationPGRepository.insertLogMsg(log);
 
       expressObj.res.status(200).send({
         isAuthenticated: expressObj.isAuthenticated,
@@ -133,18 +133,20 @@ passport.use(
         expressObj.userExists = false;
         blockedOrNotVerified = false;
 
+        /* Comento actualizacion de IP
         await authenticationPGRepository.updateIPSession(
           req.sessionID,
           req.header("Client-Ip")
         );
+        */
 
         logger.info(`[${context}]: Checking user`);
-        ObjLog.log(`[${context}]: Checking user`);
+        //ObjLog.log(`[${context}]: Checking user`);
 
         // if (guard.getUsernameField() === "email")
         user = await authenticationPGRepository.getUserByEmail(email.toLowerCase());
 
-        console.log('USER OBTENIDO🔴:',user)
+        // console.log('USER OBTENIDO🔴:',user)
 
         if (user && user.wholesale_partner_info) {
           user.wholesale_partner_info.logo = fs.readFileSync(
@@ -158,14 +160,14 @@ passport.use(
 
         if (user) {
           logger.info(`[${context}]: User found, checking password`);
-          ObjLog.log(`[${context}]: User found, checking password`);
+          //ObjLog.log(`[${context}]: User found, checking password`);
 
           if (
             user.user_blocked ||
             (user.id_verif_level === 0 && !user.verif_level_apb)
           ) {
             logger.error(`[${context}]: User is blocked or not verified`);
-            ObjLog.log(`[${context}]: User is blocked or not verified`);
+            //ObjLog.log(`[${context}]: User is blocked or not verified`);
 
             blockedOrNotVerified = true;
 
@@ -180,17 +182,19 @@ passport.use(
             expressObj.userExists = true;
             globalUser = user;
 
+            /*
             await authenticationPGRepository.updateIPUser(
               user.id_uuid,
               req.header("Client-Ip"),
               req.sessionID
             );
+            */
 
             let match = await bcrypt.compare(password, user.password);
 
             if (match) {
               logger.info(`[${context}]: Successful login`);
-              ObjLog.log(`[${context}]: Successful login`);
+              //ObjLog.log(`[${context}]: Successful login`);
 
               expressObj.userActiveSession =
                 await authenticationPGRepository.userHasAnActiveSession(email);
@@ -267,21 +271,21 @@ export default {
       log.is_auth = req.isAuthenticated();
       log.ip = req.header("Client-Ip");
       log.route = req.method + " " + req.originalUrl;
-      const resp = await authenticationPGRepository.getIpInfo(
+      const resp = {};/*await authenticationPGRepository.getIpInfo(
         req.header("Client-Ip")
-      );
+      );*/
       if (resp)
         log.country = resp.country_name
           ? resp.country_name
           : "Probably Localhost";
-      if (await authenticationPGRepository.getSessionById(req.sessionID))
+      if (await authenticationPGRepository.getSessionById(req.sessionID)) // si cambiamos de postgres a redis lo de las sesiones, esto se puede optimizar
         log.session = req.sessionID;
 
       log.params = req.params;
       log.query = req.query;
       log.body = req.body;
 
-      passport.authenticate("local", async function (err, user, info) {
+      passport.authenticate("local", async (err, user, info) => {
         if (err) {
           return expressObj.next(err);
         }
@@ -306,7 +310,7 @@ export default {
                           userExists: expressObj.userExists,
                           captchaSuccess: true,
                         };
-          await authenticationPGRepository.insertLogMsg(log);
+          //await authenticationPGRepository.insertLogMsg(log); Comentado para optimizar
 
           res.json({
             isAuthenticated: false,
@@ -347,7 +351,7 @@ export default {
       log.failed = false;
       log.status = 200;
       log.response = { message: "Logged out succesfully" };
-      await authenticationPGRepository.insertLogMsg(log);
+      //await authenticationPGRepository.insertLogMsg(log);
 
       res.status(200).json({ message: "Logged out succesfully" });
       next();

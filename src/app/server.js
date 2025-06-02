@@ -19,6 +19,12 @@ import bodyParser from "body-parser";
 import whatsapp from "../utils/whatsapp";
 import queue from 'express-queue';
 import * as Sentry from "@sentry/node";
+import { createBullBoard } from '@bull-board/api';
+import { BullAdapter } from '@bull-board/api/bullAdapter';
+import { ExpressAdapter } from '@bull-board/express';
+import { siltQueue } from '../utils/queues/silt.queue'; // Importamos la cola
+import { remittanceQueue } from "../utils/queues/createRemittance.queue"; // Importamos la cola
+
 
 //jobs
 import transactionsJob from '../utils/jobs/transactions'
@@ -53,7 +59,9 @@ app.use(
       "https://bithonor.es",
       "https://3.143.246.144:5011",
       "https://3.143.246.144:4053",
-      "https://bhtest.bithonor.com"
+      "https://bhtest.bithonor.com",
+      "https://qa.bithonor.com",
+      "https://qa.bithonor.es"
     ],
     methods: "GET,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
@@ -62,6 +70,7 @@ app.use(
   })
 );
 app.use(helmet());
+app.set("trust proxy", 1);
 app.use(
   session({
     store: new pgSession({
@@ -81,7 +90,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(queue({ activeLimit: 1, queuedLimit: -1, rejectHandler: (req, res) => { res.sendStatus(500); } }));
+// app.use(queue({ activeLimit: 1, queuedLimit: -1, rejectHandler: (req, res) => { res.sendStatus(500); } }));
 
 app.use((req, res, next) => {
   logger.debug(`[Request]: ${req.method} ${req.originalUrl}`);
@@ -103,10 +112,22 @@ app.use((req, res, next) => {
 });
 
 // ROUTES
-app.get("/", async (req, res) => {
+app.get("/", async (req, res, next) => {
   res.status(200).send("Server running");
   next();
 });
+
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/admin/queues');
+
+const { addQueue, removeQueue, setQueues } = createBullBoard({
+    queues: [new BullAdapter(siltQueue), new BullAdapter(remittanceQueue)], // Usamos la cola que exportamos
+    serverAdapter,
+});
+
+app.use('/admin/queues', serverAdapter.getRouter());
+
+console.log('🔵 Bull Board está corriendo en: /admin/queues');
 
 app.use("/cr", routerIndex);
 

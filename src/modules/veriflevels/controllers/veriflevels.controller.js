@@ -759,7 +759,7 @@ const getEvaluatedStatus = (globalStatus, userStatus, verifications, manualRevie
 veriflevelsController.levelOneVerfificationSilt = async (req, res, next) => {
   try {
     const dateBirth = req.body.user.birth_date;
-    const emailUser = req.body.user_meta.email_user;
+    const emailUser = req.body.user_meta?.email_user || req.body.user.company_app_meta?.email_user;
     const selfie = req.body.user.selfie ? req.body.user.selfie.file_url : "";
     const gender = req.body.user.sex;
     const nationalityCountry = req.body.user.nationality;
