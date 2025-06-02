@@ -2,7 +2,7 @@
 module.exports = {
   apps: [
     {
-      name: 'pre-prod-be-bh:api',
+      name: 'prod-be-bh:api',
       script: 'node_modules/.bin/babel-node',
       args: 'src/index.js',
       instances: 1,
@@ -12,7 +12,7 @@ module.exports = {
       out_file:   './logs/api-out.log',
     },
     {
-      name: 'pre-prod-be-bh:rem-worker',
+      name: 'prod-be-bh:rem-worker',
       script: 'node_modules/.bin/babel-node',
       args: 'src/utils/workers/createRemittance.worker.js',
       instances: 1,          // ¡no escalar!
@@ -23,7 +23,7 @@ module.exports = {
       out_file:   './logs/rem-out.log',
     },
     {
-      name: 'pre-prod-be-bh:silt-worker',
+      name: 'prod-be-bh:silt-worker',
       script: 'node_modules/.bin/babel-node',
       args: 'src/utils/workers/silt.worker.js',
       instances: 1,
