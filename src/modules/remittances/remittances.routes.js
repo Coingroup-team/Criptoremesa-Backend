@@ -89,4 +89,10 @@ remittancesRouter.get(
   remittancesController.getInfoByOriginAndDestination
 );
 
+remittancesRouter.post(
+  "/clear-cache-info",
+  // guard.verifyAdmin("/login"),
+  remittancesController.clearCacheInfo
+)
+
 export default remittancesRouter;
