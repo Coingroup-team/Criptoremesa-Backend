@@ -702,4 +702,27 @@ remittancesController.getInfoByOriginAndDestination = async (req, res, next) => 
   }
 }
 
+remittancesController.clearCacheInfo = async (req, res, next) => {
+  try {
+    // filling log object info
+    let log = logConst;
+    log.ip = req.header("Client-Ip");
+    log.route = req.method + " " + req.originalUrl;
+    log.is_auth = req.isAuthenticated();
+    log.params = req.params;
+    log.query = req.query;
+
+    // calling service
+    logger.info(`[${context}]: Clearing cache info`);
+    ObjLog.log(`[${context}]: Clearing cache info`);
+
+    let finalResp = await remittancesService.clearCacheInfo(req, res, next);
+    
+    res.status(200).json(finalResp.data);
+    await authenticationPGRepository.insertLogMsg(log);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default remittancesController;

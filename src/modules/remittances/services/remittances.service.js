@@ -10,6 +10,7 @@ import formidable from "formidable";
 import axios from 'axios'
 import transbankService from "../../transbank/services/transbank.service";
 import { addRemittanceToQueue } from "../../../utils/queues/createRemittance.queue";
+import { pairIsoCodes } from "../../../utils/pairIsoCodes";
 
 const remittancesService = {};
 const context = "remittances Service";
@@ -27,6 +28,34 @@ function getFromRedis(key) {
       if (err) return reject(err);
       return resolve(reply);
     });
+  });
+}
+
+async function viewKeys() {
+  redisClient.keys("*", (err, keys) => {
+    if (err) throw err;
+    const pairs = keys.filter(key => pairIsoCodes.includes(key));
+    console.log("Keys in Redis:", pairs);
+  });
+  
+  
+  // for (let key of keys) {
+  //   const type = await redisClient.type(key);
+  //   let value;
+  //   if (type === "string") value = await redisClient.get(key);
+  //   else if (type === "hash") value = await redisClient.hgetall(key);
+  //   // y así para otros tipos
+  //   console.log(`${key} (${type}):`, value);
+  // }
+}
+
+async function clearCachePairIsoCodes() {
+  redisClient.del(...pairIsoCodes, (err, res) => {
+    if (err) {
+      console.error(`❌ Error al eliminar claves: ${err}`);
+    } else {
+      console.log(`✅ Se eliminaron ${res} claves.`);
+    }
   });
 }
 
@@ -499,6 +528,7 @@ remittancesService.getInfoByOriginAndDestination = async (req, res, next) => {
   let data;
   const pairInfo = req.params.countryIsoCodOrigin + req.params.countryIsoCodDestiny
   const redisInfo = await getFromRedis(pairInfo)
+  await viewKeys();
 
   if (redisInfo) {
     // redisClient.del(pairInfo);
@@ -514,6 +544,22 @@ remittancesService.getInfoByOriginAndDestination = async (req, res, next) => {
     success: true,
     failed: false
   }
+}
+
+remittancesService.clearCacheInfo = async (req, res, next) => {
+  logger.info(`[${context}]: Clearing cache info`);
+  ObjLog.log(`[${context}]: Clearing cache info`);
+
+  await clearCachePairIsoCodes();
+  
+  logger.info(`[${context}]: Cache info cleared for pairs ${pairIsoCodes}`);
+  ObjLog.log(`[${context}]: Cache info cleared for pairs ${pairIsoCodes}`);
+  return {
+    data: { message: 'Cache info cleared successfully' },
+    status: 200,
+    success: true,
+    failed: false
+  };
 }
 
 export default remittancesService;
