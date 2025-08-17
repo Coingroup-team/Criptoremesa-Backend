@@ -339,7 +339,9 @@ veriflevelsService.levelOneVerfificationSiltEnhanced = async (
   manualReviewStatus,
   personalNumber,
   expiryDate,
-  documentAddress
+  documentAddress,
+  documentType,
+  documentNumber
 ) => {
   logger.info(`[${context}]: getting iso codes for enhanced SILT`);
   ObjLog.log(`[${context}]: getting iso codes for enhanced SILT`);
@@ -372,7 +374,9 @@ veriflevelsService.levelOneVerfificationSiltEnhanced = async (
     manualReviewStatus,
     personalNumber,
     expiryDate,
-    documentAddress
+    documentAddress,
+    documentType,
+    documentNumber
   }
 
   addSiltRequestToQueue(siltRequestEnhanced);

@@ -814,6 +814,7 @@ veriflevelsController.levelOneVerfificationSilt = async (req, res, next) => {
 
     console.log(`Doc Country ${countryDoc} - nationality ${nationalityCountry}`);
     console.log(`Additional SILT data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}`);
+    console.log(`Document identification - Type: ${docType}, Number: ${identDocNumber}`);
 
     if (req.body.processing_attempt) {
       await veriflevelsService.levelOneVerfificationSiltEnhanced(
@@ -831,7 +832,9 @@ veriflevelsController.levelOneVerfificationSilt = async (req, res, next) => {
         req.body.manual_review_status,
         personalNumber,
         expiryDate,
-        documentAddress
+        documentAddress,
+        docType,
+        identDocNumber
       );
     }
 

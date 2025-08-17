@@ -303,12 +303,14 @@ siltRequest
     personalNumber,
     expiryDate,
     documentAddress,
+    documentType,
+    documentNumber,
   } = siltRequest;
 
-  console.log(`Enhanced SILT data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}`);
+  console.log(`Enhanced SILT data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}, Doc Type: ${documentType}, Doc Number: ${documentNumber}`);
 
   await poolSM.query({
-    text: `select sec_cust.sp_request_level_one_silt_enhanced($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+    text: `select sec_cust.sp_request_level_one_silt_enhanced($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`,
     values: [
       dateBirth,
       emailUser,
@@ -325,6 +327,8 @@ siltRequest
       personalNumber,
       expiryDate,
       documentAddress,
+      documentType,
+      documentNumber,
     ],
   });
 };

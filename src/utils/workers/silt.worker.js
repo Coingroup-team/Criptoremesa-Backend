@@ -11,7 +11,7 @@ siltQueue.process(1, async (job, done) => {
         const siltRequest = job.data;
         
         // Check if this is an enhanced SILT request with additional document data
-        const hasEnhancedData = siltRequest.personalNumber || siltRequest.expiryDate || siltRequest.documentAddress;
+        const hasEnhancedData = siltRequest.personalNumber || siltRequest.expiryDate || siltRequest.documentAddress || siltRequest.documentType || siltRequest.documentNumber;
         
         if (hasEnhancedData) {
             logger.info(`[${context}] Processing enhanced SILT request with additional document data`);

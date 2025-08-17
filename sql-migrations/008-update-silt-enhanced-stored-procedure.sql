@@ -1,10 +1,10 @@
--- Migration: Enhanced SILT Processing Function
--- Description: Updates sp_request_level_one_silt to handle additional document data
---              (personal number, expiry date, address) using lnk_users_extra_data table
--- Author: System Migration  
--- Date: 2024
+-- Migration: Update SILT Enhanced Stored Procedure with Document Type and Number
+-- Description: Updates sp_request_level_one_silt_enhanced to accept and store 
+--              document type and number parameters (17 total parameters)
+-- Author: Coingroup Expert System
+-- Date: 2025-08-17
 
--- Create enhanced SILT processing function
+-- Update the SILT enhanced stored procedure to handle document type and number
 CREATE OR REPLACE FUNCTION sec_cust.sp_request_level_one_silt_enhanced(
     p_date_birth timestamp with time zone,
     p_email_user character varying,
@@ -18,10 +18,13 @@ CREATE OR REPLACE FUNCTION sec_cust.sp_request_level_one_silt_enhanced(
     p_silt_id character varying,
     p_silt_status character varying,
     p_was_set_manually boolean,
-    -- New parameters for additional document data
+    -- Enhanced parameters for additional document data
     p_personal_number character varying DEFAULT NULL,
     p_expiry_date character varying DEFAULT NULL,
-    p_document_address text DEFAULT NULL
+    p_document_address text DEFAULT NULL,
+    -- New parameters for document type and number
+    p_document_type character varying DEFAULT NULL,
+    p_document_number character varying DEFAULT NULL
 )
 RETURNS void
 LANGUAGE plpgsql
@@ -37,6 +40,8 @@ DECLARE
     v_item_personal_number_id integer;
     v_item_expiry_date_id integer;
     v_item_address_id integer;
+    v_item_document_type_id integer;
+    v_item_document_number_id integer;
 BEGIN
     -- Original function logic (call existing function first)
     PERFORM sec_cust.sp_request_level_one_silt(
@@ -59,7 +64,7 @@ BEGIN
     FROM sec_cust.ms_sixmap_users AS us
     WHERE us.email_user = p_email_user;
 
-    -- Get item IDs for SILT document data
+    -- Get item IDs for all SILT document data
     SELECT id_item INTO v_item_personal_number_id 
     FROM sec_cust.ms_item 
     WHERE name = 'silt_document_personal_number';
@@ -71,6 +76,14 @@ BEGIN
     SELECT id_item INTO v_item_address_id 
     FROM sec_cust.ms_item 
     WHERE name = 'silt_document_address';
+
+    SELECT id_item INTO v_item_document_type_id 
+    FROM sec_cust.ms_item 
+    WHERE name = 'silt_document_type';
+
+    SELECT id_item INTO v_item_document_number_id 
+    FROM sec_cust.ms_item 
+    WHERE name = 'silt_document_number';
 
     -- Store additional SILT document data if provided
     IF p_personal_number IS NOT NULL AND v_item_personal_number_id IS NOT NULL THEN
@@ -106,18 +119,44 @@ BEGIN
         VALUES (v_current_full_user.id_user, v_item_address_id, p_document_address, false);
     END IF;
 
+    -- Store new document type and number data
+    IF p_document_type IS NOT NULL AND v_item_document_type_id IS NOT NULL THEN
+        -- Delete existing document type for this user
+        DELETE FROM sec_cust.lnk_users_extra_data 
+        WHERE id_user = v_current_full_user.id_user 
+        AND id_item = v_item_document_type_id;
+
+        -- Insert new document type
+        INSERT INTO sec_cust.lnk_users_extra_data (id_user, id_item, value, edited)
+        VALUES (v_current_full_user.id_user, v_item_document_type_id, p_document_type, false);
+    END IF;
+
+    IF p_document_number IS NOT NULL AND v_item_document_number_id IS NOT NULL THEN
+        -- Delete existing document number for this user
+        DELETE FROM sec_cust.lnk_users_extra_data 
+        WHERE id_user = v_current_full_user.id_user 
+        AND id_item = v_item_document_number_id;
+
+        -- Insert new document number
+        INSERT INTO sec_cust.lnk_users_extra_data (id_user, id_item, value, edited)
+        VALUES (v_current_full_user.id_user, v_item_document_number_id, p_document_number, false);
+    END IF;
+
 EXCEPTION
     WHEN OTHERS THEN
         -- Log error but don't fail the original SILT processing
-        RAISE WARNING 'Error storing additional SILT document data for user %: %', p_email_user, SQLERRM;
+        RAISE WARNING 'Error storing enhanced SILT document data for user %: %', p_email_user, SQLERRM;
 END;
 $function$;
 
--- Grant permissions
+-- Grant permissions on the updated function
 GRANT EXECUTE ON FUNCTION sec_cust.sp_request_level_one_silt_enhanced TO postgres;
 
--- Verify function creation
-SELECT proname, pronargs 
+-- Verify function update shows 17 parameters
+SELECT 
+    proname,
+    pronargs,
+    pg_get_function_arguments(oid) as arguments
 FROM pg_proc 
 WHERE proname = 'sp_request_level_one_silt_enhanced' 
 AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'sec_cust');
