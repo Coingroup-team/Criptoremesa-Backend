@@ -75,4 +75,9 @@ veriflevelsRouter.post(
   veriflevelsController.levelOneVerfificationSilt
 )
 
+veriflevelsRouter.get(
+  "/silt/document-data/:emailUser",
+  veriflevelsController.getUserSiltDocumentData
+)
+
 export default veriflevelsRouter;

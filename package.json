@@ -4,14 +4,14 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "build":       "babel src --out-dir dist",
-    "dev:api":     "nodemon --signal SIGTERM --exec babel-node src/index.js",
-    "dev:rem":     "babel-node src/utils/workers/createRemittance.worker.js",
-    "dev:silt":    "babel-node src/utils/workers/silt.worker.js",
-
-    "start:api":   "babel-node src/index.js",
-    "start:rem":   "babel-node src/utils/workers/createRemittance.worker.js",
-    "start:silt":  "babel-node src/utils/workers/silt.worker.js"
+    "build": "babel src --out-dir dist",
+    "dev:api": "nodemon --signal SIGTERM --exec babel-node src/index.js",
+    "dev:rem": "babel-node src/utils/workers/createRemittance.worker.js",
+    "dev:silt": "babel-node src/utils/workers/silt.worker.js",
+    "start:api": "babel-node src/index.js",
+    "start:rem": "babel-node src/utils/workers/createRemittance.worker.js",
+    "start:silt": "babel-node src/utils/workers/silt.worker.js",
+    "start:all": "concurrently \"npm run start:api\" \"npm run start:rem\" \"npm run start:silt\" --names \"API,REM,SILT\" --prefix-colors \"blue,green,yellow\""
   },
   "repository": {
     "type": "git",
@@ -74,6 +74,7 @@
     "@babel/node": "^7.13.0",
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "^7.13.9",
+    "concurrently": "^9.2.0",
     "dotenv": "^8.2.0",
     "nodemon": "^2.0.7"
   }

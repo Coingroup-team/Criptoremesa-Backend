@@ -766,41 +766,95 @@ veriflevelsController.levelOneVerfificationSilt = async (req, res, next) => {
     const siltID = req.body.user.id;
     const siltStatus = getEvaluatedStatus(req.body.status, req.body.user.status, req.body.user.verifications, req.body.manual_review_status);
     console.log(req.body);
+    
     let docType;
     let countryDoc;
     let identDocNumber;
     let docPath;
+    let personalNumber = null;
+    let expiryDate = null;
+    let documentAddress = null;
+    
     if (req.body.user.national_id) {
       docType = 1;
       countryDoc = req.body.user.national_id.country;
       identDocNumber = req.body.user.national_id.document_number;
       docPath = req.body.user.national_id.files && req.body.user.national_id.files.length > 0 ? req.body.user.national_id.files[0].file_url : "";
+      
+      // Extract additional SILT document data
+      personalNumber = req.body.user.national_id.personal_number || req.body.user.national_id.personal_id || null;
+      expiryDate = req.body.user.national_id.expiry_date || req.body.user.national_id.date_of_expiry || req.body.user.national_id.expiration_date || null;
+      documentAddress = req.body.user.national_id.address + ' ' + req.body.user.national_id.province + ' ' + req.body.user.national_id.city || req.body.user.address + ' ' + req.body.user.province + ' ' + req.body.user.city || null;
     }
     else if (req.body.user.passport) {
       docType = 2;
       countryDoc = req.body.user.passport.country;
       identDocNumber = req.body.user.passport.document_number;
       docPath = req.body.user.passport.files && req.body.user.passport.files.length > 0 ? req.body.user.passport.files[0].file_url : "";
+      
+      // Extract additional SILT document data
+      personalNumber = req.body.user.passport.personal_number || req.body.user.passport.personal_id || null;
+      expiryDate = req.body.user.passport.expiry_date || req.body.user.passport.date_of_expiry || req.body.user.passport.expiration_date || null;
+      documentAddress = req.body.user.passport.address + ' ' + req.body.user.passport.province + ' ' + req.body.user.passport.city || req.body.user.address + ' ' + req.body.user.province + ' ' + req.body.user.city || null;
     }
     else if (req.body.user.driving_license) {
       docType = 3;
       countryDoc = req.body.user.driving_license.country;
       identDocNumber = req.body.user.driving_license.document_number;
       docPath = req.body.user.driving_license.files && req.body.user.driving_license.files.length > 0 ? req.body.user.driving_license.files[0].file_url : "";
+      
+      // Extract additional SILT document data
+      personalNumber = req.body.user.driving_license.personal_number || req.body.user.driving_license.personal_id || null;
+      expiryDate = req.body.user.driving_license.expiry_date || req.body.user.driving_license.date_of_expiry || req.body.user.driving_license.expiration_date || null;
+      documentAddress = req.body.user.driving_license.address + ' ' + req.body.user.driving_license.province + ' ' + req.body.user.driving_license.city || req.body.user.address + ' ' + req.body.user.province + ' ' + req.body.user.city || null;
     }
     
     logger.info(`[${context}]: Sending service to request level one SILT`);
     ObjLog.log(`[${context}]: Sending service to request level one SILT`);
 
     console.log(`Doc Country ${countryDoc} - nationality ${nationalityCountry}`);
+    console.log(`Additional SILT data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}`);
+    console.log(`Document identification - Type: ${docType}, Number: ${identDocNumber}`);
 
     if (req.body.processing_attempt) {
-      await veriflevelsService.levelOneVerfificationSilt(dateBirth, emailUser, docType, countryDoc, identDocNumber, docPath, selfie, gender, nationalityCountry, siltID, siltStatus, req.body.manual_review_status);
+      await veriflevelsService.levelOneVerfificationSiltEnhanced(
+        dateBirth, 
+        emailUser, 
+        docType, 
+        countryDoc, 
+        identDocNumber, 
+        docPath, 
+        selfie, 
+        gender, 
+        nationalityCountry, 
+        siltID, 
+        siltStatus, 
+        req.body.manual_review_status,
+        personalNumber,
+        expiryDate,
+        documentAddress,
+        docType,
+        identDocNumber
+      );
     }
 
     res.status(200).send({
       message: "OK"
     });
+    
+  } catch (error) {
+    next(error);
+  }
+}
+
+veriflevelsController.getUserSiltDocumentData = async (req, res, next) => {
+  try {
+    logger.info(`[${context}]: Getting user SILT document data controller`);
+    ObjLog.log(`[${context}]: Getting user SILT document data controller`);
+
+    const resp = await veriflevelsService.getUserSiltDocumentData(req, res, next);
+    
+    res.status(resp.status).send(resp);
     
   } catch (error) {
     next(error);
