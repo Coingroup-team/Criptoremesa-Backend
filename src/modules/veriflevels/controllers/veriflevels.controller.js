@@ -808,7 +808,12 @@ veriflevelsController.levelOneVerfificationSilt = async (req, res, next) => {
       expiryDate = req.body.user.driving_license.expiry_date || req.body.user.driving_license.date_of_expiry || req.body.user.driving_license.expiration_date || null;
       documentAddress = req.body.user.driving_license.address + ' ' + req.body.user.driving_license.province + ' ' + req.body.user.driving_license.city || req.body.user.address + ' ' + req.body.user.province + ' ' + req.body.user.city || null;
     }
-    
+
+    // if countryDoc is CHL and docType is 1 (national ID), format the identDocNumber to XXX.XXX.XXX-X
+    if (countryDoc === 'CHL' && docType === 1) {
+      identDocNumber = identDocNumber.replace(/(\d{3})(\d{3})(\d{3})[-\s]*(\d)/, '$1.$2.$3-$4');
+    }
+
     logger.info(`[${context}]: Sending service to request level one SILT`);
     ObjLog.log(`[${context}]: Sending service to request level one SILT`);
 
