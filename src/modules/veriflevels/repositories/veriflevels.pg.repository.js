@@ -281,4 +281,73 @@ siltRequest
   });
 };
 
+veriflevelsPGRepository.levelOneVerfificationSiltEnhanced = async (
+siltRequest
+) => {
+  logger.info(`[${context}]: Sending enhanced SILT request to DB`);
+  ObjLog.log(`[${context}]: Sending enhanced SILT request to DB`);
+
+  const {
+    dateBirth,
+    emailUser,
+    docType,
+    countryIsoCodeDoc,
+    identDocNumber,
+    docPath,
+    selfie,
+    gender,
+    nationalityCountryIsoCode,
+    siltID,
+    siltStatus,
+    manualReviewStatus,
+    personalNumber,
+    expiryDate,
+    documentAddress,
+    documentType,
+    documentNumber,
+  } = siltRequest;
+
+  console.log(`Enhanced SILT data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}, Doc Type: ${documentType}, Doc Number: ${documentNumber}`);
+
+  await poolSM.query({
+    text: `select sec_cust.sp_request_level_one_silt_enhanced($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`,
+    values: [
+      dateBirth,
+      emailUser,
+      docType,
+      countryIsoCodeDoc,
+      identDocNumber,
+      docPath,
+      selfie,
+      gender,
+      nationalityCountryIsoCode,
+      siltID,
+      siltStatus,
+      manualReviewStatus,
+      personalNumber,
+      expiryDate,
+      documentAddress,
+      documentType,
+      documentNumber,
+    ],
+  });
+};
+
+veriflevelsPGRepository.getUserSiltDocumentData = async (emailUser) => {
+  logger.info(`[${context}]: Getting SILT document data for user ${emailUser}`);
+  ObjLog.log(`[${context}]: Getting SILT document data for user ${emailUser}`);
+
+  try {
+    await poolSM.query("SET SCHEMA 'sec_cust'");
+    const resp = await poolSM.query(
+      `SELECT * FROM v_user_silt_document_data WHERE email_user = $1`,
+      [emailUser]
+    );
+    return resp.rows[0] || null;
+  } catch (error) {
+    logger.error(`[${context}] Error getting SILT document data: ${error}`);
+    throw error;
+  }
+};
+
 export default veriflevelsPGRepository;

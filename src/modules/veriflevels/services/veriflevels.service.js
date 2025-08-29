@@ -324,4 +324,80 @@ veriflevelsService.levelOneVerfificationSilt = async (
   addSiltRequestToQueue(siltRequest);
 };
 
+veriflevelsService.levelOneVerfificationSiltEnhanced = async (
+  dateBirth,
+  emailUser,
+  docType,
+  countryDoc,
+  identDocNumber,
+  docPath,
+  selfie,
+  gender,
+  nationalityCountry,
+  siltID,
+  siltStatus,
+  manualReviewStatus,
+  personalNumber,
+  expiryDate,
+  documentAddress,
+  documentType,
+  documentNumber
+) => {
+  logger.info(`[${context}]: getting iso codes for enhanced SILT`);
+  ObjLog.log(`[${context}]: getting iso codes for enhanced SILT`);
+
+  const countryIsoCodeDoc = countryDoc
+    ? await veriflevelsHTTPRepository.getCountryIsoCodeCCA2(countryDoc)
+    : null;
+  const nationalityCountryIsoCode = nationalityCountry
+    ? await veriflevelsHTTPRepository.getCountryIsoCodeCCA2(nationalityCountry)
+    : null;
+
+  console.log(`countryIsoCodeDoc: ${countryIsoCodeDoc}`);
+  console.log(`nationalityCountryIsoCode: ${nationalityCountryIsoCode}`);
+
+  logger.info(`[${context}]: storing enhanced silt request in BD`);
+  ObjLog.log(`[${context}]: storing enhanced silt request in BD`);
+
+  const siltRequestEnhanced = {
+    dateBirth,
+    emailUser,
+    docType,
+    countryIsoCodeDoc,
+    identDocNumber,
+    docPath,
+    selfie,
+    gender,
+    nationalityCountryIsoCode,
+    siltID,
+    siltStatus,
+    manualReviewStatus,
+    personalNumber,
+    expiryDate,
+    documentAddress,
+    documentType,
+    documentNumber
+  }
+
+  addSiltRequestToQueue(siltRequestEnhanced);
+};
+
+veriflevelsService.getUserSiltDocumentData = async (req, res, next) => {
+  try {
+    logger.info(`[${context}]: Getting user SILT document data`);
+    ObjLog.log(`[${context}]: Getting user SILT document data`);
+      
+    const siltDocumentData = await veriflevelsPGRepository.getUserSiltDocumentData(req.params.emailUser);
+    
+    return {
+      data: siltDocumentData,
+      status: 200,
+      success: true,
+      failed: false
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default veriflevelsService;
