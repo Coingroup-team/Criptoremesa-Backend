@@ -55,29 +55,21 @@ personaHTTPRepository.createInquiry = async (referenceId, userData = {}) => {
         attributes: {
           "inquiry-template-id": PERSONA_INQUIRY_TEMPLATE_ID,
           "reference-id": referenceId,
+          fields: {},
         },
       },
     };
 
     // Add optional user data if provided
     if (userData.email) {
-      requestBody.data.attributes.fields = {
-        ...requestBody.data.attributes.fields,
-        "email-address": { type: "string", value: userData.email },
-      };
+      requestBody.data.attributes.fields["email-address"] = userData.email;
     }
 
     if (userData.name) {
-      requestBody.data.attributes.fields = {
-        ...requestBody.data.attributes.fields,
-        "name-first": { type: "string", value: userData.name.split(" ")[0] },
-        "name-last": {
-          type: "string",
-          value:
-            userData.name.split(" ").slice(1).join(" ") ||
-            userData.name.split(" ")[0],
-        },
-      };
+      const nameParts = userData.name.split(" ");
+      requestBody.data.attributes.fields["name-first"] = nameParts[0] || "";
+      requestBody.data.attributes.fields["name-last"] =
+        nameParts.slice(1).join(" ") || nameParts[0] || "";
     }
 
     const response = await axios.post(
