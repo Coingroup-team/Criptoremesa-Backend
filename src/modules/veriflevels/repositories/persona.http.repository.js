@@ -27,6 +27,28 @@ personaHTTPRepository.createInquiry = async (referenceId, userData = {}) => {
       `[${context}]: Creating Persona inquiry for reference: ${referenceId}`
     );
 
+    // Validate required configuration
+    if (!PERSONA_API_KEY) {
+      throw new Error(
+        "PERSONA_API_KEY is not configured in environment variables"
+      );
+    }
+    if (!PERSONA_INQUIRY_TEMPLATE_ID) {
+      throw new Error(
+        "PERSONA_INQUIRY_TEMPLATE_ID is not configured in environment variables"
+      );
+    }
+
+    logger.info(`[${context}]: Using Persona API URL: ${PERSONA_API_BASE_URL}`);
+    logger.info(
+      `[${context}]: API Key configured: ${
+        PERSONA_API_KEY
+          ? "Yes (key starts with: " + PERSONA_API_KEY.substring(0, 20) + "...)"
+          : "No"
+      }`
+    );
+    logger.info(`[${context}]: Template ID: ${PERSONA_INQUIRY_TEMPLATE_ID}`);
+
     const requestBody = {
       data: {
         type: "inquiry",
