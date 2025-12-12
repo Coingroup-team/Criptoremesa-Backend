@@ -5,7 +5,6 @@ import ObjLog from "../../../utils/ObjLog";
 const veriflevelsPGRepository = {};
 const context = "veriflevels PG Repository";
 
-
 veriflevelsPGRepository.requestWholesalePartner = async (body) => {
   try {
     logger.info(`[${context}]: Requesting Wholesale Partner in db`);
@@ -188,7 +187,7 @@ veriflevelsPGRepository.getVerifLevelRequirements = async (email_user) => {
     const resp = await poolSM.query(
       `SELECT * FROM v_verif_levels_requirements('${email_user}')`
     );
-      logger.silly(resp.rows[0].v_verif_levels_requirements)
+    logger.silly(resp.rows[0].v_verif_levels_requirements);
 
     return resp.rows[0].v_verif_levels_requirements;
   } catch (error) {
@@ -228,9 +227,7 @@ veriflevelsPGRepository.validateRemittance = async (remittance) => {
   }
 };
 
-veriflevelsPGRepository.levelOneVerfificationSilt = async (
-siltRequest
-) => {
+veriflevelsPGRepository.levelOneVerfificationSilt = async (siltRequest) => {
   logger.info(`[${context}]: Sending SILT request to DB`);
   ObjLog.log(`[${context}]: Sending SILT request to DB`);
 
@@ -282,7 +279,7 @@ siltRequest
 };
 
 veriflevelsPGRepository.levelOneVerfificationSiltEnhanced = async (
-siltRequest
+  siltRequest
 ) => {
   logger.info(`[${context}]: Sending enhanced SILT request to DB`);
   ObjLog.log(`[${context}]: Sending enhanced SILT request to DB`);
@@ -307,7 +304,9 @@ siltRequest
     documentNumber,
   } = siltRequest;
 
-  console.log(`Enhanced SILT data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}, Doc Type: ${documentType}, Doc Number: ${documentNumber}`);
+  console.log(
+    `Enhanced SILT data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}, Doc Type: ${documentType}, Doc Number: ${documentNumber}`
+  );
 
   await poolSM.query({
     text: `select sec_cust.sp_request_level_one_silt_enhanced($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`,
@@ -346,6 +345,72 @@ veriflevelsPGRepository.getUserSiltDocumentData = async (emailUser) => {
     return resp.rows[0] || null;
   } catch (error) {
     logger.error(`[${context}] Error getting SILT document data: ${error}`);
+    throw error;
+  }
+};
+
+/**
+ * Store Persona inquiry ID in user record
+ * @param {string} emailUser - User email
+ * @param {string} personaInquiryId - Persona inquiry ID
+ * @returns {Promise<Object>} - Updated user record
+ */
+veriflevelsPGRepository.storePersonaInquiryId = async (
+  emailUser,
+  personaInquiryId
+) => {
+  try {
+    logger.info(
+      `[${context}]: Storing Persona inquiry ID for user: ${emailUser}`
+    );
+    ObjLog.log(
+      `[${context}]: Storing Persona inquiry ID for user: ${emailUser}`
+    );
+
+    await poolSM.query("SET SCHEMA 'sec_cust'");
+    const resp = await poolSM.query(
+      `UPDATE ms_sixmap_users 
+       SET persona_inquiry_id = $1 
+       WHERE email_user = $2 
+       RETURNING id_user, email_user, persona_inquiry_id`,
+      [personaInquiryId, emailUser]
+    );
+
+    if (resp.rows.length === 0) {
+      throw new Error(`User not found with email: ${emailUser}`);
+    }
+
+    logger.info(`[${context}]: Persona inquiry ID stored successfully`);
+    return resp.rows[0];
+  } catch (error) {
+    logger.error(`[${context}] Error storing Persona inquiry ID: ${error}`);
+    throw error;
+  }
+};
+
+/**
+ * Get Persona inquiry ID for a user
+ * @param {string} emailUser - User email
+ * @returns {Promise<string|null>} - Persona inquiry ID or null
+ */
+veriflevelsPGRepository.getPersonaInquiryId = async (emailUser) => {
+  try {
+    logger.info(
+      `[${context}]: Getting Persona inquiry ID for user: ${emailUser}`
+    );
+    ObjLog.log(
+      `[${context}]: Getting Persona inquiry ID for user: ${emailUser}`
+    );
+
+    await poolSM.query("SET SCHEMA 'sec_cust'");
+    const resp = await poolSM.query(
+      `SELECT persona_inquiry_id FROM ms_sixmap_users WHERE email_user = $1`,
+      [emailUser]
+    );
+
+    return resp.rows[0]?.persona_inquiry_id || null;
+  } catch (error) {
+    logger.error(`[${context}] Error getting Persona inquiry ID: ${error}`);
     throw error;
   }
 };

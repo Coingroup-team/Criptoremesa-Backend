@@ -639,7 +639,7 @@ veriflevelsController.getVerifLevelRequirements = async (req, res, next) => {
         log.response = null;
         await authenticationPGRepository.insertLogMsg(log);
 
-        logger.silly(log)
+        logger.silly(log);
 
         //sendind response to FE
         res.status(finalResp.status).json(finalResp.data);
@@ -720,11 +720,15 @@ veriflevelsController.getWholesalePartnerRequestsRequirementsByEmail = async (
   }
 };
 
-const getEvaluatedStatus = (globalStatus, userStatus, verifications, manualReviewStatus) => {
+const getEvaluatedStatus = (
+  globalStatus,
+  userStatus,
+  verifications,
+  manualReviewStatus
+) => {
   if (manualReviewStatus) {
     return manualReviewStatus;
-  }
-  else if (userStatus === "SUCCESS") {
+  } else if (userStatus === "SUCCESS") {
     const hasAML = verifications.some((v) => v.verification_type === "AML");
     const hasPEP = verifications.some((v) => v.verification_type === "PEP");
     const hasMisconduct = verifications.some(
@@ -737,13 +741,10 @@ const getEvaluatedStatus = (globalStatus, userStatus, verifications, manualRevie
     return "SUCCESS";
   } else if (
     globalStatus === "SUCCESS" &&
-    (userStatus === "MANUAL_REVIEW" ||
-      userStatus === "BLOCKED" )
+    (userStatus === "MANUAL_REVIEW" || userStatus === "BLOCKED")
   ) {
     return "PENDING";
-  } else if (
-    globalStatus === "SUCCESS"
-  ) {
+  } else if (globalStatus === "SUCCESS") {
     return "SUCCESS";
   } else if (
     globalStatus === "ERROR" ||
@@ -754,19 +755,26 @@ const getEvaluatedStatus = (globalStatus, userStatus, verifications, manualRevie
   } else {
     return "PENDING";
   }
-}
+};
 
 veriflevelsController.levelOneVerfificationSilt = async (req, res, next) => {
   try {
     const dateBirth = req.body.user.birth_date;
-    const emailUser = req.body.user_meta?.email_user || req.body.user.company_app_meta?.email_user;
+    const emailUser =
+      req.body.user_meta?.email_user ||
+      req.body.user.company_app_meta?.email_user;
     const selfie = req.body.user.selfie ? req.body.user.selfie.file_url : "";
     const gender = req.body.user.sex;
     const nationalityCountry = req.body.user.nationality;
     const siltID = req.body.user.id;
-    const siltStatus = getEvaluatedStatus(req.body.status, req.body.user.status, req.body.user.verifications, req.body.manual_review_status);
+    const siltStatus = getEvaluatedStatus(
+      req.body.status,
+      req.body.user.status,
+      req.body.user.verifications,
+      req.body.manual_review_status
+    );
     console.log(req.body);
-    
+
     let docType;
     let countryDoc;
     let identDocNumber;
@@ -774,66 +782,138 @@ veriflevelsController.levelOneVerfificationSilt = async (req, res, next) => {
     let personalNumber = null;
     let expiryDate = null;
     let documentAddress = null;
-    
+
     if (req.body.user.national_id) {
       docType = 1;
       countryDoc = req.body.user.national_id.country;
       identDocNumber = req.body.user.national_id.document_number;
-      docPath = req.body.user.national_id.files && req.body.user.national_id.files.length > 0 ? req.body.user.national_id.files[0].file_url : "";
-      
+      docPath =
+        req.body.user.national_id.files &&
+        req.body.user.national_id.files.length > 0
+          ? req.body.user.national_id.files[0].file_url
+          : "";
+
       // Extract additional SILT document data
-      personalNumber = req.body.user.national_id.personal_number || req.body.user.national_id.personal_id || null;
-      expiryDate = req.body.user.national_id.expiry_date || req.body.user.national_id.date_of_expiry || req.body.user.national_id.expiration_date || null;
-      documentAddress = req.body.user.national_id.address + ' ' + req.body.user.national_id.province + ' ' + req.body.user.national_id.city || req.body.user.address + ' ' + req.body.user.province + ' ' + req.body.user.city || null;
-    }
-    else if (req.body.user.passport) {
+      personalNumber =
+        req.body.user.national_id.personal_number ||
+        req.body.user.national_id.personal_id ||
+        null;
+      expiryDate =
+        req.body.user.national_id.expiry_date ||
+        req.body.user.national_id.date_of_expiry ||
+        req.body.user.national_id.expiration_date ||
+        null;
+      documentAddress =
+        req.body.user.national_id.address +
+          " " +
+          req.body.user.national_id.province +
+          " " +
+          req.body.user.national_id.city ||
+        req.body.user.address +
+          " " +
+          req.body.user.province +
+          " " +
+          req.body.user.city ||
+        null;
+    } else if (req.body.user.passport) {
       docType = 2;
       countryDoc = req.body.user.passport.country;
       identDocNumber = req.body.user.passport.document_number;
-      docPath = req.body.user.passport.files && req.body.user.passport.files.length > 0 ? req.body.user.passport.files[0].file_url : "";
-      
+      docPath =
+        req.body.user.passport.files && req.body.user.passport.files.length > 0
+          ? req.body.user.passport.files[0].file_url
+          : "";
+
       // Extract additional SILT document data
-      personalNumber = req.body.user.passport.personal_number || req.body.user.passport.personal_id || null;
-      expiryDate = req.body.user.passport.expiry_date || req.body.user.passport.date_of_expiry || req.body.user.passport.expiration_date || null;
-      documentAddress = req.body.user.passport.address + ' ' + req.body.user.passport.province + ' ' + req.body.user.passport.city || req.body.user.address + ' ' + req.body.user.province + ' ' + req.body.user.city || null;
-    }
-    else if (req.body.user.driving_license) {
+      personalNumber =
+        req.body.user.passport.personal_number ||
+        req.body.user.passport.personal_id ||
+        null;
+      expiryDate =
+        req.body.user.passport.expiry_date ||
+        req.body.user.passport.date_of_expiry ||
+        req.body.user.passport.expiration_date ||
+        null;
+      documentAddress =
+        req.body.user.passport.address +
+          " " +
+          req.body.user.passport.province +
+          " " +
+          req.body.user.passport.city ||
+        req.body.user.address +
+          " " +
+          req.body.user.province +
+          " " +
+          req.body.user.city ||
+        null;
+    } else if (req.body.user.driving_license) {
       docType = 3;
       countryDoc = req.body.user.driving_license.country;
       identDocNumber = req.body.user.driving_license.document_number;
-      docPath = req.body.user.driving_license.files && req.body.user.driving_license.files.length > 0 ? req.body.user.driving_license.files[0].file_url : "";
-      
+      docPath =
+        req.body.user.driving_license.files &&
+        req.body.user.driving_license.files.length > 0
+          ? req.body.user.driving_license.files[0].file_url
+          : "";
+
       // Extract additional SILT document data
-      personalNumber = req.body.user.driving_license.personal_number || req.body.user.driving_license.personal_id || null;
-      expiryDate = req.body.user.driving_license.expiry_date || req.body.user.driving_license.date_of_expiry || req.body.user.driving_license.expiration_date || null;
-      documentAddress = req.body.user.driving_license.address + ' ' + req.body.user.driving_license.province + ' ' + req.body.user.driving_license.city || req.body.user.address + ' ' + req.body.user.province + ' ' + req.body.user.city || null;
+      personalNumber =
+        req.body.user.driving_license.personal_number ||
+        req.body.user.driving_license.personal_id ||
+        null;
+      expiryDate =
+        req.body.user.driving_license.expiry_date ||
+        req.body.user.driving_license.date_of_expiry ||
+        req.body.user.driving_license.expiration_date ||
+        null;
+      documentAddress =
+        req.body.user.driving_license.address +
+          " " +
+          req.body.user.driving_license.province +
+          " " +
+          req.body.user.driving_license.city ||
+        req.body.user.address +
+          " " +
+          req.body.user.province +
+          " " +
+          req.body.user.city ||
+        null;
     }
 
     // if countryDoc is CHL and docType is 1 (national ID), format the identDocNumber to XXX.XXX.XXX-X
-    if (countryDoc === 'CHL' && docType === 1) {
-      identDocNumber = identDocNumber.replace(/(\d{3})(\d{3})(\d{3})[-\s]*(\d)/, '$1.$2.$3-$4');
+    if (countryDoc === "CHL" && docType === 1) {
+      identDocNumber = identDocNumber.replace(
+        /(\d{3})(\d{3})(\d{3})[-\s]*(\d)/,
+        "$1.$2.$3-$4"
+      );
     }
 
     logger.info(`[${context}]: Sending service to request level one SILT`);
     ObjLog.log(`[${context}]: Sending service to request level one SILT`);
 
-    console.log(`Doc Country ${countryDoc} - nationality ${nationalityCountry}`);
-    console.log(`Additional SILT data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}`);
-    console.log(`Document identification - Type: ${docType}, Number: ${identDocNumber}`);
+    console.log(
+      `Doc Country ${countryDoc} - nationality ${nationalityCountry}`
+    );
+    console.log(
+      `Additional SILT data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}`
+    );
+    console.log(
+      `Document identification - Type: ${docType}, Number: ${identDocNumber}`
+    );
 
     if (req.body.processing_attempt) {
       await veriflevelsService.levelOneVerfificationSiltEnhanced(
-        dateBirth, 
-        emailUser, 
-        docType, 
-        countryDoc, 
-        identDocNumber, 
-        docPath, 
-        selfie, 
-        gender, 
-        nationalityCountry, 
-        siltID, 
-        siltStatus, 
+        dateBirth,
+        emailUser,
+        docType,
+        countryDoc,
+        identDocNumber,
+        docPath,
+        selfie,
+        gender,
+        nationalityCountry,
+        siltID,
+        siltStatus,
         req.body.manual_review_status,
         personalNumber,
         expiryDate,
@@ -844,26 +924,130 @@ veriflevelsController.levelOneVerfificationSilt = async (req, res, next) => {
     }
 
     res.status(200).send({
-      message: "OK"
+      message: "OK",
     });
-    
   } catch (error) {
     next(error);
   }
-}
+};
 
 veriflevelsController.getUserSiltDocumentData = async (req, res, next) => {
   try {
     logger.info(`[${context}]: Getting user SILT document data controller`);
     ObjLog.log(`[${context}]: Getting user SILT document data controller`);
 
-    const resp = await veriflevelsService.getUserSiltDocumentData(req, res, next);
-    
+    const resp = await veriflevelsService.getUserSiltDocumentData(
+      req,
+      res,
+      next
+    );
+
     res.status(resp.status).send(resp);
-    
   } catch (error) {
     next(error);
   }
-}
+};
+
+/**
+ * PHASE 1: Create Persona inquiry and get session token
+ * POST /veriflevels/persona/create-inquiry
+ * Body: { email_user: string }
+ * Returns: { inquiryId, sessionToken, status, isNewInquiry }
+ */
+veriflevelsController.createPersonaInquiry = async (req, res, next) => {
+  try {
+    // filling log object info
+    let log = logConst;
+
+    log.is_auth = req.isAuthenticated();
+    log.ip = req.header("Client-Ip");
+    log.route = req.method + " " + req.originalUrl;
+    const resp = await authenticationPGRepository.getIpInfo(
+      req.header("Client-Ip")
+    );
+    if (resp)
+      log.country = resp.country_name
+        ? resp.country_name
+        : "Probably Localhost";
+    if (await authenticationPGRepository.getSessionById(req.sessionID))
+      log.session = req.sessionID;
+
+    logger.info(`[${context}]: Creating Persona inquiry`);
+    ObjLog.log(`[${context}]: Creating Persona inquiry`);
+
+    let finalResp = await veriflevelsService.createPersonaInquiry(
+      req,
+      res,
+      next
+    );
+
+    if (finalResp) {
+      //logging on DB
+      log.success = finalResp.success;
+      log.failed = finalResp.failed;
+      log.params = req.params;
+      log.query = req.query;
+      log.body = req.body;
+      log.status = finalResp.status;
+      log.response = finalResp.data;
+      await authenticationPGRepository.insertLogMsg(log);
+
+      //sending response to FE
+      res.status(finalResp.status).json(finalResp.data);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get Persona inquiry status
+ * GET /veriflevels/persona/inquiry-status/:email_user
+ */
+veriflevelsController.getPersonaInquiryStatus = async (req, res, next) => {
+  try {
+    // filling log object info
+    let log = logConst;
+
+    log.is_auth = req.isAuthenticated();
+    log.ip = req.header("Client-Ip");
+    log.route = req.method + " " + req.originalUrl;
+    const resp = await authenticationPGRepository.getIpInfo(
+      req.header("Client-Ip")
+    );
+    if (resp)
+      log.country = resp.country_name
+        ? resp.country_name
+        : "Probably Localhost";
+    if (await authenticationPGRepository.getSessionById(req.sessionID))
+      log.session = req.sessionID;
+
+    logger.info(`[${context}]: Getting Persona inquiry status`);
+    ObjLog.log(`[${context}]: Getting Persona inquiry status`);
+
+    let finalResp = await veriflevelsService.getPersonaInquiryStatus(
+      req,
+      res,
+      next
+    );
+
+    if (finalResp) {
+      //logging on DB
+      log.success = finalResp.success;
+      log.failed = finalResp.failed;
+      log.params = req.params;
+      log.query = req.query;
+      log.body = req.body;
+      log.status = finalResp.status;
+      log.response = finalResp.data;
+      await authenticationPGRepository.insertLogMsg(log);
+
+      //sending response to FE
+      res.status(finalResp.status).json(finalResp.data);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 
 export default veriflevelsController;
