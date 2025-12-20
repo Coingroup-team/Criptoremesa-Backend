@@ -415,4 +415,64 @@ veriflevelsPGRepository.getPersonaInquiryId = async (emailUser) => {
   }
 };
 
+/**
+ * Process Persona verification webhook (Enhanced version with extra document data)
+ * This function calls the enhanced PostgreSQL function that stores additional document fields
+ * @param {Object} personaRequest - Persona webhook data
+ * @returns {Promise<void>}
+ */
+veriflevelsPGRepository.levelOneVerificationPersonaEnhanced = async (
+  personaRequest
+) => {
+  logger.info(`[${context}]: Sending enhanced Persona request to DB`);
+  ObjLog.log(`[${context}]: Sending enhanced Persona request to DB`);
+
+  const {
+    dateBirth,
+    emailUser,
+    docType,
+    countryIsoCodeDoc,
+    identDocNumber,
+    docPath,
+    selfie,
+    gender,
+    nationalityCountryIsoCode,
+    personaInquiryId,
+    personaStatus,
+    manualReviewStatus,
+    personalNumber,
+    expiryDate,
+    documentAddress,
+    documentType,
+    documentNumber,
+  } = personaRequest;
+
+  console.log(
+    `Enhanced Persona data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}, Doc Type: ${documentType}, Doc Number: ${documentNumber}`
+  );
+
+  await poolSM.query({
+    text: `select sec_cust.sp_request_level_one_persona_enhanced($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`,
+    values: [
+      dateBirth,
+      emailUser,
+      docType,
+      countryIsoCodeDoc,
+      identDocNumber,
+      docPath,
+      selfie,
+      gender,
+      nationalityCountryIsoCode,
+      personaInquiryId,
+      personaStatus,
+      manualReviewStatus,
+      personalNumber,
+      expiryDate,
+      documentAddress,
+      documentType,
+      documentNumber,
+    ],
+  });
+};
+
 export default veriflevelsPGRepository;

@@ -106,4 +106,23 @@ veriflevelsRouter.get(
   veriflevelsController.getPersonaInquiryStatus
 );
 
+// ========================================
+// PERSONA INTEGRATION ENDPOINTS - PHASE 2
+// ========================================
+
+/**
+ * Persona webhook endpoint
+ * POST /veriflevels/persona/webhook
+ * Receives Persona inquiry webhooks (inquiry.approved, inquiry.declined, inquiry.marked-for-review)
+ * Processes verification data asynchronously via Bull queue
+ * Maps Persona status to internal status (SUCCESS, ERROR, PENDING)
+ *
+ * Note: This endpoint should NOT be protected by authentication
+ * Persona sends webhooks without authentication - use webhook signature validation in production
+ */
+veriflevelsRouter.post(
+  "/persona/webhook",
+  veriflevelsController.levelOneVerificationPersona
+);
+
 export default veriflevelsRouter;

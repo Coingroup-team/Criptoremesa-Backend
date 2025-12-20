@@ -604,4 +604,49 @@ veriflevelsService.getPersonaInquiryStatus = async (req, res, next) => {
   }
 };
 
+/**
+ * PHASE 2: Process Persona webhook (Enhanced version with extra document data)
+ * This service processes Persona inquiry webhooks asynchronously using Bull queue
+ * Mirrors the SILT webhook pattern for consistency
+ * @param {Object} webhookData - Persona webhook payload
+ */
+veriflevelsService.levelOneVerificationPersonaEnhanced = async (
+  webhookData
+) => {
+  logger.info(
+    `[${context}]: Processing Persona webhook - inquiry.${webhookData.status}`
+  );
+  ObjLog.log(`[${context}]: Processing Persona webhook`);
+
+  // Import the queue function (needs to be imported at the top of the file)
+  const { addPersonaRequestToQueue } = await import(
+    "../../../utils/queues/persona.queue.js"
+  );
+
+  const personaRequestEnhanced = {
+    dateBirth: webhookData.dateBirth,
+    emailUser: webhookData.emailUser,
+    docType: webhookData.docType,
+    countryIsoCodeDoc: webhookData.countryIsoCodeDoc,
+    identDocNumber: webhookData.identDocNumber,
+    docPath: webhookData.docPath,
+    selfie: webhookData.selfie,
+    gender: webhookData.gender,
+    nationalityCountryIsoCode: webhookData.nationalityCountryIsoCode,
+    personaInquiryId: webhookData.personaInquiryId,
+    personaStatus: webhookData.personaStatus,
+    manualReviewStatus: webhookData.manualReviewStatus,
+    personalNumber: webhookData.personalNumber,
+    expiryDate: webhookData.expiryDate,
+    documentAddress: webhookData.documentAddress,
+    documentType: webhookData.documentType,
+    documentNumber: webhookData.documentNumber,
+  };
+
+  logger.info(
+    `[${context}]: Adding Persona request to queue for async processing`
+  );
+  addPersonaRequestToQueue(personaRequestEnhanced);
+};
+
 export default veriflevelsService;

@@ -1050,4 +1050,169 @@ veriflevelsController.getPersonaInquiryStatus = async (req, res, next) => {
   }
 };
 
+/**
+ * PHASE 2: Persona webhook handler
+ * POST /veriflevels/persona/webhook
+ * This endpoint receives Persona inquiry webhooks and processes them asynchronously
+ * Mirrors the SILT webhook pattern for consistency
+ *
+ * Maps Persona webhook events to internal status:
+ * - inquiry.approved → SUCCESS
+ * - inquiry.declined → ERROR
+ * - inquiry.marked-for-review → PENDING (manual review needed)
+ * - inquiry.completed (with needs_review) → PENDING
+ */
+veriflevelsController.levelOneVerificationPersona = async (req, res, next) => {
+  try {
+    logger.info(`[${context}]: Persona webhook received`);
+    ObjLog.log(`[${context}]: Processing Persona webhook`);
+    console.log("Persona webhook payload:", JSON.stringify(req.body, null, 2));
+
+    // Extract data from Persona webhook payload
+    const webhookData = req.body.data;
+    const inquiryData = webhookData.attributes.payload.data;
+    const inquiryAttributes = inquiryData.attributes;
+    const inquiryFields = inquiryAttributes.fields;
+
+    // Get reference ID (user's email)
+    const emailUser = inquiryAttributes["reference-id"];
+    const personaInquiryId = inquiryData.id;
+
+    // Map Persona status to internal status
+    const personaStatus = inquiryAttributes.status; // approved, declined, needs_review
+    let mappedStatus;
+
+    switch (personaStatus) {
+      case "approved":
+        mappedStatus = "SUCCESS";
+        break;
+      case "declined":
+        mappedStatus = "ERROR";
+        break;
+      case "needs_review":
+      case "marked-for-review":
+        mappedStatus = "PENDING";
+        break;
+      default:
+        mappedStatus = "PENDING";
+    }
+
+    // Extract document data from fields
+    const birthdate = inquiryFields.birthdate?.value;
+    const gender = inquiryFields["name-first"]?.value
+      ? inquiryFields["name-first"]?.value.toLowerCase().includes("female")
+        ? "F"
+        : "M"
+      : null;
+
+    // Get document type from selected-id-class
+    const selectedIdClass = inquiryFields["selected-id-class"]?.value; // 'id', 'passport', 'drivers_license'
+    let docType;
+    switch (selectedIdClass) {
+      case "id":
+        docType = 1; // national_id
+        break;
+      case "passport":
+        docType = 2;
+        break;
+      case "drivers_license":
+        docType = 3;
+        break;
+      default:
+        docType = 1;
+    }
+
+    // Get country codes
+    const countryIsoCodeDoc = inquiryFields["selected-country-code"]?.value; // e.g., 'ES'
+    const nationalityCountryIsoCode =
+      inquiryFields["address-country-code"]?.value || countryIsoCodeDoc;
+
+    // Get document number
+    const identDocNumber =
+      inquiryFields["identification-number"]?.value ||
+      inquiryFields["card-access-number"]?.value ||
+      inquiryFields["government-identification-number-map"]?.value?.[
+        "national-id-number"
+      ];
+
+    // Get document paths (from relationships - need to construct full URLs)
+    const govIdData = inquiryData.relationships?.documents?.data?.[0];
+    const selfieData = inquiryData.relationships?.selfies?.data?.[0];
+
+    // Note: Full document/selfie URLs would need to be fetched from Persona API
+    // For now, we'll use the IDs as placeholders
+    const docPath = govIdData?.id ? `persona://document/${govIdData.id}` : "";
+    const selfie = selfieData?.id ? `persona://selfie/${selfieData.id}` : "";
+
+    // Extract enhanced document data
+    const personalNumber = inquiryFields["card-access-number"]?.value;
+    const expiryDate = inquiryFields["expiration-date"]?.value;
+
+    // Construct address from address fields
+    const addressParts = [
+      inquiryFields["address-street-1"]?.value,
+      inquiryFields["address-street-2"]?.value,
+      inquiryFields["address-city"]?.value,
+      inquiryFields["address-subdivision"]?.value,
+      inquiryFields["address-postal-code"]?.value,
+    ].filter(Boolean);
+    const documentAddress =
+      addressParts.length > 0 ? addressParts.join(" ") : null;
+
+    // Manual review status
+    const manualReviewStatus = inquiryAttributes["reviewer-comment"]
+      ? true
+      : false;
+
+    logger.info(
+      `[${context}]: Sending Persona webhook to service for processing`
+    );
+    console.log(
+      `Persona data - Status: ${mappedStatus}, DocType: ${docType}, Country: ${countryIsoCodeDoc}`
+    );
+    console.log(
+      `Enhanced Persona data - Personal Number: ${personalNumber}, Expiry: ${expiryDate}, Address: ${documentAddress}`
+    );
+
+    // Process webhook asynchronously via service/queue
+    await veriflevelsService.levelOneVerificationPersonaEnhanced({
+      dateBirth: birthdate,
+      emailUser,
+      docType,
+      countryIsoCodeDoc,
+      identDocNumber,
+      docPath,
+      selfie,
+      gender,
+      nationalityCountryIsoCode,
+      personaInquiryId,
+      personaStatus: mappedStatus,
+      manualReviewStatus,
+      personalNumber,
+      expiryDate,
+      documentAddress,
+      documentType: selectedIdClass,
+      documentNumber: identDocNumber,
+    });
+
+    // Respond immediately to Persona (webhook should return 200 quickly)
+    res.status(200).send({
+      message: "Persona webhook received and queued for processing",
+    });
+  } catch (error) {
+    logger.error(
+      `[${context}]: Error processing Persona webhook: ${error.message}`
+    );
+    logger.error(`[${context}]: Error stack: ${error.stack}`);
+
+    // Still return 200 to Persona to avoid retries
+    res.status(200).send({
+      message: "Persona webhook received but encountered processing error",
+      error: error.message,
+    });
+
+    next(error);
+  }
+};
+
 export default veriflevelsController;
