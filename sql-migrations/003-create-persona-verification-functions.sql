@@ -1,6 +1,16 @@
 -- Migration: Create Persona verification functions (Phase 2)
 -- Description: Creates base and enhanced Persona verification functions following the SILT pattern
 -- This includes concurrency protection and extra data storage
+-- 
+-- PREREQUISITES: 
+--   - Run 001-add-persona-inquiry-id-column.sql first (adds persona_inquiry_id to ms_sixmap_users)
+--   - Run 002-add-persona-inquiry-id-to-verif-level.sql first (adds persona_inquiry_id to lnk_users_verif_level)
+--
+-- This migration creates:
+--   - Persona Information category in ms_category
+--   - 5 Persona items in ms_item linked to the category
+--   - sp_request_level_one_persona() base function
+--   - sp_request_level_one_persona_enhanced() wrapper function
 
 -- ============================================================================
 -- BASE FUNCTION: sp_request_level_one_persona (12 parameters + boolean for concurrency)
@@ -466,15 +476,49 @@ $function$;
 
 
 -- ============================================================================
--- INSERT ITEM RECORDS FOR PERSONA EXTRA DATA
+-- INSERT CATEGORY AND ITEM RECORDS FOR PERSONA EXTRA DATA
 -- ============================================================================
 -- These items are used to store Persona-specific document data in lnk_users_extra_data
+-- Following the same pattern as SILT: create category first, then items with category
 
-INSERT INTO sec_cust.ms_item (name, description, type_item, active)
-VALUES 
-    ('persona_document_personal_number', 'Personal number from Persona document verification', 'text', true),
-    ('persona_document_expiry_date', 'Expiry date from Persona document verification', 'text', true),
-    ('persona_document_address', 'Address from Persona document verification', 'text', true),
-    ('persona_document_type', 'Document type from Persona verification', 'text', true),
-    ('persona_document_number', 'Document number from Persona verification', 'text', true)
-ON CONFLICT (name) DO NOTHING;
+-- Step 1: Create new category for Persona-provided information
+-- ms_category table structure: (id_category, name, value) - id_category auto-increments
+INSERT INTO sec_cust.ms_category (name, value)
+SELECT 'Persona Information', 'persona_information'
+WHERE NOT EXISTS (
+    SELECT 1 FROM sec_cust.ms_category WHERE name = 'Persona Information'
+);
+
+-- Step 2: Get the category ID and insert Persona document items
+-- Using the newly created category for Persona-provided verification data
+-- Safe insertion that prevents duplicates
+INSERT INTO sec_cust.ms_item (name, description, id_category)
+SELECT 
+    new_items.item_name,
+    new_items.item_description,
+    cat.id_category
+FROM (VALUES
+    ('persona_document_personal_number', 'Personal number extracted by Persona from document verification'),
+    ('persona_document_expiry_date', 'Document expiry date extracted by Persona from verification'),
+    ('persona_document_address', 'Address information extracted by Persona from document verification'),
+    ('persona_document_type', 'Document type extracted by Persona from verification'),
+    ('persona_document_number', 'Document number extracted by Persona from verification')
+) AS new_items(item_name, item_description)
+CROSS JOIN (
+    SELECT id_category FROM sec_cust.ms_category WHERE name = 'Persona Information'
+) AS cat
+WHERE NOT EXISTS (
+    SELECT 1 FROM sec_cust.ms_item WHERE ms_item.name = new_items.item_name
+);
+
+-- Step 3: Verify the insertion shows proper category assignment
+SELECT
+    ms_item.id_item,
+    ms_item.name,
+    ms_item.description,
+    ms_item.id_category,
+    ms_category.name as category_name
+FROM sec_cust.ms_item 
+LEFT JOIN sec_cust.ms_category ON ms_item.id_category = ms_category.id_category
+WHERE ms_item.name LIKE 'persona_%' OR ms_category.name = 'Persona Information'
+ORDER BY ms_item.id_item;

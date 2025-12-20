@@ -1073,6 +1073,7 @@ veriflevelsController.levelOneVerificationPersona = async (req, res, next) => {
     const inquiryData = webhookData.attributes.payload.data;
     const inquiryAttributes = inquiryData.attributes;
     const inquiryFields = inquiryAttributes.fields;
+    const includedData = webhookData.attributes.payload.included || [];
 
     // Get reference ID (user's email)
     const emailUser = inquiryAttributes["reference-id"];
@@ -1097,67 +1098,81 @@ veriflevelsController.levelOneVerificationPersona = async (req, res, next) => {
         mappedStatus = "PENDING";
     }
 
-    // Extract document data from fields
-    const birthdate = inquiryFields.birthdate?.value;
-    const gender = inquiryFields["name-first"]?.value
-      ? inquiryFields["name-first"]?.value.toLowerCase().includes("female")
-        ? "F"
-        : "M"
-      : null;
+    // Find the government ID document in included array (use the current one from relationships)
+    const currentGovIdRef = inquiryFields.current_government_id?.value;
+    const governmentIdDoc = includedData.find(
+      (item) =>
+        item.type === "document/government-id" &&
+        (currentGovIdRef ? item.id === currentGovIdRef.id : true)
+    );
 
-    // Get document type from selected-id-class
-    const selectedIdClass = inquiryFields["selected-id-class"]?.value; // 'id', 'passport', 'drivers_license'
+    // Get document type from id-class in the document object
+    const selectedIdClass =
+      governmentIdDoc?.attributes?.["id-class"] ||
+      inquiryFields["selected_id_class"]?.value;
     let docType;
     switch (selectedIdClass) {
       case "id":
-        docType = 1; // national_id
+      case "dl": // driver's license
+        docType = selectedIdClass === "id" ? 1 : 3;
         break;
-      case "passport":
+      case "pp": // passport
         docType = 2;
-        break;
-      case "drivers_license":
-        docType = 3;
         break;
       default:
         docType = 1;
     }
 
-    // Get country codes
-    const countryIsoCodeDoc = inquiryFields["selected-country-code"]?.value; // e.g., 'ES'
+    // Extract document data from the government ID document attributes
+    const docAttributes = governmentIdDoc?.attributes || {};
+    const birthdate = docAttributes.birthdate;
+    const gender =
+      docAttributes.sex === "Male"
+        ? "M"
+        : docAttributes.sex === "Female"
+        ? "F"
+        : null;
+
+    // Get country codes - use issuing-authority field for document country
+    const countryIsoCodeDoc =
+      inquiryFields["selected_country_code"]?.value || "US";
     const nationalityCountryIsoCode =
-      inquiryFields["address-country-code"]?.value || countryIsoCodeDoc;
+      docAttributes.nationality ||
+      inquiryFields["address_country_code"]?.value ||
+      countryIsoCodeDoc;
 
-    // Get document number
+    // Get document number from extracted data
     const identDocNumber =
-      inquiryFields["identification-number"]?.value ||
-      inquiryFields["card-access-number"]?.value ||
-      inquiryFields["government-identification-number-map"]?.value?.[
-        "national-id-number"
-      ];
+      docAttributes["identification-number"] ||
+      docAttributes["document-number"];
 
-    // Get document paths (from relationships - need to construct full URLs)
-    const govIdData = inquiryData.relationships?.documents?.data?.[0];
+    // Get document paths (from relationships)
+    const govIdData = inquiryData.relationships?.documents?.data?.find(
+      (doc) => doc.type === "document/government-id"
+    );
     const selfieData = inquiryData.relationships?.selfies?.data?.[0];
 
-    // Note: Full document/selfie URLs would need to be fetched from Persona API
-    // For now, we'll use the IDs as placeholders
     const docPath = govIdData?.id ? `persona://document/${govIdData.id}` : "";
     const selfie = selfieData?.id ? `persona://selfie/${selfieData.id}` : "";
 
-    // Extract enhanced document data
-    const personalNumber = inquiryFields["card-access-number"]?.value;
-    const expiryDate = inquiryFields["expiration-date"]?.value;
+    // Extract enhanced document data from government ID document
+    const personalNumber = docAttributes["identification-number"];
+    const expiryDate = docAttributes["expiration-date"];
 
-    // Construct address from address fields
+    // Construct address from document attributes
     const addressParts = [
-      inquiryFields["address-street-1"]?.value,
-      inquiryFields["address-street-2"]?.value,
-      inquiryFields["address-city"]?.value,
-      inquiryFields["address-subdivision"]?.value,
-      inquiryFields["address-postal-code"]?.value,
+      docAttributes["address-street-1"],
+      docAttributes["address-street-2"],
+      docAttributes["address-city"],
+      docAttributes["address-subdivision"],
+      docAttributes["address-postal-code"],
     ].filter(Boolean);
     const documentAddress =
       addressParts.length > 0 ? addressParts.join(" ") : null;
+
+    // Get document type and number for enhanced data
+    const documentType = selectedIdClass;
+    const documentNumber = identDocNumber;
 
     // Manual review status
     const manualReviewStatus = inquiryAttributes["reviewer-comment"]
@@ -1191,8 +1206,8 @@ veriflevelsController.levelOneVerificationPersona = async (req, res, next) => {
       personalNumber,
       expiryDate,
       documentAddress,
-      documentType: selectedIdClass,
-      documentNumber: identDocNumber,
+      documentType,
+      documentNumber,
     });
 
     // Respond immediately to Persona (webhook should return 200 quickly)

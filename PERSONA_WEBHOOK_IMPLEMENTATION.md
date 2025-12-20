@@ -16,42 +16,48 @@ This implementation creates a complete Persona webhook integration that **mirror
 
 ### Core Verification Fields
 
-| SILT Field             | SILT Source                                | Persona Field                                      | Persona Source                         |
-| ---------------------- | ------------------------------------------ | -------------------------------------------------- | -------------------------------------- |
-| `user.id`              | SILT user ID                               | `data.id`                                          | Persona inquiry ID                     |
-| `user.birth_date`      | User birthdate                             | `attributes.fields.birthdate.value`                | Extracted date                         |
-| `user.email`           | Email in `user_meta` or `company_app_meta` | `attributes.reference-id`                          | User's email set as reference ID       |
-| `user.sex`             | Gender (M/F)                               | Inferred from `attributes.fields.name-first.value` | Basic inference                        |
-| `user.nationality`     | Nationality ISO code                       | `attributes.fields.address-country-code.value`     | Fallback to document country           |
-| `status`               | Webhook status                             | `attributes.status`                                | Maps to approved/declined/needs_review |
-| `manual_review_status` | Manual review flag                         | `attributes.reviewer-comment`                      | Presence indicates manual review       |
+| SILT Field             | SILT Source                                | Persona Field                                  | Persona Source                                        |
+| ---------------------- | ------------------------------------------ | ---------------------------------------------- | ----------------------------------------------------- |
+| `user.id`              | SILT user ID                               | `data.id`                                      | Persona inquiry ID                                    |
+| `user.birth_date`      | User birthdate                             | `included[].attributes.birthdate` (document)   | Extracted from government ID document                 |
+| `user.email`           | Email in `user_meta` or `company_app_meta` | `attributes.reference-id`                      | User's email set as reference ID                      |
+| `user.sex`             | Gender (M/F)                               | `included[].attributes.sex` (document)         | Extracted from government ID document (Male/Female)   |
+| `user.nationality`     | Nationality ISO code                       | `included[].attributes.nationality` (document) | Extracted from government ID, fallback to doc country |
+| `status`               | Webhook status                             | `attributes.status`                            | Maps to approved/declined/needs_review                |
+| `manual_review_status` | Manual review flag                         | `attributes.reviewer-comment`                  | Presence indicates manual review                      |
+
+> **⚠️ Important**: Document data is extracted from the `included` array in the webhook payload, not from the `fields` object. The `fields` object contains form inputs, while `included` contains the verified document data extracted by Persona.
 
 ### Document Type Mapping
 
-| SILT Type              | SILT Value      | Persona Type                                   | Persona Value         |
-| ---------------------- | --------------- | ---------------------------------------------- | --------------------- |
-| `user.national_id`     | Document object | `fields.selected-id-class` = 'id'              | Maps to `docType = 1` |
-| `user.passport`        | Document object | `fields.selected-id-class` = 'passport'        | Maps to `docType = 2` |
-| `user.driving_license` | Document object | `fields.selected-id-class` = 'drivers_license' | Maps to `docType = 3` |
+| SILT Type              | SILT Value      | Persona Type                            | Persona Value         |
+| ---------------------- | --------------- | --------------------------------------- | --------------------- |
+| `user.national_id`     | Document object | `included[].attributes.id-class` = 'id' | Maps to `docType = 1` |
+| `user.passport`        | Document object | `included[].attributes.id-class` = 'pp' | Maps to `docType = 2` |
+| `user.driving_license` | Document object | `included[].attributes.id-class` = 'dl' | Maps to `docType = 3` |
+
+> **Note**: Persona uses `id-class` values: `'id'` (national ID), `'pp'` (passport), `'dl'` (driver's license).
 
 ### Document Data Fields
 
-| SILT Field                   | SILT Source          | Persona Field                        | Persona Source                        |
-| ---------------------------- | -------------------- | ------------------------------------ | ------------------------------------- |
-| `document.country`           | Document country ISO | `fields.selected-country-code.value` | Document issuing country              |
-| `document.document_number`   | ID number            | `fields.identification-number.value` | Primary ID field                      |
-| `document.files[0].file_url` | Document image URL   | `relationships.documents.data[0].id` | Document ID (needs API fetch for URL) |
-| `user.selfie.file_url`       | Selfie image URL     | `relationships.selfies.data[0].id`   | Selfie ID (needs API fetch for URL)   |
+| SILT Field                   | SILT Source          | Persona Field                                            | Persona Source                        |
+| ---------------------------- | -------------------- | -------------------------------------------------------- | ------------------------------------- |
+| `document.country`           | Document country ISO | `fields.selected_country_code.value`                     | Document issuing country              |
+| `document.document_number`   | ID number            | `included[].attributes.identification-number` (document) | Extracted from government ID document |
+| `document.files[0].file_url` | Document image URL   | `relationships.documents.data[0].id`                     | Document ID (needs API fetch for URL) |
+| `user.selfie.file_url`       | Selfie image URL     | `relationships.selfies.data[0].id`                       | Selfie ID (needs API fetch for URL)   |
 
 ### Enhanced Document Fields (Stored in `lnk_users_extra_data`)
 
-| SILT Field         | SILT Source                 | Persona Field                                                           | Persona Source                         |
-| ------------------ | --------------------------- | ----------------------------------------------------------------------- | -------------------------------------- |
-| `personal_number`  | `document.personal_number`  | `fields.card-access-number.value`                                       | Card access number                     |
-| `expiry_date`      | `document.expiration_date`  | `fields.expiration-date.value`                                          | Document expiry                        |
-| `document_address` | Concatenated address fields | `fields.address-*` (street-1, street-2, city, subdivision, postal-code) | Full address string                    |
-| `document_type`    | Document type string        | `fields.selected-id-class.value`                                        | ID class (id/passport/drivers_license) |
-| `document_number`  | Document number             | `fields.identification-number.value`                                    | Same as core ID field                  |
+| SILT Field         | SILT Source                 | Persona Field                                                                          | Persona Source                              |
+| ------------------ | --------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `personal_number`  | `document.personal_number`  | `included[].attributes.identification-number` (document)                               | Primary identification number from document |
+| `expiry_date`      | `document.expiration_date`  | `included[].attributes.expiration-date` (document)                                     | Document expiration date                    |
+| `document_address` | Concatenated address fields | `included[].attributes.address-*` (street-1, street-2, city, subdivision, postal-code) | Full address string from document           |
+| `document_type`    | Document type string        | `included[].attributes.id-class` (document)                                            | ID class (id/pp/dl)                         |
+| `document_number`  | Document number             | `included[].attributes.identification-number` (document)                               | Same as core ID field                       |
+
+> **Key Insight**: All document data comes from `included` array items where `type === "document/government-id"`. The controller finds the current government ID document using the `current_government_id` reference from fields, then extracts all data from that document's `attributes` object.
 
 ---
 
@@ -236,22 +242,36 @@ Criptoremesa-Backend/
 #### **ms_sixmap_users**
 
 - Column: `persona_inquiry_id` (already exists from Phase 1)
+- Migration: `001-add-persona-inquiry-id-column.sql`
 - Usage: Stores Persona inquiry ID for tracking
 
 #### **lnk_users_verif_level**
 
-- Column: `persona_inquiry_id` (varchar)
+- **NEW Column**: `persona_inquiry_id` (varchar)
+- Migration: `002-add-persona-inquiry-id-to-verif-level.sql` ⚠️ **Must run before functions**
 - Usage: Links verification record to Persona inquiry
-- Replaces: `silt_id` (same pattern)
+- Pattern: Mirrors `silt_id` column for SILT verification
+- Index: `idx_lnk_users_verif_level_persona_inquiry_id` for fast lookups
 
-#### **lnk_users_extra_data**
+#### **ms_category**
 
-- New Items in `ms_item`:
+- New Category: `'Persona Information'` with value `'persona_information'`
+- Usage: Groups all Persona-related items for organization
+- Mirrors: `'SILT Information'` category pattern
+
+#### **ms_item**
+
+- New Items (all linked to `'Persona Information'` category via `id_category`):
   - `persona_document_personal_number`
   - `persona_document_expiry_date`
   - `persona_document_address`
   - `persona_document_type`
   - `persona_document_number`
+
+#### **lnk_users_extra_data**
+
+- Storage: Links users to Persona items via `id_user` and `id_item`
+- Pattern: Same as SILT extra data storage
 
 ---
 
@@ -259,12 +279,34 @@ Criptoremesa-Backend/
 
 ### Prerequisites
 
-1. **Run SQL Migration:**
+1. **Run SQL Migrations (in order):**
 
 ```bash
-# Connect to database and run:
+# Connect to database and run in this order:
+
+# Step 1: Add persona_inquiry_id column to lnk_users_verif_level
+psql -U <user> -d <database> -f sql-migrations/002-add-persona-inquiry-id-to-verif-level.sql
+
+# Step 2: Create Persona functions and categories
 psql -U <user> -d <database> -f sql-migrations/003-create-persona-verification-functions.sql
+
+# Note: Migration 001 (adds persona_inquiry_id to ms_sixmap_users) should already be run from Phase 1
+
+# These migrations create:
+# - persona_inquiry_id column in lnk_users_verif_level table
+# - Persona category in ms_category ('Persona Information')
+# - 5 Persona items in ms_item linked to the category
+# - sp_request_level_one_persona() base function
+# - sp_request_level_one_persona_enhanced() wrapper function
 ```
+
+# - 5 Persona items in ms_item linked to the category
+
+# - sp_request_level_one_persona() base function
+
+# - sp_request_level_one_persona_enhanced() wrapper function
+
+````
 
 2. **Environment Variables:**
 
@@ -276,7 +318,7 @@ REDIS_PORT=6379
 REDIS_HOST=localhost
 REDIS_DB_PERSONA_QUEUE=2  # Or will use SILT DB + 1
 REDIS_PASSWORD=<password>
-```
+````
 
 3. **Start Server:**
 
@@ -513,20 +555,105 @@ AND i.name LIKE 'persona_%';
 
 ---
 
-## 📊 Comparison Table: SILT vs Persona
+## � Troubleshooting
 
-| Feature                 | SILT Implementation                              | Persona Implementation                              | Status |
-| ----------------------- | ------------------------------------------------ | --------------------------------------------------- | ------ |
-| Webhook Endpoint        | `/silt/webhook`                                  | `/persona/webhook`                                  | ✅     |
-| Base SQL Function       | `sp_request_level_one_silt` (12 params)          | `sp_request_level_one_persona` (12 params)          | ✅     |
-| Enhanced SQL Function   | `sp_request_level_one_silt_enhanced` (17 params) | `sp_request_level_one_persona_enhanced` (17 params) | ✅     |
-| Concurrency Protection  | ✅ Yes                                           | ✅ Yes (identical logic)                            | ✅     |
-| Async Processing        | Bull queue + worker                              | Bull queue + worker                                 | ✅     |
-| Extra Data Storage      | `lnk_users_extra_data` with `silt_*` items       | `lnk_users_extra_data` with `persona_*` items       | ✅     |
-| Real-time Notifications | pg_notify on 'level_upgrade'                     | pg_notify on 'level_upgrade'                        | ✅     |
-| Status Mapping          | SUCCESS/ERROR/PENDING                            | SUCCESS/ERROR/PENDING                               | ✅     |
-| Document Type Support   | ID/Passport/License                              | ID/Passport/License                                 | ✅     |
-| Bull Board Monitoring   | ✅ siltQueue                                     | ✅ personaQueue                                     | ✅     |
+### Issue: Extra Data Not Being Stored
+
+**Symptom**: `lnk_users_extra_data` table is empty after webhook processing
+
+**Cause**: The code was extracting data from the wrong location in the webhook payload. Originally, it tried to extract from `attributes.fields.*` (form inputs), but Persona's verified document data is in the `included` array.
+
+**Solution** (✅ Fixed):
+
+- Extract document data from `included` array where `type === "document/government-id"`
+- Use `attributes.identification-number`, `attributes.expiration-date`, `attributes.address-*` from the document object
+- The controller now properly finds the current government ID document and extracts all data from its `attributes`
+
+**How to Verify**:
+
+```sql
+SELECT
+    u.email_user,
+    i.name as item_name,
+    ed.value,
+    ed.created_at
+FROM sec_cust.lnk_users_extra_data ed
+JOIN sec_cust.ms_sixmap_users u ON ed.id_user = u.id_user
+JOIN sec_cust.ms_item i ON ed.id_item = i.id_item
+WHERE i.name LIKE 'persona_%'
+ORDER BY ed.created_at DESC;
+```
+
+### Issue: Null Values in Logs
+
+**Symptom**: Logs show `undefined` or `null` for document fields like `personalNumber`, `expiryDate`, etc.
+
+**Cause**: Same as above - extracting from wrong location
+
+**Solution** (✅ Fixed):
+
+- Controller now properly navigates the webhook structure:
+  1. Get `included` array from `webhookData.attributes.payload.included`
+  2. Find document with `type === "document/government-id"`
+  3. Extract from `documentAttributes` instead of `inquiryFields`
+
+**Expected Log Output After Fix**:
+
+```
+Enhanced Persona data - Personal Number: I1234562, Expiry: 2030-12-20, Address: 600 CALIFORNIA STREET SAN FRANCISCO CA 94109
+```
+
+### Issue: Document Type Not Mapping Correctly
+
+**Symptom**: `docType` is always 1 (national ID) regardless of actual document type
+
+**Cause**: Persona uses different codes: `'dl'` for driver's license, `'pp'` for passport, `'id'` for national ID
+
+**Solution** (✅ Fixed):
+
+```javascript
+switch (selectedIdClass) {
+  case "id":
+    docType = 1;
+    break;
+  case "pp": // passport
+    docType = 2;
+    break;
+  case "dl": // driver's license
+    docType = 3;
+    break;
+}
+```
+
+### Debug Checklist
+
+When testing webhooks, verify:
+
+1. ✅ Webhook payload logged completely
+2. ✅ `included` array contains `document/government-id` objects
+3. ✅ Document attributes show all extracted fields
+4. ✅ Enhanced data shows proper values (not null/undefined)
+5. ✅ SQL logs show proper parameter values
+6. ✅ Database query confirms data in `lnk_users_extra_data`
+
+---
+
+## �📊 Comparison Table: SILT vs Persona
+
+| Feature                  | SILT Implementation                              | Persona Implementation                              | Status |
+| ------------------------ | ------------------------------------------------ | --------------------------------------------------- | ------ |
+| Webhook Endpoint         | `/silt/webhook`                                  | `/persona/webhook`                                  | ✅     |
+| Base SQL Function        | `sp_request_level_one_silt` (12 params)          | `sp_request_level_one_persona` (12 params)          | ✅     |
+| Enhanced SQL Function    | `sp_request_level_one_silt_enhanced` (17 params) | `sp_request_level_one_persona_enhanced` (17 params) | ✅     |
+| Concurrency Protection   | ✅ Yes                                           | ✅ Yes (identical logic)                            | ✅     |
+| Async Processing         | Bull queue + worker                              | Bull queue + worker                                 | ✅     |
+| Category in ms_category  | `'SILT Information'`                             | `'Persona Information'`                             | ✅     |
+| Extra Data Storage       | `lnk_users_extra_data` with `silt_*` items       | `lnk_users_extra_data` with `persona_*` items       | ✅     |
+| Items Linked to Category | ✅ Yes via `id_category`                         | ✅ Yes via `id_category`                            | ✅     |
+| Real-time Notifications  | pg_notify on 'level_upgrade'                     | pg_notify on 'level_upgrade'                        | ✅     |
+| Status Mapping           | SUCCESS/ERROR/PENDING                            | SUCCESS/ERROR/PENDING                               | ✅     |
+| Document Type Support    | ID/Passport/License                              | ID/Passport/License                                 | ✅     |
+| Bull Board Monitoring    | ✅ siltQueue                                     | ✅ personaQueue                                     | ✅     |
 
 ---
 
