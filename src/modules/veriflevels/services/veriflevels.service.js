@@ -488,12 +488,16 @@ veriflevelsService.createPersonaInquiry = async (req, res, next) => {
         userInfo.persona_inquiry_id
       );
 
+      // Build verification URL with inquiryId and sessionToken
+      const verificationUrl = `https://withpersona.com/verify?inquiry-id=${userInfo.persona_inquiry_id}&session-token=${sessionData.sessionToken}`;
+
       return {
         data: {
           inquiryId: userInfo.persona_inquiry_id,
           sessionToken: sessionData.sessionToken,
           status: sessionData.status,
           isNewInquiry: false,
+          verificationUrl,
           message: "Using existing Persona inquiry",
         },
         status: 200,
@@ -526,12 +530,16 @@ veriflevelsService.createPersonaInquiry = async (req, res, next) => {
       `[${context}]: Persona inquiry created successfully - Phase 1 complete`
     );
 
+    // Build verification URL with inquiryId and sessionToken
+    const verificationUrl = `https://withpersona.com/verify?inquiry-id=${inquiryData.inquiryId}&session-token=${sessionData.sessionToken}`;
+
     return {
       data: {
         inquiryId: inquiryData.inquiryId,
         sessionToken: sessionData.sessionToken,
         status: sessionData.status,
         isNewInquiry: true,
+        verificationUrl,
         message: "Persona inquiry created successfully",
       },
       status: 200,

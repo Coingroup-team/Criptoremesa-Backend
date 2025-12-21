@@ -952,7 +952,7 @@ veriflevelsController.getUserSiltDocumentData = async (req, res, next) => {
  * PHASE 1: Create Persona inquiry and get session token
  * POST /veriflevels/persona/create-inquiry
  * Body: { email_user: string }
- * Returns: { inquiryId, sessionToken, status, isNewInquiry }
+ * Returns: { inquiryId, sessionToken, status, isNewInquiry, verificationUrl }
  */
 veriflevelsController.createPersonaInquiry = async (req, res, next) => {
   try {
