@@ -649,6 +649,7 @@ veriflevelsService.levelOneVerificationPersonaEnhanced = async (
     documentAddress: webhookData.documentAddress,
     documentType: webhookData.documentType,
     documentNumber: webhookData.documentNumber,
+    webhookFullJson: webhookData.webhookFullJson,
   };
 
   logger.info(

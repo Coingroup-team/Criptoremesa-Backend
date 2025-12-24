@@ -360,7 +360,8 @@ CREATE OR REPLACE FUNCTION sec_cust.sp_request_level_one_persona_enhanced(
     p_expiry_date character varying DEFAULT NULL,
     p_document_address text DEFAULT NULL,
     p_document_type character varying DEFAULT NULL,
-    p_document_number character varying DEFAULT NULL
+    p_document_number character varying DEFAULT NULL,
+    p_webhook_full_json text DEFAULT NULL
 )
 RETURNS void
 LANGUAGE plpgsql
@@ -378,6 +379,7 @@ DECLARE
     v_item_address_id integer;
     v_item_document_type_id integer;
     v_item_document_number_id integer;
+    v_item_webhook_full_json_id integer;
 BEGIN
     -- Call base function first to handle core verification logic
     PERFORM sec_cust.sp_request_level_one_persona(
@@ -420,6 +422,10 @@ BEGIN
     SELECT id_item INTO v_item_document_number_id
     FROM sec_cust.ms_item
     WHERE name = 'persona_document_number';
+
+    SELECT id_item INTO v_item_webhook_full_json_id
+    FROM sec_cust.ms_item
+    WHERE name = 'persona_webhook_full_json';
 
     -- Store additional Persona document data if provided (UPSERT pattern: DELETE + INSERT)
     IF p_personal_number IS NOT NULL AND v_item_personal_number_id IS NOT NULL THEN
@@ -467,6 +473,15 @@ BEGIN
         VALUES (v_current_full_user.id_user, v_item_document_number_id, p_document_number, false);
     END IF;
 
+    IF p_webhook_full_json IS NOT NULL AND v_item_webhook_full_json_id IS NOT NULL THEN
+        DELETE FROM sec_cust.lnk_users_extra_data
+        WHERE id_user = v_current_full_user.id_user
+        AND id_item = v_item_webhook_full_json_id;
+
+        INSERT INTO sec_cust.lnk_users_extra_data (id_user, id_item, value, edited)
+        VALUES (v_current_full_user.id_user, v_item_webhook_full_json_id, p_webhook_full_json, false);
+    END IF;
+
 EXCEPTION
     WHEN OTHERS THEN
         -- Log error but don't fail the original Persona processing
@@ -502,7 +517,8 @@ FROM (VALUES
     ('persona_document_expiry_date', 'Document expiry date extracted by Persona from verification'),
     ('persona_document_address', 'Address information extracted by Persona from document verification'),
     ('persona_document_type', 'Document type extracted by Persona from verification'),
-    ('persona_document_number', 'Document number extracted by Persona from verification')
+    ('persona_document_number', 'Document number extracted by Persona from verification'),
+    ('persona_webhook_full_json', 'Full webhook JSON body received from Persona for audit and debugging purposes')
 ) AS new_items(item_name, item_description)
 CROSS JOIN (
     SELECT id_category FROM sec_cust.ms_category WHERE name = 'Persona Information'

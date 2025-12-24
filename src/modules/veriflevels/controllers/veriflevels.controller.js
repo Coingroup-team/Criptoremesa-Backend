@@ -1075,6 +1075,9 @@ veriflevelsController.levelOneVerificationPersona = async (req, res, next) => {
     const inquiryFields = inquiryAttributes.fields;
     const includedData = webhookData.attributes.payload.included || [];
 
+    // Store full webhook body as JSON string for audit purposes
+    const webhookFullJson = JSON.stringify(req.body);
+
     // Get reference ID (user's email)
     const emailUser = inquiryAttributes["reference-id"];
     const personaInquiryId = inquiryData.id;
@@ -1208,6 +1211,7 @@ veriflevelsController.levelOneVerificationPersona = async (req, res, next) => {
       documentAddress,
       documentType,
       documentNumber,
+      webhookFullJson,
     });
 
     // Respond immediately to Persona (webhook should return 200 quickly)
