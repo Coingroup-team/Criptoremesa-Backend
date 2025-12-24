@@ -483,27 +483,39 @@ veriflevelsService.createPersonaInquiry = async (req, res, next) => {
         `[${context}]: User already has inquiry ID: ${userInfo.persona_inquiry_id}`
       );
 
-      // Get session token for existing inquiry
-      const sessionData = await personaHTTPRepository.getSessionToken(
-        userInfo.persona_inquiry_id
-      );
+      try {
+        // Get session token for existing inquiry
+        const sessionData = await personaHTTPRepository.getSessionToken(
+          userInfo.persona_inquiry_id
+        );
 
-      // Build verification URL with inquiryId and sessionToken
-      const verificationUrl = `https://withpersona.com/verify?inquiry-id=${userInfo.persona_inquiry_id}&session-token=${sessionData.sessionToken}`;
+        // Build verification URL with inquiryId and sessionToken
+        const verificationUrl = `https://withpersona.com/verify?inquiry-id=${userInfo.persona_inquiry_id}&session-token=${sessionData.sessionToken}`;
 
-      return {
-        data: {
-          inquiryId: userInfo.persona_inquiry_id,
-          sessionToken: sessionData.sessionToken,
-          status: sessionData.status,
-          isNewInquiry: false,
-          verificationUrl,
-          message: "Using existing Persona inquiry",
-        },
-        status: 200,
-        success: true,
-        failed: false,
-      };
+        return {
+          data: {
+            inquiryId: userInfo.persona_inquiry_id,
+            sessionToken: sessionData.sessionToken,
+            status: sessionData.status,
+            isNewInquiry: false,
+            verificationUrl,
+            message: "Using existing Persona inquiry",
+          },
+          status: 200,
+          success: true,
+          failed: false,
+        };
+      } catch (error) {
+        // If inquiry not found (e.g., sandbox inquiry ID with production credentials),
+        // create a new inquiry instead
+        logger.warn(
+          `[${context}]: Existing inquiry not found (possibly from different environment), creating new inquiry`
+        );
+        ObjLog.log(
+          `[${context}]: Existing inquiry ${userInfo.persona_inquiry_id} not found, creating new one`
+        );
+        // Continue to create new inquiry below
+      }
     }
 
     // Step 2: Create new inquiry in Persona
