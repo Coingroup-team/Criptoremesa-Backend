@@ -1058,9 +1058,14 @@ veriflevelsController.getPersonaInquiryStatus = async (req, res, next) => {
  *
  * Maps Persona webhook events to internal status:
  * - inquiry.approved → SUCCESS
+ * - inquiry.completed (all verifications passed + decisioned) → SUCCESS
+ * - inquiry.completed (all verifications passed, not decisioned) → PENDING
+ * - inquiry.completed (some verifications failed) → ERROR
  * - inquiry.declined → ERROR
+ * - inquiry.failed → ERROR
  * - inquiry.marked-for-review → PENDING (manual review needed)
- * - inquiry.completed (with needs_review) → PENDING
+ * - inquiry.needs_review → PENDING
+ * - any other status → PENDING
  */
 veriflevelsController.levelOneVerificationPersona = async (req, res, next) => {
   try {
@@ -1083,7 +1088,7 @@ veriflevelsController.levelOneVerificationPersona = async (req, res, next) => {
     const personaInquiryId = inquiryData.id;
 
     // Map Persona status to internal status
-    const personaStatus = inquiryAttributes.status; // approved, declined, needs_review
+    const personaStatus = inquiryAttributes.status; // completed, approved, declined, needs_review, etc.
     let mappedStatus;
 
     switch (personaStatus) {
@@ -1091,13 +1096,53 @@ veriflevelsController.levelOneVerificationPersona = async (req, res, next) => {
         mappedStatus = "SUCCESS";
         break;
       case "declined":
+      case "failed":
         mappedStatus = "ERROR";
         break;
       case "needs_review":
       case "marked-for-review":
         mappedStatus = "PENDING";
         break;
+      case "completed":
+        // For completed status, check the verifications to determine if it passed
+        const verifications =
+          inquiryData.relationships?.verifications?.data || [];
+        const verificationDetails = includedData.filter((item) =>
+          item.type?.startsWith("verification/")
+        );
+
+        // Check if all verifications passed
+        const allVerificationsPassed = verificationDetails.every(
+          (verification) => verification.attributes?.status === "passed"
+        );
+
+        // If there's a decisioned-at timestamp, use that to determine approval
+        const decisionedAt = inquiryAttributes["decisioned-at"];
+
+        console.log(
+          `Persona completed inquiry - Verifications passed: ${allVerificationsPassed}, Decisioned: ${!!decisionedAt}`
+        );
+        console.log(
+          `Verification details:`,
+          verificationDetails.map((v) => ({
+            type: v.type,
+            status: v.attributes?.status,
+            id: v.id,
+          }))
+        );
+
+        if (allVerificationsPassed && decisionedAt) {
+          mappedStatus = "SUCCESS";
+        } else if (allVerificationsPassed && !decisionedAt) {
+          // Completed but not yet decisioned - may need manual review
+          mappedStatus = "PENDING";
+        } else {
+          // Some verifications failed
+          mappedStatus = "ERROR";
+        }
+        break;
       default:
+        // For any other status (created, pending, etc.)
         mappedStatus = "PENDING";
     }
 
