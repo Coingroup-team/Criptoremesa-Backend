@@ -238,7 +238,8 @@ veriflevelsService.getVerifLevelRequirements = async (req, res, next) => {
       if (
         bdResp.level_one[0] &&
         bdResp.level_one[0].req_use_path &&
-        !bdResp.level_one[0].req_use_path.includes("http")
+        !bdResp.level_one[0].req_use_path.includes("http") &&
+        !bdResp.level_one[0].req_use_path.includes("persona://")
       )
         doc = fs.readFileSync(bdResp.level_one[0].req_use_path);
 
@@ -246,7 +247,8 @@ veriflevelsService.getVerifLevelRequirements = async (req, res, next) => {
       if (
         bdResp.level_one[1] &&
         bdResp.level_one[1].req_use_path &&
-        !bdResp.level_one[1].req_use_path.includes("http")
+        !bdResp.level_one[1].req_use_path.includes("http") &&
+        !bdResp.level_one[1].req_use_path.includes("persona://")
       )
         selfie = fs.readFileSync(bdResp.level_one[1].req_use_path);
 
