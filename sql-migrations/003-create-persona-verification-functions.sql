@@ -213,7 +213,7 @@ BEGIN
                 case
                     when p_persona_status = 'SUCCESS' then true
                     when p_persona_status = 'ERROR' or p_persona_status = 'VERIFICATION_ERROR' then false
-                    else v_current_full_user.verif_level_apb  -- Keep existing value for PENDING
+                    else null  -- Set to null for PENDING status
                 end
             ),
             id_verif_level = 1,
@@ -298,7 +298,7 @@ BEGIN
                 case
                     when p_persona_status = 'SUCCESS' then true
                     when p_persona_status = 'ERROR' or p_persona_status = 'VERIFICATION_ERROR' then false
-                    else level_apb_ok  -- Keep existing value for other statuses
+                    else null  -- Set to null for PENDING status
                 end
             )
             where persona_inquiry_id = p_persona_inquiry_id;
@@ -309,7 +309,7 @@ BEGIN
                 case
                     when p_persona_status = 'SUCCESS' then true
                     when p_persona_status = 'ERROR' or p_persona_status = 'VERIFICATION_ERROR' then false
-                    else verif_level_apb  -- Keep existing value for other statuses
+                    else null  -- Set to null for PENDING status
                 end
             )
             WHERE uuid_user = v_current_full_user.uuid_user;
