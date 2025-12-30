@@ -333,6 +333,8 @@ async function downloadImage(url, siltId, index) {
       method: "GET",
       responseType: "stream",
       timeout: 60000,
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
     });
 
     // Generate filename from URL or use index
