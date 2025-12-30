@@ -35,8 +35,10 @@ for (const siltId of siltDirs) {
       if (stats.size === TRUNCATED_SIZE) {
         truncatedCount++;
         truncatedRecords.add(siltId);
-        const fileType = file.toLowerCase().endsWith('.pdf') ? 'PDF' : 'IMAGE';
-        console.log(`❌ TRUNCATED ${fileType}: ${siltId}/${file} (${stats.size} bytes)`);
+        const fileType = file.toLowerCase().endsWith(".pdf") ? "PDF" : "IMAGE";
+        console.log(
+          `❌ TRUNCATED ${fileType}: ${siltId}/${file} (${stats.size} bytes)`
+        );
       }
     }
   }

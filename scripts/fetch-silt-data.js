@@ -324,7 +324,7 @@ function extractImageUrls(siltData) {
 }
 
 /**
- * Download image from URL
+ * Download image or PDF from URL
  */
 async function downloadImage(url, siltId, index) {
   try {
@@ -337,10 +337,25 @@ async function downloadImage(url, siltId, index) {
       maxBodyLength: Infinity,
     });
 
+    // Detect file type from Content-Type header
+    const contentType = response.headers["content-type"] || "";
+    const isPdf = contentType.includes("application/pdf");
+
     // Generate filename from URL or use index
     const urlObj = new URL(url);
     const pathParts = urlObj.pathname.split("/");
-    const filename = pathParts[pathParts.length - 1] || `image_${index}.jpg`;
+    let filename = pathParts[pathParts.length - 1] || `file_${index}`;
+
+    // If filename from URL has no extension, add appropriate one based on content type
+    if (!path.extname(filename)) {
+      filename += isPdf ? ".pdf" : ".jpg";
+    }
+
+    // If Content-Type says PDF but filename doesn't end with .pdf, fix it
+    if (isPdf && !filename.toLowerCase().endsWith(".pdf")) {
+      filename = filename.replace(/\.(jpg|jpeg|png|gif)$/i, ".pdf");
+    }
+
     const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
 
     const localPath = path.join(
@@ -350,14 +365,16 @@ async function downloadImage(url, siltId, index) {
 
     await streamPipeline(response.data, fs.createWriteStream(localPath));
 
-    log.success(`Downloaded image: ${sanitizedFilename}`);
+    const fileType = isPdf ? "PDF" : "image";
+    log.success(`Downloaded ${fileType}: ${sanitizedFilename}`);
     return {
       success: true,
       localPath,
       filename: `${siltId}_${sanitizedFilename}`,
+      fileType,
     };
   } catch (error) {
-    log.error(`Error downloading image from ${url}: ${error.message}`);
+    log.error(`Error downloading file from ${url}: ${error.message}`);
     return { success: false, error: error.message };
   }
 }
