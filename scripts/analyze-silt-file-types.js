@@ -1,6 +1,6 @@
 /**
  * Analyze SILT File Types
- * 
+ *
  * This script analyzes the SILT JSON data stored in the database
  * to identify all file URLs and determine their actual content types.
  */
@@ -172,10 +172,14 @@ async function analyzeSiltFileTypes() {
 
         recordsProcessed++;
         if (recordsProcessed % 10 === 0) {
-          console.log(`Processed ${recordsProcessed}/${result.rows.length} records...`);
+          console.log(
+            `Processed ${recordsProcessed}/${result.rows.length} records...`
+          );
         }
       } catch (error) {
-        console.error(`Error processing SILT ID ${row.silt_id}: ${error.message}`);
+        console.error(
+          `Error processing SILT ID ${row.silt_id}: ${error.message}`
+        );
         fileTypeStats.errors++;
       }
     }
@@ -198,19 +202,21 @@ async function analyzeSiltFileTypes() {
 
     console.log("\n📄 BY CONTENT TYPE:");
     console.log("-".repeat(40));
-    for (const [type, count] of Object.entries(fileTypeStats.byContentType).sort(
-      (a, b) => b[1] - a[1]
-    )) {
+    for (const [type, count] of Object.entries(
+      fileTypeStats.byContentType
+    ).sort((a, b) => b[1] - a[1])) {
       console.log(`  ${type.padEnd(30)} ${count} files`);
     }
 
     console.log("\n🏷️  BY FILE PREFIX (Document Type):");
     console.log("-".repeat(40));
-    for (const [prefix, count] of Object.entries(fileTypeStats.byFilePrefix).sort(
-      (a, b) => b[1] - a[1]
-    )) {
+    for (const [prefix, count] of Object.entries(
+      fileTypeStats.byFilePrefix
+    ).sort((a, b) => b[1] - a[1])) {
       const description = getFileTypeDescription(prefix);
-      console.log(`  ${prefix.padEnd(10)} ${count.toString().padEnd(6)} ${description}`);
+      console.log(
+        `  ${prefix.padEnd(10)} ${count.toString().padEnd(6)} ${description}`
+      );
     }
 
     console.log("\n📋 SAMPLE FILES:");
@@ -236,7 +242,9 @@ async function analyzeSiltFileTypes() {
 
     if (pdfCount > 0 || pdfExtCount > 0) {
       console.log("\n⚠️  WARNING: PDF files detected!");
-      console.log("The current fetch-silt-data.js script may not handle PDFs correctly.");
+      console.log(
+        "The current fetch-silt-data.js script may not handle PDFs correctly."
+      );
       console.log("All files are being saved with image extensions.");
     } else {
       console.log("\n✅ No PDF files detected in sample.");
