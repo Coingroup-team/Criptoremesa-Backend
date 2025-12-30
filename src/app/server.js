@@ -68,6 +68,7 @@ app.use(
       "https://qa.bithonor.es",
       "https://app.bithonor.com",
       "https://app.bithonor.es",
+      "http://localhost:3000"
     ],
     methods: "GET,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
