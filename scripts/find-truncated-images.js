@@ -6,13 +6,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const SILT_DATA_DIR = "/repo-cr/silt-data";
-const TRUNCATED_SIZE = 196608; // 192 KB in bytes
+const TRUNCATED_SIZE_192KB = 196608; // 192 KB in bytes
+const TRUNCATED_SIZE_256KB = 262144; // 256 KB in bytes
 
-console.log("Scanning for truncated files (images + PDFs exactly 192 KB)...\n");
+console.log("Scanning for truncated files (192 KB or 256 KB)...\n");
 
 const truncatedRecords = new Set();
 let totalFiles = 0;
-let truncatedCount = 0;
+let truncated192Count = 0;
+let truncated256Count = 0;
 
 // Read all SILT directories
 const siltDirs = fs.readdirSync(SILT_DATA_DIR);
@@ -32,13 +34,16 @@ for (const siltId of siltDirs) {
       const filePath = path.join(dirPath, file);
       const stats = fs.statSync(filePath);
 
-      if (stats.size === TRUNCATED_SIZE) {
-        truncatedCount++;
+      if (stats.size === TRUNCATED_SIZE_192KB) {
+        truncated192Count++;
         truncatedRecords.add(siltId);
         const fileType = file.toLowerCase().endsWith(".pdf") ? "PDF" : "IMAGE";
-        console.log(
-          `❌ TRUNCATED ${fileType}: ${siltId}/${file} (${stats.size} bytes)`
-        );
+        console.log(`❌ TRUNCATED ${fileType} (192 KB): ${siltId}/${file}`);
+      } else if (stats.size === TRUNCATED_SIZE_256KB) {
+        truncated256Count++;
+        truncatedRecords.add(siltId);
+        const fileType = file.toLowerCase().endsWith(".pdf") ? "PDF" : "IMAGE";
+        console.log(`❌ TRUNCATED ${fileType} (256 KB): ${siltId}/${file}`);
       }
     }
   }
@@ -46,7 +51,9 @@ for (const siltId of siltDirs) {
 
 console.log(`\n========================================`);
 console.log(`Total files scanned (images + PDFs): ${totalFiles}`);
-console.log(`Truncated files found: ${truncatedCount}`);
+console.log(`Truncated at 192 KB: ${truncated192Count}`);
+console.log(`Truncated at 256 KB: ${truncated256Count}`);
+console.log(`Total truncated: ${truncated192Count + truncated256Count}`);
 console.log(`SILT records affected: ${truncatedRecords.size}`);
 console.log(`========================================\n`);
 
