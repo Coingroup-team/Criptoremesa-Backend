@@ -1,0 +1,81 @@
+{
+  "info": {
+    "name": "Persona Integration - Phase 1",
+    "description": "API collection for testing Persona KYC integration",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Create Persona Inquiry (New User)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email_user\": \"test@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/veriflevels/persona/create-inquiry",
+          "host": ["{{base_url}}"],
+          "path": ["veriflevels", "persona", "create-inquiry"]
+        },
+        "description": "Creates a new Persona inquiry for a user. Returns inquiryId and sessionToken needed for verification flow."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Get Inquiry Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/veriflevels/persona/inquiry-status/test@example.com",
+          "host": ["{{base_url}}"],
+          "path": [
+            "veriflevels",
+            "persona",
+            "inquiry-status",
+            "test@example.com"
+          ]
+        },
+        "description": "Gets the current status of a Persona inquiry for a user."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Create Inquiry (Existing User - Returns Same Inquiry)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email_user\": \"test@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/veriflevels/persona/create-inquiry",
+          "host": ["{{base_url}}"],
+          "path": ["veriflevels", "persona", "create-inquiry"]
+        },
+        "description": "Calling this again for the same user returns the existing inquiry and a fresh session token."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5031",
+      "type": "string"
+    }
+  ]
+}

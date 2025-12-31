@@ -13,21 +13,25 @@ let pgSession = require("connect-pg-simple")(session);
 import { poolSM } from "../db/pg.connection";
 import ObjUserSessionData from "../utils/ObjUserSessionData";
 import authenticationPGRepository from "../modules/authentication/repositories/authentication.pg.repository";
-import operationRoutesRepository from '../modules/operation_routes/repositories/operation_routes.pg.repository'
-import ws from '../utils/websocketTradeAPIs'
+import operationRoutesRepository from "../modules/operation_routes/repositories/operation_routes.pg.repository";
+import ws from "../utils/websocketTradeAPIs";
 import bodyParser from "body-parser";
 import whatsapp from "../utils/whatsapp";
-import queue from 'express-queue';
+import queue from "express-queue";
 import * as Sentry from "@sentry/node";
-import { createBullBoard } from '@bull-board/api';
-import { BullAdapter } from '@bull-board/api/bullAdapter';
-import { ExpressAdapter } from '@bull-board/express';
-import { siltQueue } from '../utils/queues/silt.queue'; // Importamos la cola
+import { createBullBoard } from "@bull-board/api";
+import { BullAdapter } from "@bull-board/api/bullAdapter";
+import { ExpressAdapter } from "@bull-board/express";
+import { siltQueue } from "../utils/queues/silt.queue"; // Importamos la cola SILT
+import { personaQueue } from "../utils/queues/persona.queue"; // Importamos la cola Persona
 import { remittanceQueue } from "../utils/queues/createRemittance.queue"; // Importamos la cola
 
+// Initialize workers (they will start listening to their respective queues)
+import "../utils/workers/silt.worker"; // Initialize SILT worker
+import "../utils/workers/persona.worker"; // Initialize Persona worker
 
 //jobs
-import transactionsJob from '../utils/jobs/transactions'
+import transactionsJob from "../utils/jobs/transactions";
 
 // SETTINGS
 const app = express();
@@ -35,8 +39,8 @@ const app = express();
 // si no se quiere enviar nunca 304
 // app.disable('etag');
 
-app.use(bodyParser.json({limit: '50mb'})); 
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.set("port", env.PORT || 3000);
 
 // MIDDLEWARES
@@ -64,6 +68,7 @@ app.use(
       "https://qa.bithonor.es",
       "https://app.bithonor.com",
       "https://app.bithonor.es",
+      "http://localhost:3000"
     ],
     methods: "GET,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
@@ -108,7 +113,7 @@ app.use((req, res, next) => {
     req.session.views = 1;
   }
 
-  logger.silly('ANTES DEL REQUEST SEGUN YO')
+  logger.silly("ANTES DEL REQUEST SEGUN YO");
 
   next();
 });
@@ -120,21 +125,26 @@ app.get("/", async (req, res, next) => {
 });
 
 const serverAdapter = new ExpressAdapter();
-serverAdapter.setBasePath('/admin/queues');
+serverAdapter.setBasePath("/admin/queues");
 
 const { addQueue, removeQueue, setQueues } = createBullBoard({
-    queues: [new BullAdapter(siltQueue), new BullAdapter(remittanceQueue)], // Usamos la cola que exportamos
-    serverAdapter,
+  queues: [
+    new BullAdapter(siltQueue),
+    new BullAdapter(personaQueue),
+    new BullAdapter(remittanceQueue),
+  ], // Added Persona queue to Bull Board
+  serverAdapter,
 });
 
-app.use('/admin/queues', serverAdapter.getRouter());
+app.use("/admin/queues", serverAdapter.getRouter());
 
-console.log('🔵 Bull Board está corriendo en: /admin/queues');
+console.log("🔵 Bull Board está corriendo en: /admin/queues");
+console.log("📊 Queues monitored: SILT, Persona, Remittance");
 
 app.use("/cr", routerIndex);
 
 app.use(async (req, res, next) => {
-  logger.silly('DESPUES DEL REQUEST SEGUN YO')
+  logger.silly("DESPUES DEL REQUEST SEGUN YO");
 
   try {
     ObjUserSessionData.set({
@@ -146,7 +156,7 @@ app.use(async (req, res, next) => {
     });
     next();
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
 
@@ -155,13 +165,12 @@ Sentry.setupExpressErrorHandler(app);
 // ERROR HANDLER
 // app.use(queue.errorHandler());
 
-app.use(async function (err, req, res,next) {
-
+app.use(async function (err, req, res, next) {
   const context = "ERROR HANDLER";
 
   logger.error(`${context}: ${err.message}`);
   ObjLog.log(`${context}: ${err.message}`);
-  
+
   // declaring log object
   const logConst = {
     is_auth: null,
@@ -177,13 +186,13 @@ app.use(async function (err, req, res,next) {
   let log = logConst;
 
   const businessError = {
-                          error: "BUSINESS_ERROR",
-                          msg: "Esa dirección de correo ya está en uso. Prueba con otro.",
-                        }
-  const serverError = { 
-                        error: "SERVER_ERROR", 
-                        msg: err.message 
-                      }
+    error: "BUSINESS_ERROR",
+    msg: "Esa dirección de correo ya está en uso. Prueba con otro.",
+  };
+  const serverError = {
+    error: "SERVER_ERROR",
+    msg: err.message,
+  };
 
   log.success = false;
   log.failed = true;
@@ -194,7 +203,7 @@ app.use(async function (err, req, res,next) {
   log.query = req.query;
   log.body = req.body;
   log.status = 500;
-  
+
   const resp = await authenticationPGRepository.getIpInfo(
     req.header("Client-Ip")
   );
@@ -203,13 +212,14 @@ app.use(async function (err, req, res,next) {
   if (await authenticationPGRepository.getSessionById(req.sessionID))
     log.session = req.sessionID;
 
-  if ( err.message === 'duplicate key value violates unique constraint \\"ms_sixmap_users_email_user_key\\"') 
-  {
+  if (
+    err.message ===
+    'duplicate key value violates unique constraint \\"ms_sixmap_users_email_user_key\\"'
+  ) {
     log.response = businessError;
     await authenticationPGRepository.insertLogMsg(log);
     res.status(500).send(businessError);
-  }
-  else {
+  } else {
     log.response = serverError;
     await authenticationPGRepository.insertLogMsg(log);
     res.status(500).send(serverError);
@@ -218,30 +228,34 @@ app.use(async function (err, req, res,next) {
 
 // GLOBAL VARIABLES
 
-global.routes = []
+global.routes = [];
 
-export function replaceOperationRoute(val){
-  routes.forEach((el,i) => {
-    if (el.id_operation_route === val.operationRoute.id_operation_route) 
-    el = val.operationRoute.id_operation_route
-  })
+export function replaceOperationRoute(val) {
+  routes.forEach((el, i) => {
+    if (el.id_operation_route === val.operationRoute.id_operation_route)
+      el = val.operationRoute.id_operation_route;
+  });
 }
 
 if (routes.length === 0) {
   operationRoutesRepository.getoperation_routes().then((val) => {
-    routes = val
-  })
+    routes = val;
+  });
 }
 
 // ENV WHA MESSAGE
 
-if (env.NOTIFY_ENV === 'TRUE') {
-  let msg
+if (env.NOTIFY_ENV === "TRUE") {
+  let msg;
 
-  if (env.PG_DB_SM_NAME === 'sixmap-tig') msg = '🔶_*Mensaje enviado desde CriptoRemesa*_🔶\n\nSistema corriendo en ambiente 🧑🏻‍💻*DEV*\n\n⚠️NO UTILIZAR nimobot'
-  else if (env.PG_DB_SM_NAME === 'sixmap-cg') msg = '🔶_*Mensaje enviado desde CriptoRemesa*_🔶\n\nSistema corriendo en ambiente 🧪*TEST*\n\n✅Testers pueden utilizar nimobot'
-  
-  whatsapp.sendGroupWhatsappMessage(msg)
+  if (env.PG_DB_SM_NAME === "sixmap-tig")
+    msg =
+      "🔶_*Mensaje enviado desde CriptoRemesa*_🔶\n\nSistema corriendo en ambiente 🧑🏻‍💻*DEV*\n\n⚠️NO UTILIZAR nimobot";
+  else if (env.PG_DB_SM_NAME === "sixmap-cg")
+    msg =
+      "🔶_*Mensaje enviado desde CriptoRemesa*_🔶\n\nSistema corriendo en ambiente 🧪*TEST*\n\n✅Testers pueden utilizar nimobot";
+
+  whatsapp.sendGroupWhatsappMessage(msg);
 }
 
 export default app;

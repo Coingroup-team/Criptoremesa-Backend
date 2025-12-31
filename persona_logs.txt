@@ -1,0 +1,2000 @@
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - debug - [Request]: POST /cr/veriflevels/persona/webhook
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - silly - ANTES DEL REQUEST SEGUN YO
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - info - [veriflevels Controller]: Persona webhook received
+20|pre-prod-be-bh:api  | Persona webhook payload: {
+20|pre-prod-be-bh:api  |   "data": {
+20|pre-prod-be-bh:api  |     "type": "event",
+20|pre-prod-be-bh:api  |     "id": "evt_4ehpuEfvQH6NvBKixgs8zVwqXV1s",
+20|pre-prod-be-bh:api  |     "attributes": {
+20|pre-prod-be-bh:api  |       "name": "inquiry.approved",
+20|pre-prod-be-bh:api  |       "payload": {
+20|pre-prod-be-bh:api  |         "data": {
+20|pre-prod-be-bh:api  |           "type": "inquiry",
+20|pre-prod-be-bh:api  |           "id": "inq_HFMHNfAFuCfeTkWppv8GygfxfykA",
+20|pre-prod-be-bh:api  |           "attributes": {
+20|pre-prod-be-bh:api  |             "status": "approved",
+20|pre-prod-be-bh:api  |             "reference-id": "bithonor.2023+03@gmail.com",
+20|pre-prod-be-bh:api  |             "note": null,
+20|pre-prod-be-bh:api  |             "behaviors": {
+20|pre-prod-be-bh:api  |               "api-version-less-than-minimum-count": 0,
+20|pre-prod-be-bh:api  |               "autofill-cancels": 8,
+20|pre-prod-be-bh:api  |               "autofill-starts": 0,
+20|pre-prod-be-bh:api  |               "behavior-threat-level": "medium",
+20|pre-prod-be-bh:api  |               "bot-score": 2,
+20|pre-prod-be-bh:api  |               "completion-time": 118.356500327,
+20|pre-prod-be-bh:api  |               "debugger-attached": false,
+20|pre-prod-be-bh:api  |               "devtools-open": false,
+20|pre-prod-be-bh:api  |               "distraction-events": 1,
+20|pre-prod-be-bh:api  |               "hesitation-baseline": 89973,
+20|pre-prod-be-bh:api  |               "hesitation-count": 17,
+20|pre-prod-be-bh:api  |               "hesitation-percentage": 38.65381836773254,
+20|pre-prod-be-bh:api  |               "hesitation-time": 34778,
+20|pre-prod-be-bh:api  |               "mobile-sdk-version-less-than-minimum-count": 0,
+20|pre-prod-be-bh:api  |               "request-spoof-attempts": 0,
+20|pre-prod-be-bh:api  |               "shortcut-copies": 0,
+20|pre-prod-be-bh:api  |               "shortcut-pastes": 0,
+20|pre-prod-be-bh:api  |               "user-agent-spoof-attempts": 0
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "tags": [
+20|pre-prod-be-bh:api  |               "AUTO-APPROVED"
+20|pre-prod-be-bh:api  |             ],
+20|pre-prod-be-bh:api  |             "creator": "API",
+20|pre-prod-be-bh:api  |             "reviewer-comment": null,
+20|pre-prod-be-bh:api  |             "updated-at": "2025-12-20T16:27:21.000Z",
+20|pre-prod-be-bh:api  |             "created-at": "2025-12-20T16:25:04.000Z",
+20|pre-prod-be-bh:api  |             "started-at": "2025-12-20T16:25:54.000Z",
+20|pre-prod-be-bh:api  |             "expires-at": null,
+20|pre-prod-be-bh:api  |             "completed-at": "2025-12-20T16:27:19.000Z",
+20|pre-prod-be-bh:api  |             "failed-at": null,
+20|pre-prod-be-bh:api  |             "marked-for-review-at": null,
+20|pre-prod-be-bh:api  |             "decisioned-at": "2025-12-20T16:27:21.000Z",
+20|pre-prod-be-bh:api  |             "expired-at": null,
+20|pre-prod-be-bh:api  |             "redacted-at": null,
+20|pre-prod-be-bh:api  |             "previous-step-name": "selfie_0a2957_verification",
+20|pre-prod-be-bh:api  |             "next-step-name": "success_97e311",
+20|pre-prod-be-bh:api  |             "fields": {
+20|pre-prod-be-bh:api  |               "current_government_id": {
+20|pre-prod-be-bh:api  |                 "type": "government_id",
+20|pre-prod-be-bh:api  |                 "value": {
+20|pre-prod-be-bh:api  |                   "id": "doc_yjst88o8hai5mQppaPgZRM7SEoqg",
+20|pre-prod-be-bh:api  |                   "type": "Document::GovernmentId"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "selected_country_code": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "US"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "selected_id_class": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "dl"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "address_street_1": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "600 CALIFORNIA STREET"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "address_street_2": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "address_city": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "SAN FRANCISCO"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "address_subdivision": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "CA"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "address_postal_code": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "94109"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "address_country_code": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "US"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "birthdate": {
+20|pre-prod-be-bh:api  |                 "type": "date",
+20|pre-prod-be-bh:api  |                 "value": "1977-07-17"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "expiration_date": {
+20|pre-prod-be-bh:api  |                 "type": "date",
+20|pre-prod-be-bh:api  |                 "value": "2030-12-20"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "email_address": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "bithonor.2023+03@gmail.com"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "identification_class": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "dl"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "identification_number": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "I1234562"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "name_first": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "ALEXANDER J"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "name_middle": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "name_last": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "SAMPLE"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "phone_number": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "card_access_number": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "issue_date": {
+20|pre-prod-be-bh:api  |                 "type": "date",
+20|pre-prod-be-bh:api  |                 "value": "2024-12-20"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "issuing_authority": {
+20|pre-prod-be-bh:api  |                 "type": "string",
+20|pre-prod-be-bh:api  |                 "value": "CA"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "government_identification_number_map": {
+20|pre-prod-be-bh:api  |                 "type": "json",
+20|pre-prod-be-bh:api  |                 "value": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "current_selfie": {
+20|pre-prod-be-bh:api  |                 "type": "selfie",
+20|pre-prod-be-bh:api  |                 "value": {
+20|pre-prod-be-bh:api  |                   "id": "self_N8ryUYaJGpFsaatwuaHzNvggECTG",
+20|pre-prod-be-bh:api  |                   "type": "Selfie::ProfileAndCenter"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           "relationships": {
+20|pre-prod-be-bh:api  |             "account": {
+20|pre-prod-be-bh:api  |               "data": {
+20|pre-prod-be-bh:api  |                 "type": "account",
+20|pre-prod-be-bh:api  |                 "id": "act_VZGPtCtdXsLsunDZgMckqNBEmkj7"
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "template": {
+20|pre-prod-be-bh:api  |               "data": null
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "inquiry-template": {
+20|pre-prod-be-bh:api  |               "data": {
+20|pre-prod-be-bh:api  |                 "type": "inquiry-template",
+20|pre-prod-be-bh:api  |                 "id": "itmpl_A355XaELXkPyR3REyH4vz6x9b4tw"
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "inquiry-template-version": {
+20|pre-prod-be-bh:api  |               "data": {
+20|pre-prod-be-bh:api  |                 "type": "inquiry-template-version",
+20|pre-prod-be-bh:api  |                 "id": "itmplv_49y6sTmKzRRthF6UE3HART943Dbd"
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "transaction": {
+20|pre-prod-be-bh:api  |               "data": null
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "reviewer": {
+20|pre-prod-be-bh:api  |               "data": {
+20|pre-prod-be-bh:api  |                 "type": "workflow-run",
+20|pre-prod-be-bh:api  |                 "id": "wfr_2t7UrHtE6zf3EekPG8cbz65KqYZV"
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "reports": {
+20|pre-prod-be-bh:api  |               "data": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "type": "report/politically-exposed-person",
+20|pre-prod-be-bh:api  |                   "id": "rep_Xb4NE1GnQRmbcowcpafEo9SovuBF"
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "type": "report/watchlist",
+20|pre-prod-be-bh:api  |                   "id": "rep_wfF2VfjDZpXYQxm3h76pUfcKHXLH"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ]
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "verifications": {
+20|pre-prod-be-bh:api  |               "data": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "type": "verification/government-id",
+20|pre-prod-be-bh:api  |                   "id": "ver_yNCiEn9FRo7ZQWEmtJhvHXs9NZi4"
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "type": "verification/government-id",
+20|pre-prod-be-bh:api  |                   "id": "ver_UVuRzVAXvr4HDSeNHMjmTUbi9qds"
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "type": "verification/selfie",
+20|pre-prod-be-bh:api  |                   "id": "ver_GmrKXkzDPSrDA3K7hmMBLAUB13P6"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ]
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "sessions": {
+20|pre-prod-be-bh:api  |               "data": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-session",
+20|pre-prod-be-bh:api  |                   "id": "iqse_YY8qRrFVrqg83woRYbnXCZazugg9"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ]
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "documents": {
+20|pre-prod-be-bh:api  |               "data": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "type": "document/government-id",
+20|pre-prod-be-bh:api  |                   "id": "doc_yAJ9p6MExUVpyen4Zgs2XmJZz8Jc"
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "type": "document/government-id",
+20|pre-prod-be-bh:api  |                   "id": "doc_yjst88o8hai5mQppaPgZRM7SEoqg"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ]
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "selfies": {
+20|pre-prod-be-bh:api  |               "data": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "type": "selfie/profile-and-center",
+20|pre-prod-be-bh:api  |                   "id": "self_N8ryUYaJGpFsaatwuaHzNvggECTG"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ]
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           }
+20|pre-prod-be-bh:api  |         },
+20|pre-prod-be-bh:api  |         "included": [
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "account",
+20|pre-prod-be-bh:api  |             "id": "act_VZGPtCtdXsLsunDZgMckqNBEmkj7",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "reference-id": "bithonor.2023+03@gmail.com",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:25:04.000Z",
+20|pre-prod-be-bh:api  |               "updated-at": "2025-12-20T16:27:20.000Z",
+20|pre-prod-be-bh:api  |               "redacted-at": null,
+20|pre-prod-be-bh:api  |               "account-type-name": "User",
+20|pre-prod-be-bh:api  |               "fields": {
+20|pre-prod-be-bh:api  |                 "name": {
+20|pre-prod-be-bh:api  |                   "type": "hash",
+20|pre-prod-be-bh:api  |                   "value": {
+20|pre-prod-be-bh:api  |                     "first": {
+20|pre-prod-be-bh:api  |                       "type": "string",
+20|pre-prod-be-bh:api  |                       "value": "ALEXANDER J"
+20|pre-prod-be-bh:api  |                     },
+20|pre-prod-be-bh:api  |                     "middle": {
+20|pre-prod-be-bh:api  |                       "type": "string",
+20|pre-prod-be-bh:api  |                       "value": null
+20|pre-prod-be-bh:api  |                     },
+20|pre-prod-be-bh:api  |                     "last": {
+20|pre-prod-be-bh:api  |                       "type": "string",
+20|pre-prod-be-bh:api  |                       "value": "SAMPLE"
+20|pre-prod-be-bh:api  |                     }
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 "address": {
+20|pre-prod-be-bh:api  |                   "type": "hash",
+20|pre-prod-be-bh:api  |                   "value": {
+20|pre-prod-be-bh:api  |                     "street_1": {
+20|pre-prod-be-bh:api  |                       "type": "string",
+20|pre-prod-be-bh:api  |                       "value": "600 CALIFORNIA STREET"
+20|pre-prod-be-bh:api  |                     },
+20|pre-prod-be-bh:api  |                     "street_2": {
+20|pre-prod-be-bh:api  |                       "type": "string",
+20|pre-prod-be-bh:api  |                       "value": null
+20|pre-prod-be-bh:api  |                     },
+20|pre-prod-be-bh:api  |                     "city": {
+20|pre-prod-be-bh:api  |                       "type": "string",
+20|pre-prod-be-bh:api  |                       "value": "SAN FRANCISCO"
+20|pre-prod-be-bh:api  |                     },
+20|pre-prod-be-bh:api  |                     "subdivision": {
+20|pre-prod-be-bh:api  |                       "type": "string",
+20|pre-prod-be-bh:api  |                       "value": "CA"
+20|pre-prod-be-bh:api  |                     },
+20|pre-prod-be-bh:api  |                     "postal_code": {
+20|pre-prod-be-bh:api  |                       "type": "string",
+20|pre-prod-be-bh:api  |                       "value": "94109"
+20|pre-prod-be-bh:api  |                     },
+20|pre-prod-be-bh:api  |                     "country_code": {
+20|pre-prod-be-bh:api  |                       "type": "string",
+20|pre-prod-be-bh:api  |                       "value": "US"
+20|pre-prod-be-bh:api  |                     }
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 "identification_numbers": {
+20|pre-prod-be-bh:api  |                   "type": "array",
+20|pre-prod-be-bh:api  |                   "value": [
+20|pre-prod-be-bh:api  |                     {
+20|pre-prod-be-bh:api  |                       "type": "hash",
+20|pre-prod-be-bh:api  |                       "value": {
+20|pre-prod-be-bh:api  |                         "identification_class": {
+20|pre-prod-be-bh:api  |                           "type": "string",
+20|pre-prod-be-bh:api  |                           "value": "dl"
+20|pre-prod-be-bh:api  |                         },
+20|pre-prod-be-bh:api  |                         "identification_number": {
+20|pre-prod-be-bh:api  |                           "type": "string",
+20|pre-prod-be-bh:api  |                           "value": "I1234562"
+20|pre-prod-be-bh:api  |                         },
+20|pre-prod-be-bh:api  |                         "issuing_country": {
+20|pre-prod-be-bh:api  |                           "type": "string",
+20|pre-prod-be-bh:api  |                           "value": "US"
+20|pre-prod-be-bh:api  |                         }
+20|pre-prod-be-bh:api  |                       }
+20|pre-prod-be-bh:api  |                     }
+20|pre-prod-be-bh:api  |                   ]
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 "birthdate": {
+20|pre-prod-be-bh:api  |                   "type": "date",
+20|pre-prod-be-bh:api  |                   "value": "1977-07-17"
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 "phone_number": {
+20|pre-prod-be-bh:api  |                   "type": "string",
+20|pre-prod-be-bh:api  |                   "value": null
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 "email_address": {
+20|pre-prod-be-bh:api  |                   "type": "string",
+20|pre-prod-be-bh:api  |                   "value": "bithonor.2023+03@gmail.com"
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 "selfie_photo": {
+20|pre-prod-be-bh:api  |                   "type": "file",
+20|pre-prod-be-bh:api  |                   "value": {
+20|pre-prod-be-bh:api  |                     "filename": "center_photo_processed.jpg",
+20|pre-prod-be-bh:api  |                     "byte_size": 182894,
+20|pre-prod-be-bh:api  |                     "url": "https://files.withpersona.com/center_photo_processed.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzeThmdjNieTY2dXoyajZia255ODJqNzB5bjByIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiZDJiOGYwZGYtMTUyNy00MjIwLWIwN2UtMDU0Y2QxNDcyOWYxIiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImFjY291bnRzIiwiZmlsZV9pbmZvIjoic2VsZmllX3Bob3RvIiwiaXNfcHVibGljX3Blcm1hbGluayI6ZmFsc2V9.nhMDhbVvYQ0opFsVqp209x0NEfbnZLo0QoluSbxU_sM"
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "tags": [],
+20|pre-prod-be-bh:api  |               "account-status": "Default"
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "account-type": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "account-type",
+20|pre-prod-be-bh:api  |                   "id": "acttp_VnDw1HatbJ53rL1umqEKt9eTPhAK"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "inquiry-template",
+20|pre-prod-be-bh:api  |             "id": "itmpl_A355XaELXkPyR3REyH4vz6x9b4tw",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "active",
+20|pre-prod-be-bh:api  |               "name": "KYC: Government ID and Selfie",
+20|pre-prod-be-bh:api  |               "embedded-flow-domain-allowlist": [],
+20|pre-prod-be-bh:api  |               "hosted-flow-subdomains": [],
+20|pre-prod-be-bh:api  |               "hosted-flow-redirect-uri-schemes": []
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "latest-published-version": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template-version",
+20|pre-prod-be-bh:api  |                   "id": "itmplv_49y6sTmKzRRthF6UE3HART943Dbd"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "inquiry-template-version",
+20|pre-prod-be-bh:api  |             "id": "itmplv_49y6sTmKzRRthF6UE3HART943Dbd",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "name-display": null,
+20|pre-prod-be-bh:api  |               "status": "published",
+20|pre-prod-be-bh:api  |               "enabled-locales": [
+20|pre-prod-be-bh:api  |                 "ar-EG",
+20|pre-prod-be-bh:api  |                 "az",
+20|pre-prod-be-bh:api  |                 "bg",
+20|pre-prod-be-bh:api  |                 "bn",
+20|pre-prod-be-bh:api  |                 "cs",
+20|pre-prod-be-bh:api  |                 "cy",
+20|pre-prod-be-bh:api  |                 "da",
+20|pre-prod-be-bh:api  |                 "de",
+20|pre-prod-be-bh:api  |                 "el-GR",
+20|pre-prod-be-bh:api  |                 "en-US",
+20|pre-prod-be-bh:api  |                 "es-MX",
+20|pre-prod-be-bh:api  |                 "fi",
+20|pre-prod-be-bh:api  |                 "fr",
+20|pre-prod-be-bh:api  |                 "he",
+20|pre-prod-be-bh:api  |                 "hi",
+20|pre-prod-be-bh:api  |                 "hr",
+20|pre-prod-be-bh:api  |                 "hu",
+20|pre-prod-be-bh:api  |                 "hy",
+20|pre-prod-be-bh:api  |                 "id-ID",
+20|pre-prod-be-bh:api  |                 "it",
+20|pre-prod-be-bh:api  |                 "ja",
+20|pre-prod-be-bh:api  |                 "ko-KR",
+20|pre-prod-be-bh:api  |                 "lt",
+20|pre-prod-be-bh:api  |                 "ms",
+20|pre-prod-be-bh:api  |                 "nl-NL",
+20|pre-prod-be-bh:api  |                 "no",
+20|pre-prod-be-bh:api  |                 "pl",
+20|pre-prod-be-bh:api  |                 "pt-BR",
+20|pre-prod-be-bh:api  |                 "ro",
+20|pre-prod-be-bh:api  |                 "ru",
+20|pre-prod-be-bh:api  |                 "sk",
+20|pre-prod-be-bh:api  |                 "sr",
+20|pre-prod-be-bh:api  |                 "sv",
+20|pre-prod-be-bh:api  |                 "ta",
+20|pre-prod-be-bh:api  |                 "th",
+20|pre-prod-be-bh:api  |                 "tl",
+20|pre-prod-be-bh:api  |                 "tr-TR",
+20|pre-prod-be-bh:api  |                 "uk-UA",
+20|pre-prod-be-bh:api  |                 "ur",
+20|pre-prod-be-bh:api  |                 "vi",
+20|pre-prod-be-bh:api  |                 "zh-CN",
+20|pre-prod-be-bh:api  |                 "zh-TW"
+20|pre-prod-be-bh:api  |               ],
+20|pre-prod-be-bh:api  |               "created-at": "2025-11-28T14:17:58.180Z",
+20|pre-prod-be-bh:api  |               "updated-at": "2025-11-28T14:22:20.423Z",
+20|pre-prod-be-bh:api  |               "published-at": "2025-11-28T14:22:20.000Z",
+20|pre-prod-be-bh:api  |               "theme": {
+20|pre-prod-be-bh:api  |                 "border-radius": null,
+20|pre-prod-be-bh:api  |                 "border-radius-modal": null,
+20|pre-prod-be-bh:api  |                 "border-radius-input": null,
+20|pre-prod-be-bh:api  |                 "border-width": null,
+20|pre-prod-be-bh:api  |                 "border-width-input": null,
+20|pre-prod-be-bh:api  |                 "button-background-image": null,
+20|pre-prod-be-bh:api  |                 "button-font-weight": null,
+20|pre-prod-be-bh:api  |                 "button-position": null,
+20|pre-prod-be-bh:api  |                 "button-shadow-strength": null,
+20|pre-prod-be-bh:api  |                 "button-text-transform": null,
+20|pre-prod-be-bh:api  |                 "color-button-primary": null,
+20|pre-prod-be-bh:api  |                 "color-button-secondary": null,
+20|pre-prod-be-bh:api  |                 "color-button-secondary-fill": null,
+20|pre-prod-be-bh:api  |                 "color-button-primary-fill-disabled": null,
+20|pre-prod-be-bh:api  |                 "color-button-secondary-fill-disabled": null,
+20|pre-prod-be-bh:api  |                 "color-error": null,
+20|pre-prod-be-bh:api  |                 "color-font": null,
+20|pre-prod-be-bh:api  |                 "color-font-button-primary": null,
+20|pre-prod-be-bh:api  |                 "color-font-button-secondary": null,
+20|pre-prod-be-bh:api  |                 "color-font-small": null,
+20|pre-prod-be-bh:api  |                 "color-font-title": null,
+20|pre-prod-be-bh:api  |                 "color-icon-header": null,
+20|pre-prod-be-bh:api  |                 "color-input-background": null,
+20|pre-prod-be-bh:api  |                 "color-input-border": null,
+20|pre-prod-be-bh:api  |                 "color-link": null,
+20|pre-prod-be-bh:api  |                 "color-modal-background": null,
+20|pre-prod-be-bh:api  |                 "color-primary": null,
+20|pre-prod-be-bh:api  |                 "color-progress-bar": null,
+20|pre-prod-be-bh:api  |                 "color-success": null,
+20|pre-prod-be-bh:api  |                 "color-warning": null,
+20|pre-prod-be-bh:api  |                 "color-divider": null,
+20|pre-prod-be-bh:api  |                 "color-dropdown-background": null,
+20|pre-prod-be-bh:api  |                 "color-dropdown-option": null,
+20|pre-prod-be-bh:api  |                 "font-family": null,
+20|pre-prod-be-bh:api  |                 "font-family-title": null,
+20|pre-prod-be-bh:api  |                 "font-url": null,
+20|pre-prod-be-bh:api  |                 "font-size-body": null,
+20|pre-prod-be-bh:api  |                 "font-size-header": null,
+20|pre-prod-be-bh:api  |                 "font-size-small": null,
+20|pre-prod-be-bh:api  |                 "line-height-body": null,
+20|pre-prod-be-bh:api  |                 "line-height-header": null,
+20|pre-prod-be-bh:api  |                 "line-height-small": null,
+20|pre-prod-be-bh:api  |                 "header-font-weight": null,
+20|pre-prod-be-bh:api  |                 "header-margin-bottom": null,
+20|pre-prod-be-bh:api  |                 "icon-color-primary": null,
+20|pre-prod-be-bh:api  |                 "icon-color-highlight": null,
+20|pre-prod-be-bh:api  |                 "icon-color-stroke": null,
+20|pre-prod-be-bh:api  |                 "icon-color-background": null,
+20|pre-prod-be-bh:api  |                 "icon-color-government-id-type": null,
+20|pre-prod-be-bh:api  |                 "icon-style": null,
+20|pre-prod-be-bh:api  |                 "input-style": null,
+20|pre-prod-be-bh:api  |                 "page-transition": null,
+20|pre-prod-be-bh:api  |                 "text-align": null,
+20|pre-prod-be-bh:api  |                 "text-decoration-line-link": null,
+20|pre-prod-be-bh:api  |                 "us-state-input-method": null,
+20|pre-prod-be-bh:api  |                 "vertical-options-style": null,
+20|pre-prod-be-bh:api  |                 "government-id-pictograph-position": null,
+20|pre-prod-be-bh:api  |                 "id-back-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "id-back-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "id-front-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "id-front-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "passport-front-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "passport-front-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "passport-signature-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "passport-signature-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "government-id-select-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "government-id-select-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "device-handoff-terms-text-position": null,
+20|pre-prod-be-bh:api  |                 "selfie-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "selfie-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "selfie-center-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "selfie-center-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "selfie-left-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "selfie-left-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "selfie-right-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "selfie-right-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "document-pictograph-position": null,
+20|pre-prod-be-bh:api  |                 "document-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "document-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "camera-support-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "camera-support-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "loading-pictograph-height": null,
+20|pre-prod-be-bh:api  |                 "loading-pictograph-url": null,
+20|pre-prod-be-bh:api  |                 "navbar-logo-display": null,
+20|pre-prod-be-bh:api  |                 "logo-url": null,
+20|pre-prod-be-bh:api  |                 "logo": null,
+20|pre-prod-be-bh:api  |                 "logo-data": null,
+20|pre-prod-be-bh:api  |                 "logo-filename": null
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "inquiry-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template",
+20|pre-prod-be-bh:api  |                   "id": "itmpl_A355XaELXkPyR3REyH4vz6x9b4tw"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "workflow-run",
+20|pre-prod-be-bh:api  |             "id": "wfr_2t7UrHtE6zf3EekPG8cbz65KqYZV",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "completed",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:27:20.627Z",
+20|pre-prod-be-bh:api  |               "completed-at": "2025-12-20T16:27:22.123+00:00"
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "workflow-version": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "workflow-version",
+20|pre-prod-be-bh:api  |                   "id": "wfv_ezTUtduoqL2PTUoXwtiaNNtrrbfE"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "workflow": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "workflow",
+20|pre-prod-be-bh:api  |                   "id": "wfl_StQfC25x7XumpAqC8QgvWqz4nCYr"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "creator": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "event",
+20|pre-prod-be-bh:api  |                   "id": "evt_JJ4a7KQbjXtv9PJbti78ZuPK81YT"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "meta": {
+20|pre-prod-be-bh:api  |               "processing-time-seconds": 2
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "report/politically-exposed-person",
+20|pre-prod-be-bh:api  |             "id": "rep_Xb4NE1GnQRmbcowcpafEo9SovuBF",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "ready",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:27:20.000Z",
+20|pre-prod-be-bh:api  |               "completed-at": "2025-12-20T16:27:21.000Z",
+20|pre-prod-be-bh:api  |               "redacted-at": null,
+20|pre-prod-be-bh:api  |               "report-template-version-name": "v1",
+20|pre-prod-be-bh:api  |               "has-match": false,
+20|pre-prod-be-bh:api  |               "is-continuous": false,
+20|pre-prod-be-bh:api  |               "is-recurring": false,
+20|pre-prod-be-bh:api  |               "tags": [],
+20|pre-prod-be-bh:api  |               "query": {
+20|pre-prod-be-bh:api  |                 "name-first": "ALEXANDER J",
+20|pre-prod-be-bh:api  |                 "name-middle": null,
+20|pre-prod-be-bh:api  |                 "name-last": "SAMPLE",
+20|pre-prod-be-bh:api  |                 "term": "ALEXANDER J SAMPLE",
+20|pre-prod-be-bh:api  |                 "birthdate": "1977-07-17",
+20|pre-prod-be-bh:api  |                 "country-code": "US"
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "result": [],
+20|pre-prod-be-bh:api  |               "ignore-list": []
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "inquiry": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry",
+20|pre-prod-be-bh:api  |                   "id": "inq_HFMHNfAFuCfeTkWppv8GygfxfykA"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "account": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "account",
+20|pre-prod-be-bh:api  |                   "id": "act_VZGPtCtdXsLsunDZgMckqNBEmkj7"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "transaction": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "report-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "report-template/politically-exposed-person",
+20|pre-prod-be-bh:api  |                   "id": "rptp_u5AcbFirFWMXYVwJeywjFwFWErDQ"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "report/watchlist",
+20|pre-prod-be-bh:api  |             "id": "rep_wfF2VfjDZpXYQxm3h76pUfcKHXLH",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "ready",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:27:21.000Z",
+20|pre-prod-be-bh:api  |               "completed-at": "2025-12-20T16:27:21.000Z",
+20|pre-prod-be-bh:api  |               "redacted-at": null,
+20|pre-prod-be-bh:api  |               "report-template-version-name": "v1",
+20|pre-prod-be-bh:api  |               "has-match": false,
+20|pre-prod-be-bh:api  |               "is-continuous": false,
+20|pre-prod-be-bh:api  |               "is-recurring": true,
+20|pre-prod-be-bh:api  |               "tags": [],
+20|pre-prod-be-bh:api  |               "name-first": "ALEXANDER J",
+20|pre-prod-be-bh:api  |               "name-middle": null,
+20|pre-prod-be-bh:api  |               "name-last": "SAMPLE",
+20|pre-prod-be-bh:api  |               "term": "ALEXANDER J SAMPLE",
+20|pre-prod-be-bh:api  |               "birthdate": "1977-07-17",
+20|pre-prod-be-bh:api  |               "country-code": "US",
+20|pre-prod-be-bh:api  |               "matched-lists": [],
+20|pre-prod-be-bh:api  |               "ignore-list": []
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "inquiry": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry",
+20|pre-prod-be-bh:api  |                   "id": "inq_HFMHNfAFuCfeTkWppv8GygfxfykA"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "account": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "account",
+20|pre-prod-be-bh:api  |                   "id": "act_VZGPtCtdXsLsunDZgMckqNBEmkj7"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "transaction": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "report-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "report-template/watchlist",
+20|pre-prod-be-bh:api  |                   "id": "rptp_xBBFc551QEPPQnNQzT9eAx5U9nwk"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "verification/government-id",
+20|pre-prod-be-bh:api  |             "id": "ver_yNCiEn9FRo7ZQWEmtJhvHXs9NZi4",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "failed",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:25:52.000Z",
+20|pre-prod-be-bh:api  |               "created-at-ts": 1766247952,
+20|pre-prod-be-bh:api  |               "submitted-at": "2025-12-20T16:25:52.000Z",
+20|pre-prod-be-bh:api  |               "submitted-at-ts": 1766247952,
+20|pre-prod-be-bh:api  |               "completed-at": "2025-12-20T16:25:53.000Z",
+20|pre-prod-be-bh:api  |               "completed-at-ts": 1766247953,
+20|pre-prod-be-bh:api  |               "redacted-at": null,
+20|pre-prod-be-bh:api  |               "country-code": "US",
+20|pre-prod-be-bh:api  |               "tags": [],
+20|pre-prod-be-bh:api  |               "entity-confidence-score": 0,
+20|pre-prod-be-bh:api  |               "entity-confidence-reasons": [
+20|pre-prod-be-bh:api  |                 "failed_age_comparison",
+20|pre-prod-be-bh:api  |                 "color_inconsistency",
+20|pre-prod-be-bh:api  |                 "compromised_image_matched",
+20|pre-prod-be-bh:api  |                 "double_front",
+20|pre-prod-be-bh:api  |                 "expired",
+20|pre-prod-be-bh:api  |                 "mrz_not_detected",
+20|pre-prod-be-bh:api  |                 "selfie_comparison_failure",
+20|pre-prod-be-bh:api  |                 "unprocessable_image"
+20|pre-prod-be-bh:api  |               ],
+20|pre-prod-be-bh:api  |               "front-photo-url": "https://files.withpersona.com/photo1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJueXNwcW5taXpkYmtxYTZvM2xiYW5vZ2hjcGd1IiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiNzMwYzk5ODAtMDhkYS00NGI5LWI5N2ItNzMzY2YyZjQzODlmIiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJwcm9jZXNzZWQiLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.Cj_NyIPIfTbS6UfEFgW1pRjGYc348I9V-FHvW_bweb4",
+20|pre-prod-be-bh:api  |               "back-photo-url": null,
+20|pre-prod-be-bh:api  |               "photo-urls": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "page": "front",
+20|pre-prod-be-bh:api  |                   "url": "https://files.withpersona.com/photo1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJueXNwcW5taXpkYmtxYTZvM2xiYW5vZ2hjcGd1IiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiM2Q4ZDg3MGEtNWI4MC00NGEyLTgxN2UtM2M4NTQwMzEwZWE3IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJwcm9jZXNzZWQiLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.QxIRFSqH93aMG7RI1r1elTDnUewKCOfKonz3sBmZPuY",
+20|pre-prod-be-bh:api  |                   "normalized-url": "https://files.withpersona.com/photo1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtc2xsbWkzcmdxeW5pbXpyZTYxYmFscTc3bmtnIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiZDgyOGM0ZGUtMTllNi00MGRkLTlhMmMtMjc5NTU5ODdjNTY2IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJub3JtYWxpemVkIiwiaXNfcHVibGljX3Blcm1hbGluayI6ZmFsc2V9.qilDn8HSYcsXVWRA6AH-Bx8Lq2b2KA7aiekxgwpx2Dw",
+20|pre-prod-be-bh:api  |                   "original-urls": [
+20|pre-prod-be-bh:api  |                     "https://files.withpersona.com/photo1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ5amVqeXQ5OXplOGlibm50ajVibHA1ZnM4MGx3IiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiNDgyYmNjOGUtYThmZi00OTQxLWI4MDMtMTk4NmJhMDA0ZGExIiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJvcmlnaW5hbHMiLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.Z98jHJ1SlsrQlNVlTxDN1hAsAOHdq9OjFS3O-C3fLJM"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "byte-size": 179506
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ],
+20|pre-prod-be-bh:api  |               "selfie-photo": {
+20|pre-prod-be-bh:api  |                 "url": "https://files.withpersona.com/selfie_photo.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsMTBoM3F0NHp1cnJ6emxqbGQwb2prc3R2aDRnIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiMmI3ZjZlMTYtNjNhMi00ODQ3LWFjNjAtYWZhZDA1MjY0ZGRhIiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJzZWxmaWVfcGhvdG8iLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.m62ZWf6JpPHWtGNQndwbcbuXD6Rw3i6JVKzye4B8v8k",
+20|pre-prod-be-bh:api  |                 "byte-size": 179506
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "selfie-photo-url": "https://files.withpersona.com/selfie_photo.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsMTBoM3F0NHp1cnJ6emxqbGQwb2prc3R2aDRnIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiNGM0OWQyNzktNTk2ZS00ZWQwLTkwOWQtYTVlM2E3ZDY4NWY1IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJzZWxmaWVfcGhvdG8iLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.4YF2NKLdYopfmqt0jOujXY-7LjAve_AlhL_XK3XwYWY",
+20|pre-prod-be-bh:api  |               "video-url": null,
+20|pre-prod-be-bh:api  |               "id-class": "dl",
+20|pre-prod-be-bh:api  |               "capture-method": "manual",
+20|pre-prod-be-bh:api  |               "name-first": "ALEXANDER J",
+20|pre-prod-be-bh:api  |               "name-middle": null,
+20|pre-prod-be-bh:api  |               "name-last": "SAMPLE",
+20|pre-prod-be-bh:api  |               "name-suffix": null,
+20|pre-prod-be-bh:api  |               "native-name-first": null,
+20|pre-prod-be-bh:api  |               "native-name-middle": null,
+20|pre-prod-be-bh:api  |               "native-name-last": null,
+20|pre-prod-be-bh:api  |               "native-name-title": null,
+20|pre-prod-be-bh:api  |               "birthdate": "1977-07-17",
+20|pre-prod-be-bh:api  |               "address-street-1": "600 CALIFORNIA STREET",
+20|pre-prod-be-bh:api  |               "address-street-2": null,
+20|pre-prod-be-bh:api  |               "address-city": "SAN FRANCISCO",
+20|pre-prod-be-bh:api  |               "address-subdivision": "CA",
+20|pre-prod-be-bh:api  |               "address-postal-code": "94109",
+20|pre-prod-be-bh:api  |               "issuing-authority": "CA",
+20|pre-prod-be-bh:api  |               "issuing-subdivision": "CA",
+20|pre-prod-be-bh:api  |               "nationality": null,
+20|pre-prod-be-bh:api  |               "document-number": null,
+20|pre-prod-be-bh:api  |               "visa-status": null,
+20|pre-prod-be-bh:api  |               "issue-date": "2024-12-20",
+20|pre-prod-be-bh:api  |               "expiration-date": "2030-12-20",
+20|pre-prod-be-bh:api  |               "designations": null,
+20|pre-prod-be-bh:api  |               "birthplace": null,
+20|pre-prod-be-bh:api  |               "endorsements": null,
+20|pre-prod-be-bh:api  |               "height": null,
+20|pre-prod-be-bh:api  |               "sex": "Male",
+20|pre-prod-be-bh:api  |               "restrictions": null,
+20|pre-prod-be-bh:api  |               "vehicle-class": null,
+20|pre-prod-be-bh:api  |               "identification-number": "I1234562",
+20|pre-prod-be-bh:api  |               "from-reusable-persona": false,
+20|pre-prod-be-bh:api  |               "checks": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_aamva_database_lookup",
+20|pre-prod-be-bh:api  |                   "status": "not_applicable",
+20|pre-prod-be-bh:api  |                   "reasons": [
+20|pre-prod-be-bh:api  |                     "disabled_by_check_config"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_account_comparison",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_age_comparison",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_age_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "not_applicable",
+20|pre-prod-be-bh:api  |                   "reasons": [
+20|pre-prod-be-bh:api  |                     "disabled_by_check_config"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_attribute_comparison",
+20|pre-prod-be-bh:api  |                   "status": "not_applicable",
+20|pre-prod-be-bh:api  |                   "reasons": [
+20|pre-prod-be-bh:api  |                     "disabled_by_check_config"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_barcode_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_barcode_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_blur_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_color_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_compromised_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_damaged_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_disallowed_country_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {
+20|pre-prod-be-bh:api  |                     "country-code": null,
+20|pre-prod-be-bh:api  |                     "selected-country-code": null
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_disallowed_type_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {
+20|pre-prod-be-bh:api  |                     "country-code": null,
+20|pre-prod-be-bh:api  |                     "detected-id-class": null,
+20|pre-prod-be-bh:api  |                     "detected-id-designations": null,
+20|pre-prod-be-bh:api  |                     "disallowed-id-designations": null,
+20|pre-prod-be-bh:api  |                     "selected-id-classes": null
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_double_side_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_electronic_replica_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_entity_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_experimental_model_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_expired_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_extracted_properties_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_extraction_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {
+20|pre-prod-be-bh:api  |                     "check-requirements": []
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_fabrication_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_glare_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_handwriting_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_inconsistent_repeat_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_inquiry_comparison",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_mrz_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_mrz_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_number_format_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_paper_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_physical_tamper_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_po_box_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_portrait_clarity_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_portrait_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_public_figure_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_real_id_detection",
+20|pre-prod-be-bh:api  |                   "status": "not_applicable",
+20|pre-prod-be-bh:api  |                   "reasons": [
+20|pre-prod-be-bh:api  |                     "disabled_by_check_config"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_repeat_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_selfie_comparison",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_tamper_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_unprocessable_submission_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_valid_dates_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_video_quality_detection",
+20|pre-prod-be-bh:api  |                   "status": "failed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ]
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "inquiry": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry",
+20|pre-prod-be-bh:api  |                   "id": "inq_HFMHNfAFuCfeTkWppv8GygfxfykA"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "template": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "inquiry-template-version": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template-version",
+20|pre-prod-be-bh:api  |                   "id": "itmplv_49y6sTmKzRRthF6UE3HART943Dbd"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "inquiry-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template",
+20|pre-prod-be-bh:api  |                   "id": "itmpl_A355XaELXkPyR3REyH4vz6x9b4tw"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "verification-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "verification-template/government-id",
+20|pre-prod-be-bh:api  |                   "id": "vtmpl_89B4SXV8JQSKGBL2th9auYear8xj"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "verification-template-version": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "verification-template-version/government-id",
+20|pre-prod-be-bh:api  |                   "id": "vtmplv_X4TTUve8kk1SSqZw7BAzpXAjwxNe"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "transaction": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "document": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "document/government-id",
+20|pre-prod-be-bh:api  |                   "id": "doc_yAJ9p6MExUVpyen4Zgs2XmJZz8Jc"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "accounts": {
+20|pre-prod-be-bh:api  |                 "data": [
+20|pre-prod-be-bh:api  |                   {
+20|pre-prod-be-bh:api  |                     "type": "account",
+20|pre-prod-be-bh:api  |                     "id": "act_VZGPtCtdXsLsunDZgMckqNBEmkj7"
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 ]
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "verification/government-id",
+20|pre-prod-be-bh:api  |             "id": "ver_UVuRzVAXvr4HDSeNHMjmTUbi9qds",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "passed",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:26:50.000Z",
+20|pre-prod-be-bh:api  |               "created-at-ts": 1766248010,
+20|pre-prod-be-bh:api  |               "submitted-at": "2025-12-20T16:26:50.000Z",
+20|pre-prod-be-bh:api  |               "submitted-at-ts": 1766248010,
+20|pre-prod-be-bh:api  |               "completed-at": "2025-12-20T16:26:51.000Z",
+20|pre-prod-be-bh:api  |               "completed-at-ts": 1766248011,
+20|pre-prod-be-bh:api  |               "redacted-at": null,
+20|pre-prod-be-bh:api  |               "country-code": "US",
+20|pre-prod-be-bh:api  |               "tags": [],
+20|pre-prod-be-bh:api  |               "entity-confidence-score": 100,
+20|pre-prod-be-bh:api  |               "entity-confidence-reasons": [
+20|pre-prod-be-bh:api  |                 "generic"
+20|pre-prod-be-bh:api  |               ],
+20|pre-prod-be-bh:api  |               "front-photo-url": "https://files.withpersona.com/photo1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwZnRtdWZ5ZzkwMTBtdGJvZWFucGQwNWtxZHRuIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiMWRhYTc5OGItZWQ2Zi00ZjM5LWJjNjAtN2UxMWM1MzgwMTQwIiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJwcm9jZXNzZWQiLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.cl6FWsvusJ-lzw-TqxgdgeGImAPJWkyZV4-7g5ohlsk",
+20|pre-prod-be-bh:api  |               "back-photo-url": null,
+20|pre-prod-be-bh:api  |               "photo-urls": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "page": "front",
+20|pre-prod-be-bh:api  |                   "url": "https://files.withpersona.com/photo1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwZnRtdWZ5ZzkwMTBtdGJvZWFucGQwNWtxZHRuIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiNWJkZGFkMWYtN2ViMi00NmI4LTk4ZDMtYTk5OWM3MGNlYWY3IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJwcm9jZXNzZWQiLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.AuyLXr4MiEPNWupE_rRji1HzZKyWibaaspW2PE-I8EE",
+20|pre-prod-be-bh:api  |                   "normalized-url": "https://files.withpersona.com/photo1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZDQ3bXU2bmN0aHI3NGxwbWtoc2w1d3NpaWtkIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiMjhjNDRiNTQtODUwYi00ODdkLTk0ODktNzc1OGYzZGFiNTA2IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJub3JtYWxpemVkIiwiaXNfcHVibGljX3Blcm1hbGluayI6ZmFsc2V9.uDgl5839xZ6MlilZTpLso500sZNiuCt0UKor5wgCN5U",
+20|pre-prod-be-bh:api  |                   "original-urls": [
+20|pre-prod-be-bh:api  |                     "https://files.withpersona.com/photo1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzMWgxZHRtdDF5amlkcTVvaHA0anlic2UyMnozIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiNGYwMDFjN2UtNTM4NS00ZjUwLThkMzAtOTc0ZWU3ZDEyMGZjIiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJvcmlnaW5hbHMiLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.cDmLuBR5pFDBU9hbUpy8-QxyzNJEghRKZ27jyNQPTcM"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "byte-size": 201443
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ],
+20|pre-prod-be-bh:api  |               "selfie-photo": {
+20|pre-prod-be-bh:api  |                 "url": "https://files.withpersona.com/selfie_photo.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOHhlempkNnU2ZWV4cnZtaXZtYnEyN2Q1ZWlrIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiMjA5MzE3ZjEtYjM1Mi00OTJmLTg5ODAtYWFiNjkzYWY4MTUzIiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJzZWxmaWVfcGhvdG8iLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.3xQlyAH2lLEE4qC0ViCTfepZUHSG28EgqBvfJaZGSPA",
+20|pre-prod-be-bh:api  |                 "byte-size": 201443
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "selfie-photo-url": "https://files.withpersona.com/selfie_photo.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOHhlempkNnU2ZWV4cnZtaXZtYnEyN2Q1ZWlrIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiNmI3MjZjZDItZWFkMi00NGIwLWJkM2EtNzA1ZGVkN2VhYjNkIiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJzZWxmaWVfcGhvdG8iLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0._vq-469s_15VD5FvwkiUhIYrZ_22AbQHe2l9iHl42Os",
+20|pre-prod-be-bh:api  |               "video-url": null,
+20|pre-prod-be-bh:api  |               "id-class": "dl",
+20|pre-prod-be-bh:api  |               "capture-method": "manual",
+20|pre-prod-be-bh:api  |               "name-first": "ALEXANDER J",
+20|pre-prod-be-bh:api  |               "name-middle": null,
+20|pre-prod-be-bh:api  |               "name-last": "SAMPLE",
+20|pre-prod-be-bh:api  |               "name-suffix": null,
+20|pre-prod-be-bh:api  |               "native-name-first": null,
+20|pre-prod-be-bh:api  |               "native-name-middle": null,
+20|pre-prod-be-bh:api  |               "native-name-last": null,
+20|pre-prod-be-bh:api  |               "native-name-title": null,
+20|pre-prod-be-bh:api  |               "birthdate": "1977-07-17",
+20|pre-prod-be-bh:api  |               "address-street-1": "600 CALIFORNIA STREET",
+20|pre-prod-be-bh:api  |               "address-street-2": null,
+20|pre-prod-be-bh:api  |               "address-city": "SAN FRANCISCO",
+20|pre-prod-be-bh:api  |               "address-subdivision": "CA",
+20|pre-prod-be-bh:api  |               "address-postal-code": "94109",
+20|pre-prod-be-bh:api  |               "issuing-authority": "CA",
+20|pre-prod-be-bh:api  |               "issuing-subdivision": "CA",
+20|pre-prod-be-bh:api  |               "nationality": null,
+20|pre-prod-be-bh:api  |               "document-number": null,
+20|pre-prod-be-bh:api  |               "visa-status": null,
+20|pre-prod-be-bh:api  |               "issue-date": "2024-12-20",
+20|pre-prod-be-bh:api  |               "expiration-date": "2030-12-20",
+20|pre-prod-be-bh:api  |               "designations": null,
+20|pre-prod-be-bh:api  |               "birthplace": null,
+20|pre-prod-be-bh:api  |               "endorsements": null,
+20|pre-prod-be-bh:api  |               "height": null,
+20|pre-prod-be-bh:api  |               "sex": "Male",
+20|pre-prod-be-bh:api  |               "restrictions": null,
+20|pre-prod-be-bh:api  |               "vehicle-class": null,
+20|pre-prod-be-bh:api  |               "identification-number": "I1234562",
+20|pre-prod-be-bh:api  |               "from-reusable-persona": false,
+20|pre-prod-be-bh:api  |               "checks": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_aamva_database_lookup",
+20|pre-prod-be-bh:api  |                   "status": "not_applicable",
+20|pre-prod-be-bh:api  |                   "reasons": [
+20|pre-prod-be-bh:api  |                     "disabled_by_check_config"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_account_comparison",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_age_comparison",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_age_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "not_applicable",
+20|pre-prod-be-bh:api  |                   "reasons": [
+20|pre-prod-be-bh:api  |                     "disabled_by_check_config"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_attribute_comparison",
+20|pre-prod-be-bh:api  |                   "status": "not_applicable",
+20|pre-prod-be-bh:api  |                   "reasons": [
+20|pre-prod-be-bh:api  |                     "disabled_by_check_config"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_barcode_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_barcode_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_blur_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_color_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_compromised_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_damaged_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_disallowed_country_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {
+20|pre-prod-be-bh:api  |                     "country-code": null,
+20|pre-prod-be-bh:api  |                     "selected-country-code": null
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_disallowed_type_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {
+20|pre-prod-be-bh:api  |                     "country-code": null,
+20|pre-prod-be-bh:api  |                     "detected-id-class": null,
+20|pre-prod-be-bh:api  |                     "detected-id-designations": null,
+20|pre-prod-be-bh:api  |                     "disallowed-id-designations": null,
+20|pre-prod-be-bh:api  |                     "selected-id-classes": null
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_double_side_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_electronic_replica_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_entity_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_experimental_model_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_expired_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_extracted_properties_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_extraction_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {
+20|pre-prod-be-bh:api  |                     "check-requirements": []
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_fabrication_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_glare_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_handwriting_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_inconsistent_repeat_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_inquiry_comparison",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_mrz_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_mrz_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_number_format_inconsistency_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_paper_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_physical_tamper_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_po_box_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_portrait_clarity_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_portrait_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_public_figure_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_real_id_detection",
+20|pre-prod-be-bh:api  |                   "status": "not_applicable",
+20|pre-prod-be-bh:api  |                   "reasons": [
+20|pre-prod-be-bh:api  |                     "disabled_by_check_config"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_repeat_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_selfie_comparison",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_tamper_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_unprocessable_submission_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_valid_dates_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "id_video_quality_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ]
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "inquiry": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry",
+20|pre-prod-be-bh:api  |                   "id": "inq_HFMHNfAFuCfeTkWppv8GygfxfykA"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "template": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "inquiry-template-version": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template-version",
+20|pre-prod-be-bh:api  |                   "id": "itmplv_49y6sTmKzRRthF6UE3HART943Dbd"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "inquiry-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template",
+20|pre-prod-be-bh:api  |                   "id": "itmpl_A355XaELXkPyR3REyH4vz6x9b4tw"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "verification-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "verification-template/government-id",
+20|pre-prod-be-bh:api  |                   "id": "vtmpl_89B4SXV8JQSKGBL2th9auYear8xj"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "verification-template-version": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "verification-template-version/government-id",
+20|pre-prod-be-bh:api  |                   "id": "vtmplv_X4TTUve8kk1SSqZw7BAzpXAjwxNe"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "transaction": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "document": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "document/government-id",
+20|pre-prod-be-bh:api  |                   "id": "doc_yjst88o8hai5mQppaPgZRM7SEoqg"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "accounts": {
+20|pre-prod-be-bh:api  |                 "data": [
+20|pre-prod-be-bh:api  |                   {
+20|pre-prod-be-bh:api  |                     "type": "account",
+20|pre-prod-be-bh:api  |                     "id": "act_VZGPtCtdXsLsunDZgMckqNBEmkj7"
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 ]
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "verification/selfie",
+20|pre-prod-be-bh:api  |             "id": "ver_GmrKXkzDPSrDA3K7hmMBLAUB13P6",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "passed",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:27:18.000Z",
+20|pre-prod-be-bh:api  |               "created-at-ts": 1766248038,
+20|pre-prod-be-bh:api  |               "submitted-at": "2025-12-20T16:27:18.000Z",
+20|pre-prod-be-bh:api  |               "submitted-at-ts": 1766248038,
+20|pre-prod-be-bh:api  |               "completed-at": "2025-12-20T16:27:19.000Z",
+20|pre-prod-be-bh:api  |               "completed-at-ts": 1766248039,
+20|pre-prod-be-bh:api  |               "redacted-at": null,
+20|pre-prod-be-bh:api  |               "country-code": null,
+20|pre-prod-be-bh:api  |               "tags": [],
+20|pre-prod-be-bh:api  |               "left-photo-url": "https://files.withpersona.com/0aa4cc-legacy-shared-us-central1%2Fselfiefile%2Fimage%2F15401560491%2Fshrine_processed%2F36768f1038494b4cb1be0c8be5be76b0.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwYWE0Y2MtbGVnYWN5LXNoYXJlZC11cy1jZW50cmFsMS9zZWxmaWVmaWxlL2ltYWdlLzE1NDAxNTYwNDkxL3NocmluZV9wcm9jZXNzZWQvMzY3NjhmMTAzODQ5NGI0Y2IxYmUwYzhiZTViZTc2YjAuanBnIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiZDRhNjA1Y2EtZjhjNS00ODVkLWE4MTgtYjg3YjFiZGUyNWQ2IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6IlNocmluZTo6VXBsb2FkZWRGaWxlIiwiZmlsZV9pbmZvIjoiMGFhNGNjLWxlZ2FjeS1zaGFyZWQtdXMtY2VudHJhbDEvc2VsZmllZmlsZS9pbWFnZS8xNTQwMTU2MDQ5MS9zaHJpbmVfcHJvY2Vzc2VkLzM2NzY4ZjEwMzg0OTRiNGNiMWJlMGM4YmU1YmU3NmIwLmpwZyIsImlzX3B1YmxpY19wZXJtYWxpbmsiOmZhbHNlfQ.ez2WuqhyyDkZfyvwNAMxQfTEgTUAdI9IAJqbGjWrwwo",
+20|pre-prod-be-bh:api  |               "center-photo-url": "https://files.withpersona.com/886e91-legacy-shared-us-central1%2Fselfiefile%2Fimage%2F15401560490%2Fshrine_processed%2F3d1c19b64d0cef59b6241c068978fec1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4ODZlOTEtbGVnYWN5LXNoYXJlZC11cy1jZW50cmFsMS9zZWxmaWVmaWxlL2ltYWdlLzE1NDAxNTYwNDkwL3NocmluZV9wcm9jZXNzZWQvM2QxYzE5YjY0ZDBjZWY1OWI2MjQxYzA2ODk3OGZlYzEuanBnIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiOWI4NDRhNzktMjI3Ni00MDJlLTk0YjMtNTlkMTAxOTFhNmI3IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6IlNocmluZTo6VXBsb2FkZWRGaWxlIiwiZmlsZV9pbmZvIjoiODg2ZTkxLWxlZ2FjeS1zaGFyZWQtdXMtY2VudHJhbDEvc2VsZmllZmlsZS9pbWFnZS8xNTQwMTU2MDQ5MC9zaHJpbmVfcHJvY2Vzc2VkLzNkMWMxOWI2NGQwY2VmNTliNjI0MWMwNjg5NzhmZWMxLmpwZyIsImlzX3B1YmxpY19wZXJtYWxpbmsiOmZhbHNlfQ.BMZtDdDAItxxNc4Ot96Y_fs4rqPlparJn-234bDTbmA",
+20|pre-prod-be-bh:api  |               "right-photo-url": "https://files.withpersona.com/3c6179-legacy-shared-us-central1%2Fselfiefile%2Fimage%2F15401560492%2Fshrine_processed%2F5fedd9a27d45cd320c0e6e7913dc6ad6.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzYzYxNzktbGVnYWN5LXNoYXJlZC11cy1jZW50cmFsMS9zZWxmaWVmaWxlL2ltYWdlLzE1NDAxNTYwNDkyL3NocmluZV9wcm9jZXNzZWQvNWZlZGQ5YTI3ZDQ1Y2QzMjBjMGU2ZTc5MTNkYzZhZDYuanBnIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiODcyYTNhMzMtODJjYS00MmI5LWEzOWMtN2QzMzY4MWU5ZjFhIiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6IlNocmluZTo6VXBsb2FkZWRGaWxlIiwiZmlsZV9pbmZvIjoiM2M2MTc5LWxlZ2FjeS1zaGFyZWQtdXMtY2VudHJhbDEvc2VsZmllZmlsZS9pbWFnZS8xNTQwMTU2MDQ5Mi9zaHJpbmVfcHJvY2Vzc2VkLzVmZWRkOWEyN2Q0NWNkMzIwYzBlNmU3OTEzZGM2YWQ2LmpwZyIsImlzX3B1YmxpY19wZXJtYWxpbmsiOmZhbHNlfQ.9M2iq4R7AYHau8zu25QPB0MFWCqKT7QDUBlj4h1cy8o",
+20|pre-prod-be-bh:api  |               "photo-urls": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "page": "left_photo",
+20|pre-prod-be-bh:api  |                   "url": "https://files.withpersona.com/0aa4cc-legacy-shared-us-central1%2Fselfiefile%2Fimage%2F15401560491%2Fshrine_processed%2F36768f1038494b4cb1be0c8be5be76b0.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwYWE0Y2MtbGVnYWN5LXNoYXJlZC11cy1jZW50cmFsMS9zZWxmaWVmaWxlL2ltYWdlLzE1NDAxNTYwNDkxL3NocmluZV9wcm9jZXNzZWQvMzY3NjhmMTAzODQ5NGI0Y2IxYmUwYzhiZTViZTc2YjAuanBnIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiY2RlYWE5OTEtM2IwYi00YTZkLTk3OGEtM2MzNTUzMzcyMjA2IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6IlNocmluZTo6VXBsb2FkZWRGaWxlIiwiZmlsZV9pbmZvIjoiMGFhNGNjLWxlZ2FjeS1zaGFyZWQtdXMtY2VudHJhbDEvc2VsZmllZmlsZS9pbWFnZS8xNTQwMTU2MDQ5MS9zaHJpbmVfcHJvY2Vzc2VkLzM2NzY4ZjEwMzg0OTRiNGNiMWJlMGM4YmU1YmU3NmIwLmpwZyIsImlzX3B1YmxpY19wZXJtYWxpbmsiOmZhbHNlfQ.SRSmQCJcIbka6v6lSRhvztGV77bBDSbrxs8GQCPzgnk",
+20|pre-prod-be-bh:api  |                   "byte-size": 182905
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "page": "center_photo",
+20|pre-prod-be-bh:api  |                   "url": "https://files.withpersona.com/886e91-legacy-shared-us-central1%2Fselfiefile%2Fimage%2F15401560490%2Fshrine_processed%2F3d1c19b64d0cef59b6241c068978fec1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4ODZlOTEtbGVnYWN5LXNoYXJlZC11cy1jZW50cmFsMS9zZWxmaWVmaWxlL2ltYWdlLzE1NDAxNTYwNDkwL3NocmluZV9wcm9jZXNzZWQvM2QxYzE5YjY0ZDBjZWY1OWI2MjQxYzA2ODk3OGZlYzEuanBnIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiOWUzNTQ0NTItMjVhMi00ZjY5LWEzYzUtMWVhNjZhOGI0Yjc4IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6IlNocmluZTo6VXBsb2FkZWRGaWxlIiwiZmlsZV9pbmZvIjoiODg2ZTkxLWxlZ2FjeS1zaGFyZWQtdXMtY2VudHJhbDEvc2VsZmllZmlsZS9pbWFnZS8xNTQwMTU2MDQ5MC9zaHJpbmVfcHJvY2Vzc2VkLzNkMWMxOWI2NGQwY2VmNTliNjI0MWMwNjg5NzhmZWMxLmpwZyIsImlzX3B1YmxpY19wZXJtYWxpbmsiOmZhbHNlfQ.QGWc7YuxPfyp3JtXbikWYJMxaSrfT4xOGHKc4Y2Q9HU",
+20|pre-prod-be-bh:api  |                   "byte-size": 182866
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "page": "right_photo",
+20|pre-prod-be-bh:api  |                   "url": "https://files.withpersona.com/3c6179-legacy-shared-us-central1%2Fselfiefile%2Fimage%2F15401560492%2Fshrine_processed%2F5fedd9a27d45cd320c0e6e7913dc6ad6.j
+20|pre-prod-be-bh:api  | pg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzYzYxNzktbGVnYWN5LXNoYXJlZC11cy1jZW50cmFsMS9zZWxmaWVmaWxlL2ltYWdlLzE1NDAxNTYwNDkyL3NocmluZV9wcm9jZXNzZWQvNWZlZGQ5YTI3ZDQ1Y2QzMjBjMGU2ZTc5MTNkYzZhZDYuanBnIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiNWM5ZGQxNTQtODk4Zi00ZTE2LWFiNjUtZDM2YjNmZDliZjM5IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6IlNocmluZTo6VXBsb2FkZWRGaWxlIiwiZmlsZV9pbmZvIjoiM2M2MTc5LWxlZ2FjeS1zaGFyZWQtdXMtY2VudHJhbDEvc2VsZmllZmlsZS9pbWFnZS8xNTQwMTU2MDQ5Mi9zaHJpbmVfcHJvY2Vzc2VkLzVmZWRkOWEyN2Q0NWNkMzIwYzBlNmU3OTEzZGM2YWQ2LmpwZyIsImlzX3B1YmxpY19wZXJtYWxpbmsiOmZhbHNlfQ.41T39ORjjugj0YdG0HniXebMLjfUggYHK4NvNmrHWIw",
+20|pre-prod-be-bh:api  |                   "byte-size": 181761
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ],
+20|pre-prod-be-bh:api  |               "video-url": null,
+20|pre-prod-be-bh:api  |               "center-photo-face-coordinates": null,
+20|pre-prod-be-bh:api  |               "entity-confidence-reasons": [],
+20|pre-prod-be-bh:api  |               "document-similarity-score": null,
+20|pre-prod-be-bh:api  |               "selfie-similarity-score-left": null,
+20|pre-prod-be-bh:api  |               "selfie-similarity-score-right": null,
+20|pre-prod-be-bh:api  |               "from-reusable-persona": false,
+20|pre-prod-be-bh:api  |               "checks": [
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_attribute_comparison",
+20|pre-prod-be-bh:api  |                   "status": "not_applicable",
+20|pre-prod-be-bh:api  |                   "reasons": [
+20|pre-prod-be-bh:api  |                     "disabled_by_check_config"
+20|pre-prod-be-bh:api  |                   ],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_id_comparison",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_pose_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_multiple_faces_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_pose_repeat_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_account_comparison",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_suspicious_entity_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_liveness_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_glasses_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_glare_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_experimental_model_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_portrait_quality_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_public_figure_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_age_comparison",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_face_covering_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_video_quality_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 },
+20|pre-prod-be-bh:api  |                 {
+20|pre-prod-be-bh:api  |                   "name": "selfie_image_quality_detection",
+20|pre-prod-be-bh:api  |                   "status": "passed",
+20|pre-prod-be-bh:api  |                   "reasons": [],
+20|pre-prod-be-bh:api  |                   "requirement": "not_required",
+20|pre-prod-be-bh:api  |                   "metadata": {}
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               ],
+20|pre-prod-be-bh:api  |               "capture-method": "photo"
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "inquiry": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry",
+20|pre-prod-be-bh:api  |                   "id": "inq_HFMHNfAFuCfeTkWppv8GygfxfykA"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "template": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "inquiry-template-version": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template-version",
+20|pre-prod-be-bh:api  |                   "id": "itmplv_49y6sTmKzRRthF6UE3HART943Dbd"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "inquiry-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template",
+20|pre-prod-be-bh:api  |                   "id": "itmpl_A355XaELXkPyR3REyH4vz6x9b4tw"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "verification-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "verification-template/selfie",
+20|pre-prod-be-bh:api  |                   "id": "vtmpl_yKHph3yWy17Rm4FPD3xyD1FAid45"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "verification-template-version": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "verification-template-version/selfie",
+20|pre-prod-be-bh:api  |                   "id": "vtmplv_E7kdTwLaPkgfwr7E3MUB5EMiHv7X"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "transaction": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "accounts": {
+20|pre-prod-be-bh:api  |                 "data": [
+20|pre-prod-be-bh:api  |                   {
+20|pre-prod-be-bh:api  |                     "type": "account",
+20|pre-prod-be-bh:api  |                     "id": "act_VZGPtCtdXsLsunDZgMckqNBEmkj7"
+20|pre-prod-be-bh:api  |                   }
+20|pre-prod-be-bh:api  |                 ]
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "inquiry-session",
+20|pre-prod-be-bh:api  |             "id": "iqse_YY8qRrFVrqg83woRYbnXCZazugg9",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "active",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:25:04.000Z",
+20|pre-prod-be-bh:api  |               "started-at": "2025-12-20T16:25:22.000Z",
+20|pre-prod-be-bh:api  |               "expired-at": null,
+20|pre-prod-be-bh:api  |               "ip-address": "90.171.229.189",
+20|pre-prod-be-bh:api  |               "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 OPR/124.0.0.0",
+20|pre-prod-be-bh:api  |               "os-name": "Windows",
+20|pre-prod-be-bh:api  |               "os-full-version": "11",
+20|pre-prod-be-bh:api  |               "device-type": "desktop",
+20|pre-prod-be-bh:api  |               "device-name": null,
+20|pre-prod-be-bh:api  |               "browser-name": "Opera GX",
+20|pre-prod-be-bh:api  |               "browser-full-version": "124.0.5705.61",
+20|pre-prod-be-bh:api  |               "mobile-sdk-name": null,
+20|pre-prod-be-bh:api  |               "mobile-sdk-full-version": null,
+20|pre-prod-be-bh:api  |               "device-handoff-method": null,
+20|pre-prod-be-bh:api  |               "is-proxy": false,
+20|pre-prod-be-bh:api  |               "is-tor": false,
+20|pre-prod-be-bh:api  |               "is-datacenter": false,
+20|pre-prod-be-bh:api  |               "is-vpn": false,
+20|pre-prod-be-bh:api  |               "threat-level": "low",
+20|pre-prod-be-bh:api  |               "country-code": "US",
+20|pre-prod-be-bh:api  |               "country-name": "United States",
+20|pre-prod-be-bh:api  |               "region-code": "CA",
+20|pre-prod-be-bh:api  |               "region-name": "California",
+20|pre-prod-be-bh:api  |               "latitude": 37.751,
+20|pre-prod-be-bh:api  |               "longitude": -97.822,
+20|pre-prod-be-bh:api  |               "gps-latitude": 37.751,
+20|pre-prod-be-bh:api  |               "gps-longitude": -97.822,
+20|pre-prod-be-bh:api  |               "gps-precision": null,
+20|pre-prod-be-bh:api  |               "ip-connection-type": "residential",
+20|pre-prod-be-bh:api  |               "ip-isp": "Service Provider",
+20|pre-prod-be-bh:api  |               "network-organization": "Digital Ocean"
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "inquiry": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry",
+20|pre-prod-be-bh:api  |                   "id": "inq_HFMHNfAFuCfeTkWppv8GygfxfykA"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "device": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "device",
+20|pre-prod-be-bh:api  |                   "id": "dev_CuVDRfgSkrdTaiFuvMFEYG2p1qAY"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "network": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "network",
+20|pre-prod-be-bh:api  |                   "id": "net_AtsCEbyiGqU3p5q2ZHP22NPiVCu9"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "document/government-id",
+20|pre-prod-be-bh:api  |             "id": "doc_yAJ9p6MExUVpyen4Zgs2XmJZz8Jc",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "processed",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:25:51.000Z",
+20|pre-prod-be-bh:api  |               "processed-at": "2025-12-20T16:25:53.000Z",
+20|pre-prod-be-bh:api  |               "processed-at-ts": 1766247953,
+20|pre-prod-be-bh:api  |               "front-photo": {
+20|pre-prod-be-bh:api  |                 "filename": "photo1.jpg",
+20|pre-prod-be-bh:api  |                 "url": "https://files.withpersona.com/photo1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJueXNwcW5taXpkYmtxYTZvM2xiYW5vZ2hjcGd1IiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiMGFkZTNlODktNTQ1OC00MDg0LThkODEtNmJiODY5MjExNzMxIiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJwcm9jZXNzZWQiLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.4ZQRljxj0i28S5TzW5spJc68mWuYOcadKqd8ywM9nY0",
+20|pre-prod-be-bh:api  |                 "byte-size": 179506
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "back-photo": null,
+20|pre-prod-be-bh:api  |               "selfie-photo": {
+20|pre-prod-be-bh:api  |                 "filename": "selfie_photo.jpg",
+20|pre-prod-be-bh:api  |                 "url": "https://files.withpersona.com/selfie_photo.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsMTBoM3F0NHp1cnJ6emxqbGQwb2prc3R2aDRnIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiMjM0YTg2YTQtNzdhYi00NWExLTk4MWQtZTAxYjI2ZWQxYzQ4IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJzZWxmaWVfcGhvdG8iLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.cAzxfEId9tQwYAMLi1Ylv_PMKLrx0Bb1RjWSrE5sos8",
+20|pre-prod-be-bh:api  |                 "byte-size": 179506
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "id-class": "dl",
+20|pre-prod-be-bh:api  |               "name-first": "ALEXANDER J",
+20|pre-prod-be-bh:api  |               "name-middle": null,
+20|pre-prod-be-bh:api  |               "name-last": "SAMPLE",
+20|pre-prod-be-bh:api  |               "name-suffix": null,
+20|pre-prod-be-bh:api  |               "native-name-first": null,
+20|pre-prod-be-bh:api  |               "native-name-middle": null,
+20|pre-prod-be-bh:api  |               "native-name-last": null,
+20|pre-prod-be-bh:api  |               "native-name-title": null,
+20|pre-prod-be-bh:api  |               "birthdate": "1977-07-17",
+20|pre-prod-be-bh:api  |               "address-street-1": "600 CALIFORNIA STREET",
+20|pre-prod-be-bh:api  |               "address-street-2": null,
+20|pre-prod-be-bh:api  |               "address-city": "SAN FRANCISCO",
+20|pre-prod-be-bh:api  |               "address-subdivision": "CA",
+20|pre-prod-be-bh:api  |               "address-postal-code": "94109",
+20|pre-prod-be-bh:api  |               "issuing-authority": "CA",
+20|pre-prod-be-bh:api  |               "issuing-subdivision": "CA",
+20|pre-prod-be-bh:api  |               "nationality": null,
+20|pre-prod-be-bh:api  |               "document-number": null,
+20|pre-prod-be-bh:api  |               "visa-status": null,
+20|pre-prod-be-bh:api  |               "issue-date": "2024-12-20",
+20|pre-prod-be-bh:api  |               "expiration-date": "2030-12-20",
+20|pre-prod-be-bh:api  |               "designations": null,
+20|pre-prod-be-bh:api  |               "birthplace": null,
+20|pre-prod-be-bh:api  |               "height": null,
+20|pre-prod-be-bh:api  |               "sex": "Male",
+20|pre-prod-be-bh:api  |               "endorsements": null,
+20|pre-prod-be-bh:api  |               "restrictions": null,
+20|pre-prod-be-bh:api  |               "vehicle-class": null,
+20|pre-prod-be-bh:api  |               "identification-number": "I1234562"
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "inquiry": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry",
+20|pre-prod-be-bh:api  |                   "id": "inq_HFMHNfAFuCfeTkWppv8GygfxfykA"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "transaction": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "template": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "inquiry-template-version": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template-version",
+20|pre-prod-be-bh:api  |                   "id": "itmplv_49y6sTmKzRRthF6UE3HART943Dbd"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "inquiry-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template",
+20|pre-prod-be-bh:api  |                   "id": "itmpl_A355XaELXkPyR3REyH4vz6x9b4tw"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "document-files": {
+20|pre-prod-be-bh:api  |                 "data": []
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "document/government-id",
+20|pre-prod-be-bh:api  |             "id": "doc_yjst88o8hai5mQppaPgZRM7SEoqg",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "processed",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:26:49.000Z",
+20|pre-prod-be-bh:api  |               "processed-at": "2025-12-20T16:26:51.000Z",
+20|pre-prod-be-bh:api  |               "processed-at-ts": 1766248011,
+20|pre-prod-be-bh:api  |               "front-photo": {
+20|pre-prod-be-bh:api  |                 "filename": "photo1.jpg",
+20|pre-prod-be-bh:api  |                 "url": "https://files.withpersona.com/photo1.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwZnRtdWZ5ZzkwMTBtdGJvZWFucGQwNWtxZHRuIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiNWNjMjc1YjEtNTY1Zi00MGU1LWJjOGUtZDc3ZWE5NDE4NGY4IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJwcm9jZXNzZWQiLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.Oq1lOmaWV3AF8oF_VgP6kUNrax-iJ5p9y_WsOkptU4o",
+20|pre-prod-be-bh:api  |                 "byte-size": 201443
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "back-photo": null,
+20|pre-prod-be-bh:api  |               "selfie-photo": {
+20|pre-prod-be-bh:api  |                 "filename": "selfie_photo.jpg",
+20|pre-prod-be-bh:api  |                 "url": "https://files.withpersona.com/selfie_photo.jpg?access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOHhlempkNnU2ZWV4cnZtaXZtYnEyN2Q1ZWlrIiwiYXVkIjoiZmlsZXMud2l0aHBlcnNvbmEuY29tIiwiaXNzIjoid2l0aHBlcnNvbmEuY29tIiwiaWF0IjoxNzY2MjQ4MDQyLCJuYmYiOjE3NjYyNDgwNDIsImV4cCI6MTc2NjI2OTY0MiwianRpIjoiYmUzNjYyMmUtN2JjOC00ODA2LWEyMmUtY2E3NWQwZDNlOTI1IiwiZ2NzX2J1Y2tldCI6InBlcnNvbmEtd2ViIiwiZmlsZV9lbmNyeXB0ZWQiOnRydWUsImZpbGVfc2FsdCI6ImdvdmVybm1lbnRfaWRfZmlsZXMiLCJmaWxlX2luZm8iOiJzZWxmaWVfcGhvdG8iLCJpc19wdWJsaWNfcGVybWFsaW5rIjpmYWxzZX0.M0pE5cp7MGz5CwTo49t-F2XB6yyuvk2SB__ieElm5uM",
+20|pre-prod-be-bh:api  |                 "byte-size": 201443
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "id-class": "dl",
+20|pre-prod-be-bh:api  |               "name-first": "ALEXANDER J",
+20|pre-prod-be-bh:api  |               "name-middle": null,
+20|pre-prod-be-bh:api  |               "name-last": "SAMPLE",
+20|pre-prod-be-bh:api  |               "name-suffix": null,
+20|pre-prod-be-bh:api  |               "native-name-first": null,
+20|pre-prod-be-bh:api  |               "native-name-middle": null,
+20|pre-prod-be-bh:api  |               "native-name-last": null,
+20|pre-prod-be-bh:api  |               "native-name-title": null,
+20|pre-prod-be-bh:api  |               "birthdate": "1977-07-17",
+20|pre-prod-be-bh:api  |               "address-street-1": "600 CALIFORNIA STREET",
+20|pre-prod-be-bh:api  |               "address-street-2": null,
+20|pre-prod-be-bh:api  |               "address-city": "SAN FRANCISCO",
+20|pre-prod-be-bh:api  |               "address-subdivision": "CA",
+20|pre-prod-be-bh:api  |               "address-postal-code": "94109",
+20|pre-prod-be-bh:api  |               "issuing-authority": "CA",
+20|pre-prod-be-bh:api  |               "issuing-subdivision": "CA",
+20|pre-prod-be-bh:api  |               "nationality": null,
+20|pre-prod-be-bh:api  |               "document-number": null,
+20|pre-prod-be-bh:api  |               "visa-status": null,
+20|pre-prod-be-bh:api  |               "issue-date": "2024-12-20",
+20|pre-prod-be-bh:api  |               "expiration-date": "2030-12-20",
+20|pre-prod-be-bh:api  |               "designations": null,
+20|pre-prod-be-bh:api  |               "birthplace": null,
+20|pre-prod-be-bh:api  |               "height": null,
+20|pre-prod-be-bh:api  |               "sex": "Male",
+20|pre-prod-be-bh:api  |               "endorsements": null,
+20|pre-prod-be-bh:api  |               "restrictions": null,
+20|pre-prod-be-bh:api  |               "vehicle-class": null,
+20|pre-prod-be-bh:api  |               "identification-number": "I1234562"
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "inquiry": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry",
+20|pre-prod-be-bh:api  |                   "id": "inq_HFMHNfAFuCfeTkWppv8GygfxfykA"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "transaction": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "template": {
+20|pre-prod-be-bh:api  |                 "data": null
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "inquiry-template-version": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template-version",
+20|pre-prod-be-bh:api  |                   "id": "itmplv_49y6sTmKzRRthF6UE3HART943Dbd"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "inquiry-template": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry-template",
+20|pre-prod-be-bh:api  |                   "id": "itmpl_A355XaELXkPyR3REyH4vz6x9b4tw"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               },
+20|pre-prod-be-bh:api  |               "document-files": {
+20|pre-prod-be-bh:api  |                 "data": []
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           },
+20|pre-prod-be-bh:api  |           {
+20|pre-prod-be-bh:api  |             "type": "selfie/profile-and-center",
+20|pre-prod-be-bh:api  |             "id": "self_N8ryUYaJGpFsaatwuaHzNvggECTG",
+20|pre-prod-be-bh:api  |             "attributes": {
+20|pre-prod-be-bh:api  |               "status": "processed",
+20|pre-prod-be-bh:api  |               "created-at": "2025-12-20T16:27:18.200Z",
+20|pre-prod-be-bh:api  |               "processed-at": "2025-12-20T16:27:19.000Z"
+20|pre-prod-be-bh:api  |             },
+20|pre-prod-be-bh:api  |             "relationships": {
+20|pre-prod-be-bh:api  |               "inquiry": {
+20|pre-prod-be-bh:api  |                 "data": {
+20|pre-prod-be-bh:api  |                   "type": "inquiry",
+20|pre-prod-be-bh:api  |                   "id": "inq_HFMHNfAFuCfeTkWppv8GygfxfykA"
+20|pre-prod-be-bh:api  |                 }
+20|pre-prod-be-bh:api  |               }
+20|pre-prod-be-bh:api  |             }
+20|pre-prod-be-bh:api  |           }
+20|pre-prod-be-bh:api  |         ]
+20|pre-prod-be-bh:api  |       },
+20|pre-prod-be-bh:api  |       "created-at": "2025-12-20T16:27:21.882Z"
+20|pre-prod-be-bh:api  |     }
+20|pre-prod-be-bh:api  |   }
+20|pre-prod-be-bh:api  | }
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - info - [veriflevels Controller]: Sending Persona webhook to service for processing
+20|pre-prod-be-bh:api  | Persona data - Status: SUCCESS, DocType: 1, Country: undefined
+20|pre-prod-be-bh:api  | Enhanced Persona data - Personal Number: undefined, Expiry: undefined, Address: null
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - info - [veriflevels Service]: Processing Persona webhook - inquiry.undefined
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - info - [veriflevels Service]: Adding Persona request to queue for async processing
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - debug - [Persona Queue] New Persona request received in queue
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - info - [Persona Queue] Adding Persona inquiry inq_HFMHNfAFuCfeTkWppv8GygfxfykA to queue
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - debug - [Persona Queue] Processing Persona request
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - info - [Persona Queue] Processing standard Persona request
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - info - [veriflevels PG Repository]: Sending enhanced Persona request to DB
+20|pre-prod-be-bh:api  | Enhanced Persona data - Personal Number: undefined, Expiry: undefined, Address: null, Doc Type: undefined, Doc Number: undefined
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - info - POST /cr/veriflevels/persona/webhook 200 10.927 ms - 64
+20|pre-prod-be-bh:api  | p_persona_status SUCCESS
+20|pre-prod-be-bh:api  | iso doc country::text <NULL>
+20|pre-prod-be-bh:api  | selfie_path::text persona://selfie/self_N8ryUYaJGpFsaatwuaHzNvggECTG
+20|pre-prod-be-bh:api  | doc_path::text persona://document/doc_yAJ9p6MExUVpyen4Zgs2XmJZz8Jc
+20|pre-prod-be-bh:api  | id_doc_type::text <NULL>
+20|pre-prod-be-bh:api  | doc_number::text <NULL>
+20|pre-prod-be-bh:api  | persona inquiry id::text inq_HFMHNfAFuCfeTkWppv8GygfxfykA
+20|pre-prod-be-bh:api  | persona status::text SUCCESS
+20|pre-prod-be-bh:api  | manual review f
+20|pre-prod-be-bh:api  | [2025-12-20 16:27:23] - info - [Persona Queue] Persona request processed successfully

@@ -1,0 +1,16 @@
+{
+  "name": "silt-data-fetcher",
+  "version": "1.0.0",
+  "description": "Script to fetch and store SILT verification data",
+  "type": "module",
+  "scripts": {
+    "fetch-silt": "node fetch-silt-data.js",
+    "fetch-silt-dry-run": "node fetch-silt-data.js --dry-run"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "pg": "^8.11.3",
+    "ssh2": "^1.15.0",
+    "dotenv": "^16.3.1"
+  }
+}
