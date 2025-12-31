@@ -3,7 +3,6 @@ import veriflevelsController from "./controllers/veriflevels.controller";
 import guard from "../../utils/guard";
 const veriflevelsRouter = Router();
 
-
 veriflevelsRouter.post(
   "/requestWholesalePartner",
   // guard.verifyAdmin("/login"),
@@ -73,11 +72,57 @@ veriflevelsRouter.get(
 veriflevelsRouter.post(
   "/silt/webhook",
   veriflevelsController.levelOneVerfificationSilt
-)
+);
 
 veriflevelsRouter.get(
   "/silt/document-data/:emailUser",
   veriflevelsController.getUserSiltDocumentData
-)
+);
+
+// ========================================
+// PERSONA INTEGRATION ENDPOINTS - PHASE 1
+// ========================================
+
+/**
+ * Create Persona inquiry and get session token
+ * POST /veriflevels/persona/create-inquiry
+ * Body: { email_user: string }
+ * Returns: { inquiryId, sessionToken, status, isNewInquiry }
+ */
+veriflevelsRouter.post(
+  "/persona/create-inquiry",
+  // guard.verifyAdmin("/login"), // Uncomment when ready for production
+  veriflevelsController.createPersonaInquiry
+);
+
+/**
+ * Get Persona inquiry status for a user
+ * GET /veriflevels/persona/inquiry-status/:email_user
+ * Returns: { hasInquiry, inquiryId, status, createdAt, completedAt }
+ */
+veriflevelsRouter.get(
+  "/persona/inquiry-status/:email_user",
+  // guard.verifyAdmin("/login"), // Uncomment when ready for production
+  veriflevelsController.getPersonaInquiryStatus
+);
+
+// ========================================
+// PERSONA INTEGRATION ENDPOINTS - PHASE 2
+// ========================================
+
+/**
+ * Persona webhook endpoint
+ * POST /veriflevels/persona/webhook
+ * Receives Persona inquiry webhooks (inquiry.approved, inquiry.declined, inquiry.marked-for-review)
+ * Processes verification data asynchronously via Bull queue
+ * Maps Persona status to internal status (SUCCESS, ERROR, PENDING)
+ *
+ * Note: This endpoint should NOT be protected by authentication
+ * Persona sends webhooks without authentication - use webhook signature validation in production
+ */
+veriflevelsRouter.post(
+  "/persona/webhook",
+  veriflevelsController.levelOneVerificationPersona
+);
 
 export default veriflevelsRouter;

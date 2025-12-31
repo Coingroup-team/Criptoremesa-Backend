@@ -9,23 +9,24 @@ import veriflevelsRouter from "../modules/veriflevels/veriflevels.routes";
 import beneficiariesRouter from "../modules/beneficiaries/beneficiaries.routes";
 import countriesRouter from "../modules/countries/countries.routes";
 import currenciesRouter from "../modules/currencies/currencies.routes";
-import payMethodRouter from '../modules/payMethods/payMethods.routes';
-import banksRouter from '../modules/banks/banks.routes';
-import allCountriesRouter from '../modules/all_countries/all_countries.routes'
-import chatRouter from '../modules/chat/chat.routes';
-import remittancesRouter from '../modules/remittances/remittances.routes';
-import ratesRouter from '../modules/rates/rates.routes';
-import balancesRouter from '../modules/balances/balances.routes';
-import cryptomilesRouter from '../modules/cryptomiles/cryptomiles.routes';
-import reportsRouter from '../modules/reports/reports.routes';
-import operationRoutesRouter from '../modules/operation_routes/operation_routes.routes';
-import exchangesRouter from '../modules/exchanges/exchanges.routes';
-import walletsRouter from '../modules/wallets/wallets.routes';
-import wholesale_partnersRouter from '../modules/wholesale_partners/wholesale_partners.routes';
-import transbankRouter from '../modules/transbank/transbank.routes';
-import mail from '../utils/mail'
+import payMethodRouter from "../modules/payMethods/payMethods.routes";
+import banksRouter from "../modules/banks/banks.routes";
+import allCountriesRouter from "../modules/all_countries/all_countries.routes";
+import chatRouter from "../modules/chat/chat.routes";
+import remittancesRouter from "../modules/remittances/remittances.routes";
+import ratesRouter from "../modules/rates/rates.routes";
+import balancesRouter from "../modules/balances/balances.routes";
+import cryptomilesRouter from "../modules/cryptomiles/cryptomiles.routes";
+import reportsRouter from "../modules/reports/reports.routes";
+import operationRoutesRouter from "../modules/operation_routes/operation_routes.routes";
+import exchangesRouter from "../modules/exchanges/exchanges.routes";
+import walletsRouter from "../modules/wallets/wallets.routes";
+import wholesale_partnersRouter from "../modules/wholesale_partners/wholesale_partners.routes";
+import transbankRouter from "../modules/transbank/transbank.routes";
+import siltRouter from "../modules/silt/silt.routes";
+import mail from "../utils/mail";
 
-const router = Router();  
+const router = Router();
 
 router.post("/login", authenticationController.login);
 
@@ -64,6 +65,6 @@ router.use("/exchanges", exchangesRouter);
 router.use("/wallets", walletsRouter);
 router.use("/wholesale_partners", wholesale_partnersRouter);
 router.use("/transbank", transbankRouter);
-
+router.use("/silt", siltRouter);
 
 export default router;

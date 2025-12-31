@@ -8,10 +8,12 @@
     "dev:api": "nodemon --signal SIGTERM --exec babel-node src/index.js",
     "dev:rem": "babel-node src/utils/workers/createRemittance.worker.js",
     "dev:silt": "babel-node src/utils/workers/silt.worker.js",
+    "dev:persona": "babel-node src/utils/workers/persona.worker.js",
     "start:api": "babel-node src/index.js",
     "start:rem": "babel-node src/utils/workers/createRemittance.worker.js",
     "start:silt": "babel-node src/utils/workers/silt.worker.js",
-    "start:all": "concurrently \"npm run start:api\" \"npm run start:rem\" \"npm run start:silt\" --names \"API,REM,SILT\" --prefix-colors \"blue,green,yellow\""
+    "start:persona": "babel-node src/utils/workers/persona.worker.js",
+    "start:all": "concurrently \"npm run start:api\" \"npm run start:rem\" \"npm run start:silt\" \"npm run start:persona\" --names \"API,REM,SILT,PERSONA\" --prefix-colors \"blue,green,yellow,magenta\""
   },
   "repository": {
     "type": "git",
