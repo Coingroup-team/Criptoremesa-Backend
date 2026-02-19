@@ -11,39 +11,108 @@ export const getSiltRecords = async (req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const offset = (page - 1) * limit;
     const siltIdFilter = req.query.silt_id || "";
+    const flowFilter = req.query.flow_name || ""; // New flow filter parameter
 
-    // Get total count
+    // Build WHERE clause for flow filtering
+    const flowCondition =
+      flowFilter && flowFilter !== "All Flows"
+        ? `AND flow_name = '${flowFilter}'`
+        : "";
+
+    // Get total count from both tables
     const countQuery = `
-      SELECT COUNT(DISTINCT ulv.silt_id) as total
-      FROM sec_cust.lnk_users_verif_level ulv
-      INNER JOIN sec_cust.ms_sixmap_users u ON u.uuid_user = ulv.uuid_user
-      LEFT JOIN sec_cust.lnk_users_extra_data ued 
-        ON ued.id_user = u.id_user 
-        AND ued.id_item = (SELECT id_item FROM sec_cust.ms_item WHERE name = 'silt_full_json')
-      WHERE ulv.silt_id IS NOT NULL 
-        AND ued.value IS NOT NULL
-        ${siltIdFilter ? `AND ulv.silt_id ILIKE '%${siltIdFilter}%'` : ""}
+      SELECT COUNT(*) as total FROM (
+        SELECT ulv.silt_id as identifier, 'Bithonor' as flow_name
+        FROM sec_cust.lnk_users_verif_level ulv
+        INNER JOIN sec_cust.ms_sixmap_users u ON u.uuid_user = ulv.uuid_user
+        LEFT JOIN sec_cust.lnk_users_extra_data ued 
+          ON ued.id_user = u.id_user 
+          AND ued.id_item = (SELECT id_item FROM sec_cust.ms_item WHERE name = 'silt_full_json')
+        WHERE ulv.silt_id IS NOT NULL 
+          AND ued.value IS NOT NULL
+          ${siltIdFilter ? `AND ulv.silt_id ILIKE '%${siltIdFilter}%'` : ""}
+          ${
+            flowFilter === "Bithonor" ||
+            !flowFilter ||
+            flowFilter === "All Flows"
+              ? ""
+              : "AND 1=0"
+          }
+        
+        UNION ALL
+        
+        SELECT esd.public_id::text as identifier, esd.flow_name
+        FROM sec_cust.lnk_external_silt_data esd
+        WHERE esd.active = TRUE
+          ${
+            siltIdFilter
+              ? `AND esd.public_id::text ILIKE '%${siltIdFilter}%'`
+              : ""
+          }
+          ${
+            flowFilter &&
+            flowFilter !== "All Flows" &&
+            flowFilter !== "Bithonor"
+              ? `AND esd.flow_name = '${flowFilter}'`
+              : ""
+          }
+          ${flowFilter === "Bithonor" ? "AND 1=0" : ""}
+      ) combined
     `;
 
     const countResult = await poolSM.query(countQuery);
     const total = parseInt(countResult.rows[0].total);
 
-    // Get paginated records
+    // Get paginated records from both tables
     const dataQuery = `
-      SELECT 
-        ulv.silt_id,
-        u.email_user,
-        ued.value as silt_data,
-        ulv.date_creation as fetch_date
-      FROM sec_cust.lnk_users_verif_level ulv
-      INNER JOIN sec_cust.ms_sixmap_users u ON u.uuid_user = ulv.uuid_user
-      LEFT JOIN sec_cust.lnk_users_extra_data ued 
-        ON ued.id_user = u.id_user 
-        AND ued.id_item = (SELECT id_item FROM sec_cust.ms_item WHERE name = 'silt_full_json')
-      WHERE ulv.silt_id IS NOT NULL 
-        AND ued.value IS NOT NULL
-        ${siltIdFilter ? `AND ulv.silt_id ILIKE '%${siltIdFilter}%'` : ""}
-      ORDER BY ulv.date_creation DESC
+      SELECT * FROM (
+        SELECT 
+          ulv.silt_id as identifier,
+          'Bithonor' as flow_name,
+          u.email_user,
+          ued.value as silt_data,
+          ulv.date_creation as fetch_date
+        FROM sec_cust.lnk_users_verif_level ulv
+        INNER JOIN sec_cust.ms_sixmap_users u ON u.uuid_user = ulv.uuid_user
+        LEFT JOIN sec_cust.lnk_users_extra_data ued 
+          ON ued.id_user = u.id_user 
+          AND ued.id_item = (SELECT id_item FROM sec_cust.ms_item WHERE name = 'silt_full_json')
+        WHERE ulv.silt_id IS NOT NULL 
+          AND ued.value IS NOT NULL
+          ${siltIdFilter ? `AND ulv.silt_id ILIKE '%${siltIdFilter}%'` : ""}
+          ${
+            flowFilter === "Bithonor" ||
+            !flowFilter ||
+            flowFilter === "All Flows"
+              ? ""
+              : "AND 1=0"
+          }
+        
+        UNION ALL
+        
+        SELECT 
+          esd.public_id::text as identifier,
+          esd.flow_name,
+          NULL as email_user,
+          esd.silt_data::text as silt_data,
+          esd.date_creation as fetch_date
+        FROM sec_cust.lnk_external_silt_data esd
+        WHERE esd.active = TRUE
+          ${
+            siltIdFilter
+              ? `AND esd.public_id::text ILIKE '%${siltIdFilter}%'`
+              : ""
+          }
+          ${
+            flowFilter &&
+            flowFilter !== "All Flows" &&
+            flowFilter !== "Bithonor"
+              ? `AND esd.flow_name = '${flowFilter}'`
+              : ""
+          }
+          ${flowFilter === "Bithonor" ? "AND 1=0" : ""}
+      ) combined
+      ORDER BY fetch_date DESC
       LIMIT $1 OFFSET $2
     `;
 
@@ -76,9 +145,11 @@ export const getSiltById = async (req, res) => {
   try {
     const { silt_id } = req.params;
 
-    const query = `
+    // Try to find in internal table first (Bithonor)
+    const internalQuery = `
       SELECT 
-        ulv.silt_id,
+        ulv.silt_id as identifier,
+        'Bithonor' as flow_name,
         u.email_user,
         u.uuid_user as user_uuid,
         ued.value as silt_data,
@@ -92,7 +163,27 @@ export const getSiltById = async (req, res) => {
         AND ued.value IS NOT NULL
     `;
 
-    const result = await poolSM.query(query, [silt_id]);
+    let result = await poolSM.query(internalQuery, [silt_id]);
+    let isExternal = false;
+
+    // If not found, try external table
+    if (result.rows.length === 0) {
+      const externalQuery = `
+        SELECT 
+          esd.public_id::text as identifier,
+          esd.flow_name,
+          NULL as email_user,
+          NULL as user_uuid,
+          esd.silt_data::text as silt_data,
+          esd.date_creation as fetch_date
+        FROM sec_cust.lnk_external_silt_data esd
+        WHERE esd.public_id::text = $1
+          AND esd.active = TRUE
+      `;
+
+      result = await poolSM.query(externalQuery, [silt_id]);
+      isExternal = true;
+    }
 
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -101,9 +192,11 @@ export const getSiltById = async (req, res) => {
       });
     }
 
-    // Get images from filesystem directory instead of parsing JSON
+    // Get images from filesystem directory
     const record = result.rows[0];
-    const imageDir = `/repo-cr/silt-data/${silt_id}`;
+    const imageDir = isExternal
+      ? `/repo-cr/external-silt-data/${record.flow_name}/${silt_id}`
+      : `/repo-cr/silt-data/${silt_id}`;
     let images = [];
 
     try {
@@ -157,7 +250,22 @@ export const getSiltById = async (req, res) => {
 export const getSiltImage = async (req, res) => {
   try {
     const { silt_id, filename } = req.params;
-    const imagePath = path.join("/repo-cr/silt-data", silt_id, filename);
+    const flow_name = req.query.flow_name; // Optional flow name for external images
+
+    // Determine image path based on whether it's internal or external
+    let imagePath;
+    if (flow_name && flow_name !== "Bithonor") {
+      // External SILT data
+      imagePath = path.join(
+        "/repo-cr/external-silt-data",
+        flow_name,
+        silt_id,
+        filename
+      );
+    } else {
+      // Internal Bithonor data
+      imagePath = path.join("/repo-cr/silt-data", silt_id, filename);
+    }
 
     if (!fs.existsSync(imagePath)) {
       return res.status(404).json({
