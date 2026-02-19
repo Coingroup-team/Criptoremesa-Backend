@@ -17,6 +17,7 @@ const logConst = {
   country: null,
   route: null,
   session: null,
+  client_info: null,
 };
 
 usersController.createNewClient = async (req, res, next) => {
@@ -26,9 +27,10 @@ usersController.createNewClient = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -69,9 +71,10 @@ usersController.approveLevelCero = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -112,9 +115,10 @@ usersController.files = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -169,9 +173,10 @@ usersController.requestLevelOne1stQ = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -226,9 +231,10 @@ usersController.requestLevelOne2ndQ = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -283,9 +289,10 @@ usersController.requestLevelOne3rdQ = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -340,9 +347,10 @@ usersController.requestLevelTwo = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -397,9 +405,10 @@ usersController.forgotPassword = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -440,9 +449,10 @@ usersController.newPassword = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -483,9 +493,10 @@ usersController.sendVerificationCodeByEmail = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -501,13 +512,13 @@ usersController.sendVerificationCodeByEmail = async (req, res, next) => {
 
     let verif = await limitByIpPGRepository.verifyRouteByIp(
       "/users/sendVerificationCodeByEmail",
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (verif === "Requests limit by ip hasnt been reached")
       finalResp = await usersService.sendVerificationCodeByEmail(
         req,
         res,
-        next
+        next,
       );
     else res.status(400).json({ msg: verif });
 
@@ -537,9 +548,10 @@ usersController.sendSMS = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -580,9 +592,10 @@ usersController.sendVerificationCodeByWhatsApp = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -595,7 +608,11 @@ usersController.sendVerificationCodeByWhatsApp = async (req, res, next) => {
     logger.info(`[${context}]: Sending service to send SMS`);
     ObjLog.log(`[${context}]: Sending service to send SMS`);
 
-    let finalResp = await usersService.sendVerificationCodeByWhatsApp(req, res, next);
+    let finalResp = await usersService.sendVerificationCodeByWhatsApp(
+      req,
+      res,
+      next,
+    );
 
     if (finalResp) {
       //logging on DB
@@ -623,9 +640,10 @@ usersController.sendVerificationCodeBySMS = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -641,7 +659,7 @@ usersController.sendVerificationCodeBySMS = async (req, res, next) => {
 
     let verif = await limitByIpPGRepository.verifyRouteByIp(
       "/users/sendVerificationCodeBySMS",
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (verif === "Requests limit by ip hasnt been reached")
       finalResp = await usersService.sendVerificationCodeBySMS(req, res, next);
@@ -673,9 +691,10 @@ usersController.getLevelQuestions = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -730,9 +749,10 @@ usersController.verifyIdentUser = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -773,9 +793,10 @@ usersController.deactivateUser = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -830,9 +851,10 @@ usersController.getReferrals = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -887,9 +909,10 @@ usersController.getReferralsOperations = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -944,9 +967,10 @@ usersController.getReferralsByCountry = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1001,9 +1025,10 @@ usersController.getReferralsByStatus = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1058,9 +1083,10 @@ usersController.ambassadorRequest = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1084,10 +1110,10 @@ usersController.ambassadorRequest = async (req, res, next) => {
     } else {
       // calling service
       logger.info(
-        `[${context}]: Sending service to send ambassador Request questions`
+        `[${context}]: Sending service to send ambassador Request questions`,
       );
       ObjLog.log(
-        `[${context}]: Sending service to send ambassador Request questions`
+        `[${context}]: Sending service to send ambassador Request questions`,
       );
 
       let finalResp = await usersService.ambassadorRequest(req, res, next);
@@ -1119,9 +1145,10 @@ usersController.verifReferrallByCodPub = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1162,9 +1189,10 @@ usersController.insertUserAccount = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1205,9 +1233,10 @@ usersController.getUserAccounts = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1248,9 +1277,10 @@ usersController.deleteUserAccount = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1291,9 +1321,10 @@ usersController.getFileName = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1334,9 +1365,10 @@ usersController.getMigratedInfo = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1377,9 +1409,10 @@ usersController.validateEmail = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1420,9 +1453,10 @@ usersController.validateCode = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1463,9 +1497,10 @@ usersController.editPhone = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1506,9 +1541,10 @@ usersController.editLevelOneInfo = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1549,9 +1585,10 @@ usersController.saveExtraInfoThirdModal = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
+      req.header("Client-Ip"),
     );
     if (resp)
       log.country = resp.country_name
@@ -1568,14 +1605,16 @@ usersController.saveExtraInfoThirdModal = async (req, res, next) => {
     const industry = req.body.industry;
     const range = req.body.salary_range;
 
-    const extraData = await usersService.saveExtraInfoThirdModal(idUser, industry, range);
+    const extraData = await usersService.saveExtraInfoThirdModal(
+      idUser,
+      industry,
+      range,
+    );
 
     res.status(200).json({
       msg: "Extra data saved successfully",
-      extra_data: extraData
+      extra_data: extraData,
     });
-
-
   } catch (error) {
     next(error);
   }
@@ -1586,11 +1625,12 @@ usersController.getFullInfo = async (req, res, next) => {
     // filling log object info
     let log = logConst;
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     log.is_auth = req.isAuthenticated();
     log.params = req.params;
     log.query = req.query;
-  
+
     // calling service
     logger.info(`[${context}]: Getting full info`);
     ObjLog.log(`[${context}]: Getting full info`);
@@ -1600,6 +1640,6 @@ usersController.getFullInfo = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}
+};
 
 export default usersController;
