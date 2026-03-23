@@ -38,16 +38,12 @@ for (const siltId of siltDirs) {
         truncated192Count++;
         truncatedRecords.add(siltId);
         const fileType = file.toLowerCase().endsWith(".pdf") ? "PDF" : "IMAGE";
-        console.log(
-          `❌ TRUNCATED ${fileType} (192 KB): ${siltId}/${file}`
-        );
+        console.log(`❌ TRUNCATED ${fileType} (192 KB): ${siltId}/${file}`);
       } else if (stats.size === TRUNCATED_SIZE_256KB) {
         truncated256Count++;
         truncatedRecords.add(siltId);
         const fileType = file.toLowerCase().endsWith(".pdf") ? "PDF" : "IMAGE";
-        console.log(
-          `❌ TRUNCATED ${fileType} (256 KB): ${siltId}/${file}`
-        );
+        console.log(`❌ TRUNCATED ${fileType} (256 KB): ${siltId}/${file}`);
       }
     }
   }

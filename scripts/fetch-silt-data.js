@@ -14,6 +14,8 @@
 import dotenv from "dotenv";
 import { Pool } from "pg";
 import axios from "axios";
+import https from "https";
+import http from "http";
 import fs from "fs";
 import path from "path";
 import { Client } from "ssh2";
@@ -172,6 +174,51 @@ async function fetchSiltIds() {
 }
 
 /**
+ * Read SILT IDs from a file (one per line)
+ */
+async function fetchSiltIdsFromFile(filePath) {
+  try {
+    const absolutePath = path.isAbsolute(filePath)
+      ? filePath
+      : path.join(__dirname, filePath);
+
+    if (!fs.existsSync(absolutePath)) {
+      throw new Error(`File not found: ${absolutePath}`);
+    }
+
+    const fileContent = fs.readFileSync(absolutePath, "utf8");
+    const siltIds = fileContent
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#")); // Filter empty lines and comments
+
+    log.info(`Read ${siltIds.length} SILT IDs from ${path.basename(filePath)}`);
+
+    // Fetch uuid_user for each SILT ID from database
+    const result = await pool.query(
+      `
+      SELECT DISTINCT silt_id, uuid_user
+      FROM sec_cust.lnk_users_verif_level
+      WHERE silt_id = ANY($1::text[])
+      ORDER BY silt_id
+    `,
+      [siltIds]
+    );
+
+    if (result.rows.length < siltIds.length) {
+      log.warn(
+        `Only found ${result.rows.length} of ${siltIds.length} SILT IDs in database`
+      );
+    }
+
+    return result.rows;
+  } catch (error) {
+    log.error(`Error reading SILT IDs from file: ${error.message}`);
+    throw error;
+  }
+}
+
+/**
  * Fetch SILT data from API with retry logic for different credential pairs
  */
 async function fetchSiltData(siltId) {
@@ -324,59 +371,103 @@ function extractImageUrls(siltData) {
 }
 
 /**
- * Download image or PDF from URL
+ * Download image or PDF from URL using native Node.js https module
+ * This avoids axios buffer size limitations
  */
 async function downloadImage(url, siltId, index) {
-  try {
-    const response = await axios({
-      url,
-      method: "GET",
-      responseType: "stream",
-      timeout: 60000,
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity,
-    });
+  return new Promise((resolve) => {
+    try {
+      const urlObj = new URL(url);
+      const protocol = urlObj.protocol === "https:" ? https : http;
 
-    // Detect file type from Content-Type header
-    const contentType = response.headers["content-type"] || "";
-    const isPdf = contentType.includes("application/pdf");
+      const request = protocol.get(url, { timeout: 60000 }, (response) => {
+        // Handle redirects
+        if (response.statusCode === 301 || response.statusCode === 302) {
+          const redirectUrl = response.headers.location;
+          log.info(`Following redirect to: ${redirectUrl}`);
+          return downloadImage(redirectUrl, siltId, index).then(resolve);
+        }
 
-    // Generate filename from URL or use index
-    const urlObj = new URL(url);
-    const pathParts = urlObj.pathname.split("/");
-    let filename = pathParts[pathParts.length - 1] || `file_${index}`;
+        if (response.statusCode !== 200) {
+          return resolve({
+            success: false,
+            error: `HTTP ${response.statusCode}: ${response.statusMessage}`,
+          });
+        }
 
-    // If filename from URL has no extension, add appropriate one based on content type
-    if (!path.extname(filename)) {
-      filename += isPdf ? ".pdf" : ".jpg";
+        // Detect file type from Content-Type header
+        const contentType = response.headers["content-type"] || "";
+        const isPdf = contentType.includes("application/pdf");
+
+        // Generate filename from URL or use index
+        const pathParts = urlObj.pathname.split("/");
+        let filename = pathParts[pathParts.length - 1] || `file_${index}`;
+
+        // If filename from URL has no extension, add appropriate one based on content type
+        if (!path.extname(filename)) {
+          filename += isPdf ? ".pdf" : ".jpg";
+        }
+
+        // If Content-Type says PDF but filename doesn't end with .pdf, fix it
+        if (isPdf && !filename.toLowerCase().endsWith(".pdf")) {
+          filename = filename.replace(/\.(jpg|jpeg|png|gif)$/i, ".pdf");
+        }
+
+        const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
+
+        const localPath = path.join(
+          LOCAL_TEMP_DIR,
+          `${siltId}_${sanitizedFilename}`
+        );
+
+        const fileStream = fs.createWriteStream(localPath);
+        let downloadedBytes = 0;
+
+        response.on("data", (chunk) => {
+          downloadedBytes += chunk.length;
+        });
+
+        response.pipe(fileStream);
+
+        fileStream.on("finish", () => {
+          fileStream.close();
+          const fileType = isPdf ? "PDF" : "image";
+          const sizeMB = (downloadedBytes / 1024 / 1024).toFixed(2);
+          log.success(
+            `Downloaded ${fileType}: ${sanitizedFilename} (${sizeMB} MB)`
+          );
+          resolve({
+            success: true,
+            localPath,
+            filename: `${siltId}_${sanitizedFilename}`,
+            fileType,
+            size: downloadedBytes,
+          });
+        });
+
+        fileStream.on("error", (error) => {
+          log.error(
+            `Error writing file ${sanitizedFilename}: ${error.message}`
+          );
+          resolve({ success: false, error: error.message });
+        });
+      });
+
+      request.on("error", (error) => {
+        log.error(`Error downloading from ${url}: ${error.message}`);
+        resolve({ success: false, error: error.message });
+      });
+
+      request.on("timeout", () => {
+        request.destroy();
+        log.error(`Timeout downloading from ${url}`);
+        resolve({ success: false, error: "Request timeout" });
+      });
+    } catch (error) {
+      log.error(`Error downloading file from ${url}: ${error.message}`);
+      resolve({ success: false, error: error.message });
     }
-
-    // If Content-Type says PDF but filename doesn't end with .pdf, fix it
-    if (isPdf && !filename.toLowerCase().endsWith(".pdf")) {
-      filename = filename.replace(/\.(jpg|jpeg|png|gif)$/i, ".pdf");
-    }
-
-    const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
-
-    const localPath = path.join(
-      LOCAL_TEMP_DIR,
-      `${siltId}_${sanitizedFilename}`
-    );
-
-    await streamPipeline(response.data, fs.createWriteStream(localPath));
-
-    const fileType = isPdf ? "PDF" : "image";
-    log.success(`Downloaded ${fileType}: ${sanitizedFilename}`);
-    return {
-      success: true,
-      localPath,
-      filename: `${siltId}_${sanitizedFilename}`,
-      fileType,
-    };
-  } catch (error) {
-    log.error(`Error downloading file from ${url}: ${error.message}`);
-    return { success: false, error: error.message };
-  }
+  });
 }
 
 /**
@@ -408,7 +499,7 @@ async function uploadFilesToRemote(localFiles, siltId) {
 
           log.info(`Created remote directory: ${remoteDir}`);
 
-          // Upload each file
+          // Upload each file using fastPut for better large file handling
           const uploadPromises = localFiles.map((file) => {
             return new Promise((resolveUpload, rejectUpload) => {
               const remotePath = `${remoteDir}/${file.filename}`;
@@ -416,22 +507,24 @@ async function uploadFilesToRemote(localFiles, siltId) {
               conn.sftp((err, sftp) => {
                 if (err) return rejectUpload(err);
 
-                const readStream = fs.createReadStream(file.localPath);
-                const writeStream = sftp.createWriteStream(remotePath);
+                // Use fastPut instead of streaming for better large file support
+                sftp.fastPut(file.localPath, remotePath, (err) => {
+                  if (err) return rejectUpload(err);
 
-                writeStream.on("close", () => {
                   log.success(`Uploaded: ${file.filename} -> ${remotePath}`);
 
                   // Delete local file after successful upload
-                  fs.unlinkSync(file.localPath);
+                  try {
+                    fs.unlinkSync(file.localPath);
+                  } catch (unlinkErr) {
+                    // File might have been deleted already, ignore error
+                    log.warn(
+                      `Could not delete local file: ${unlinkErr.message}`
+                    );
+                  }
 
                   resolveUpload({ filename: file.filename, remotePath });
                 });
-
-                writeStream.on("error", rejectUpload);
-                readStream.on("error", rejectUpload);
-
-                readStream.pipe(writeStream);
               });
             });
           });
@@ -468,14 +561,20 @@ async function uploadFilesToRemote(localFiles, siltId) {
 /**
  * Process a single SILT ID
  */
-async function processSiltId(siltId, uuidUser, itemId) {
+async function processSiltId(siltId, uuidUser, itemId, force = false) {
   try {
-    // Check if already processed
-    const exists = await checkExistingSiltData(uuidUser, itemId);
-    if (exists) {
-      log.warn(`SILT data already exists for ${siltId}, skipping...`);
-      stats.skipped++;
-      return;
+    // Check if already processed (skip check if force flag is set)
+    if (!force) {
+      const exists = await checkExistingSiltData(uuidUser, itemId);
+      if (exists) {
+        log.warn(`SILT data already exists for ${siltId}, skipping...`);
+        stats.skipped++;
+        return;
+      }
+    } else {
+      log.info(
+        `Force mode: Re-processing ${siltId} even though data may exist...`
+      );
     }
 
     // Fetch SILT data from API
@@ -541,38 +640,120 @@ async function main() {
     // Ensure database item exists
     const itemId = await ensureSiltJsonItem();
 
-    // Fetch all SILT IDs
-    const siltRecords = await fetchSiltIds();
+    // Check for command-line arguments
+    const args = process.argv.slice(2);
+    const retryFromIndex = args.indexOf("--retry-from");
+    const retryFailedIndex = args.indexOf("--retry-failed");
+    const forceMode = args.includes("--force");
+
+    if (forceMode) {
+      log.info(
+        "🔄 Force mode enabled: Will re-download files even if data exists"
+      );
+    }
+
+    let siltRecords;
+
+    if (retryFromIndex !== -1 && args[retryFromIndex + 1]) {
+      // Read SILT IDs from file
+      const filePath = args[retryFromIndex + 1];
+      log.info(`Reading SILT IDs from: ${filePath}`);
+      siltRecords = await fetchSiltIdsFromFile(filePath);
+    } else if (retryFailedIndex !== -1) {
+      // Fetch only failed SILT IDs (those without silt_full_json data)
+      log.info("Fetching only failed/missing SILT records...");
+      const result = await pool.query(`
+        SELECT DISTINCT v.silt_id, v.uuid_user
+        FROM sec_cust.lnk_users_verif_level v
+        LEFT JOIN sec_cust.lnk_users_extra_data e 
+          ON v.uuid_user = e.uuid_user 
+          AND e.id_item = (SELECT id_item FROM sec_cust.ms_item WHERE name = 'silt_full_json')
+        WHERE v.silt_id IS NOT NULL
+        AND v.silt_id != ''
+        AND e.id IS NULL
+        ORDER BY v.silt_id
+      `);
+      siltRecords = result.rows;
+      log.info(`Found ${siltRecords.length} SILT IDs without data`);
+    } else {
+      // Fetch all SILT IDs (default behavior)
+      siltRecords = await fetchSiltIds();
+    }
+
     stats.total = siltRecords.length;
 
     if (siltRecords.length === 0) {
-      log.warn("No SILT IDs found in database");
+      log.warn("No SILT IDs found to process");
       return;
     }
 
-    log.info(`Starting to process ${siltRecords.length} SILT IDs...\n`);
+    // Checkpoint file to track processed IDs
+    const checkpointFile = path.join(__dirname, "silt-fetch-checkpoint.json");
+    let processedIds = new Set();
+
+    // Load checkpoint if it exists
+    if (fs.existsSync(checkpointFile)) {
+      try {
+        const checkpoint = JSON.parse(fs.readFileSync(checkpointFile, "utf8"));
+        processedIds = new Set(checkpoint.processedIds || []);
+        log.info(
+          `📋 Resuming from checkpoint: ${processedIds.size} IDs already processed`
+        );
+      } catch (err) {
+        log.warn(`Could not load checkpoint: ${err.message}`);
+      }
+    }
+
+    // Filter out already processed IDs
+    const remainingRecords = siltRecords.filter(
+      (r) => !processedIds.has(r.silt_id)
+    );
+
+    if (remainingRecords.length === 0) {
+      log.info("✅ All records already processed! Checkpoint complete.");
+      return;
+    }
+
+    log.info(
+      `Starting to process ${remainingRecords.length} SILT IDs (${processedIds.size} already done)...\n`
+    );
 
     const progressFile = path.join(__dirname, "silt-fetch-progress.txt");
 
     // Process each SILT ID sequentially (to avoid overwhelming API/SSH)
-    for (let i = 0; i < siltRecords.length; i++) {
-      const record = siltRecords[i];
-      console.log(`\n--- Processing ${i + 1}/${siltRecords.length} ---`);
-      await processSiltId(record.silt_id, record.uuid_user, itemId);
+    for (let i = 0; i < remainingRecords.length; i++) {
+      const record = remainingRecords[i];
+      console.log(
+        `\n--- Processing ${i + 1}/${remainingRecords.length} (${
+          processedIds.size + i + 1
+        }/${siltRecords.length} total) ---`
+      );
+      await processSiltId(record.silt_id, record.uuid_user, itemId, forceMode);
+
+      // Save checkpoint after each successful processing
+      processedIds.add(record.silt_id);
+      fs.writeFileSync(
+        checkpointFile,
+        JSON.stringify({
+          processedIds: Array.from(processedIds),
+          lastUpdate: new Date().toISOString(),
+        })
+      );
 
       // Update progress file every 10 records
-      if ((i + 1) % 10 === 0 || i === siltRecords.length - 1) {
+      if ((i + 1) % 10 === 0 || i === remainingRecords.length - 1) {
         const currentTime = new Date();
         const elapsed = Math.round((currentTime - startTime) / 1000);
-        const progressPercent = (((i + 1) / siltRecords.length) * 100).toFixed(
-          1
-        );
+        const progressPercent = (
+          (processedIds.size / siltRecords.length) *
+          100
+        ).toFixed(1);
         const progressText = [
           "=================================================",
           "     SILT FETCH - PROGRESS UPDATE",
           "=================================================",
           `Last Updated: ${currentTime.toISOString()}`,
-          `Progress: ${i + 1}/${siltRecords.length} (${progressPercent}%)`,
+          `Progress: ${processedIds.size}/${siltRecords.length} (${progressPercent}%)`,
           `Elapsed Time: ${Math.floor(elapsed / 3600)}h ${Math.floor(
             (elapsed % 3600) / 60
           )}m ${elapsed % 60}s`,
@@ -587,9 +768,15 @@ async function main() {
       }
 
       // Small delay between requests to be nice to the API
-      if (i < siltRecords.length - 1) {
+      if (i < remainingRecords.length - 1) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
+    }
+
+    // Delete checkpoint file after successful completion
+    if (fs.existsSync(checkpointFile)) {
+      fs.unlinkSync(checkpointFile);
+      log.info("✅ Checkpoint file deleted - all records processed");
     }
 
     // Calculate execution time

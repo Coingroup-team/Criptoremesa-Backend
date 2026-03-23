@@ -23,7 +23,7 @@ authenticationPGRepository.loginFailed = async (email_user) => {
     ObjLog.log(`[${context}]: Checking login failed in db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
     const resp = await poolSM.query(
-      `SELECT * FROM sp_login_failed('${email_user}')`
+      `SELECT * FROM sp_login_failed('${email_user}')`,
     );
     return resp.rows[0].sp_login_failed;
   } catch (error) {
@@ -37,7 +37,7 @@ authenticationPGRepository.getUserByUsername = async (username) => {
     ObjLog.log(`[${context}]: Getting user by username from db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
     const resp = await poolSM.query(
-      `SELECT * FROM get_user_by_username('${username}')`
+      `SELECT * FROM get_user_by_username('${username}')`,
     );
     return resp.rows[0];
   } catch (error) {
@@ -51,7 +51,7 @@ authenticationPGRepository.getUserByEmail = async (email) => {
     ObjLog.log(`[${context}]: Getting user by email from db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
     const resp = await poolSM.query(
-      `SELECT * FROM get_all_users_by_email('${email}')`
+      `SELECT * FROM get_all_users_by_email('${email}')`,
     );
     // console.log(resp.rows[0]);
     return resp.rows[0];
@@ -100,7 +100,7 @@ authenticationPGRepository.insert = async (body) => {
             LIMIT 1
         )
     );
-      `
+      `,
     );
   } catch (error) {
     throw error;
@@ -123,7 +123,7 @@ authenticationPGRepository.updateIPSession = async (sessionID, ip) => {
 
     let resp = await poolSM.query(
       `SELECT *
-    FROM get_ip_info('${ip}')`
+    FROM get_ip_info('${ip}')`,
     );
 
     if (resp.rows[0] === undefined) {
@@ -156,7 +156,7 @@ authenticationPGRepository.updateIPSession = async (sessionID, ip) => {
         false
       )
       `,
-      [colsArray, valsArray, sessionID]
+      [colsArray, valsArray, sessionID],
     );
     return resp.rows;
   } catch (error) {
@@ -182,7 +182,7 @@ authenticationPGRepository.updateIPUser = async (uuid_user, ip, sessionID) => {
 
     let resp = await poolSM.query(
       `SELECT *
-    FROM get_ip_info('${ip}')`
+    FROM get_ip_info('${ip}')`,
     );
 
     // logger.silly(`pais de la ip ${resp.rows[0].country_name}`);
@@ -207,7 +207,9 @@ authenticationPGRepository.updateIPUser = async (uuid_user, ip, sessionID) => {
     valsArray.push(ip);
     valsArray.push(ipInfo.city_name);
 
-    let userResp = await poolSM.query(`SELECT * FROM sec_cust.get_user_by_id('${uuid_user}')`);
+    let userResp = await poolSM.query(
+      `SELECT * FROM sec_cust.get_user_by_id('${uuid_user}')`,
+    );
 
     let fullUser = userResp.rows[0];
 
@@ -223,7 +225,7 @@ authenticationPGRepository.updateIPUser = async (uuid_user, ip, sessionID) => {
         ($3)
       )
       `,
-      [colsArray, valsArray, fullUser.email_user]
+      [colsArray, valsArray, fullUser.email_user],
     );
     //UPDATE SESSION
 
@@ -292,7 +294,7 @@ authenticationPGRepository.updateIPUser = async (uuid_user, ip, sessionID) => {
         true
       )
       `,
-      [colsArray, valsArray, sessionID]
+      [colsArray, valsArray, sessionID],
     );
     return resp.rows;
   } catch (error) {
@@ -303,11 +305,30 @@ authenticationPGRepository.updateIPUser = async (uuid_user, ip, sessionID) => {
 authenticationPGRepository.insertLogMsg = async (log) => {
   try {
     await poolSM.query("SET SCHEMA 'sec_cust'");
-    if (typeof log.response === 'string' || typeof log.response === 'number' || typeof log.response === 'boolean')
-      log.response = {response: log.response}
-    else
-      log.response = Object.assign({},log.response)
-    let resp = await poolSM.query(`SELECT * FROM SP_LOGS_ACTIONS_OBJ_INSERT(
+    if (
+      typeof log.response === "string" ||
+      typeof log.response === "number" ||
+      typeof log.response === "boolean"
+    )
+      log.response = { response: log.response };
+    else log.response = Object.assign({}, log.response);
+
+    // Parse client_info if it's a string
+    let clientInfo = null;
+    if (log.client_info) {
+      try {
+        clientInfo =
+          typeof log.client_info === "string"
+            ? JSON.parse(log.client_info)
+            : log.client_info;
+      } catch (e) {
+        logger.warn(`[${context}]: Failed to parse client_info: ${e.message}`);
+        clientInfo = null;
+      }
+    }
+
+    let resp = await poolSM.query(
+      `SELECT * FROM SP_LOGS_ACTIONS_OBJ_INSERT(
                                                                             ${log.is_auth},
                                                                             ${log.success},
                                                                             ${log.failed},
@@ -319,15 +340,17 @@ authenticationPGRepository.insertLogMsg = async (log) => {
                                                                             ($3),
                                                                             ${log.status ? log.status : null},
                                                                             ($4),
-                                                                            ${log.session ? `'${log.session}'` : null}
+                                                                            ${log.session ? `'${log.session}'` : null},
+                                                                            ($5)
                                                                         )`,
-                                                                        [
-                                                                          log.params ? log.params : null,
-                                                                          log.query ? log.query : null,
-                                                                          log.body ? log.body : null,
-                                                                          log.response ? log.response : null,
-                                                                        ]                                                                        
-                                  );
+      [
+        log.params ? log.params : null,
+        log.query ? log.query : null,
+        log.body ? log.body : null,
+        log.response ? log.response : null,
+        clientInfo,
+      ],
+    );
 
     return resp.rows[0];
   } catch (error) {
@@ -343,7 +366,7 @@ authenticationPGRepository.getIpInfo = async (ip) => {
 
     let resp = await poolSM.query(
       `SELECT *
-        FROM get_ip_info('${ip ? ip : '0.0.0.0'}')`
+        FROM get_ip_info('${ip ? ip : "0.0.0.0"}')`,
     );
     if (resp.rows[0] === undefined) return "Probably localhost";
     return resp.rows[0];
@@ -369,7 +392,9 @@ authenticationPGRepository.getSessionById = async (id) => {
     logger.info(`[${context}]: Getting session from db`);
     ObjLog.log(`[${context}]: Getting session from db`);
     await poolSM.query("SET SCHEMA 'basics'");
-    const resp = await poolCR.query(`SELECT * FROM basics.get_session_by_id('${id}')`);
+    const resp = await poolCR.query(
+      `SELECT * FROM basics.get_session_by_id('${id}')`,
+    );
     return resp.rows[0];
   } catch (error) {
     throw error;
@@ -381,7 +406,9 @@ authenticationPGRepository.userHasAnActiveSession = async (email) => {
     logger.info(`[${context}]: Checking session on db`);
     ObjLog.log(`[${context}]: Checking session on db`);
     await poolSM.query("SET SCHEMA 'basics'");
-    const resp = await poolCR.query(`SELECT * FROM basics.user_has_an_active_session('${email}')`);
+    const resp = await poolCR.query(
+      `SELECT * FROM basics.user_has_an_active_session('${email}')`,
+    );
     return resp.rows[0].user_has_an_active_session;
   } catch (error) {
     throw error;

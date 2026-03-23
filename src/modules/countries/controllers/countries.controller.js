@@ -16,6 +16,7 @@ const logConst = {
   country: null,
   route: null,
   session: null,
+  client_info: null,
 };
 
 countriesController.getDestinyCountries = async (req, res, next) => {
@@ -25,6 +26,7 @@ countriesController.getDestinyCountries = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -86,6 +88,7 @@ countriesController.countriesCurrencies = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")

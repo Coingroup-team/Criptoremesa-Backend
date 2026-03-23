@@ -17,6 +17,7 @@ const logConst = {
   country: null,
   route: null,
   session: null,
+  client_info: null,
 };
 
 remittancesController.notificationTypes = async (req, res, next) => {
@@ -26,6 +27,7 @@ remittancesController.notificationTypes = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -87,6 +89,7 @@ remittancesController.getRemittances = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     /*const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -148,6 +151,7 @@ remittancesController.limitationsByCodPub = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -207,6 +211,7 @@ remittancesController.startRemittance = async (req, res, next) => {
     // filling log object info
     let log = logConst;
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     log.is_auth = req.isAuthenticated();
     log.params = req.params;
@@ -254,6 +259,7 @@ remittancesController.webpayRemittance = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -311,6 +317,7 @@ remittancesController.startPreRemittance = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -372,6 +379,7 @@ remittancesController.getPreRemittanceByUser = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -433,6 +441,7 @@ remittancesController.cancelPreRemittance = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -494,6 +503,7 @@ remittancesController.lastRemittances = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -555,6 +565,7 @@ remittancesController.getMinAmounts = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -612,6 +623,7 @@ remittancesController.tumipayRemittance = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -667,6 +679,7 @@ remittancesController.getInfoByOriginAndDestination = async (req, res, next) => 
     // filling log object info
     let log = logConst;
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     log.is_auth = req.isAuthenticated();
     log.params = req.params;
@@ -707,6 +720,7 @@ remittancesController.clearCacheInfo = async (req, res, next) => {
     // filling log object info
     let log = logConst;
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     log.is_auth = req.isAuthenticated();
     log.params = req.params;

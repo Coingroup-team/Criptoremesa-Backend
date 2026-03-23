@@ -17,6 +17,7 @@ const logConst = {
   country: null,
   route: null,
   session: null,
+  client_info: null,
 };
 
 veriflevelsController.requestWholesalePartner = async (req, res, next) => {
@@ -26,6 +27,7 @@ veriflevelsController.requestWholesalePartner = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -87,6 +89,7 @@ veriflevelsController.notifications = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -144,6 +147,7 @@ veriflevelsController.deactivateNotification = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -205,6 +209,7 @@ veriflevelsController.readNotification = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -266,6 +271,7 @@ veriflevelsController.getWholesalePartnerRequestsCountries = async (
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -328,6 +334,7 @@ veriflevelsController.getMigrationStatus = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -393,6 +400,7 @@ veriflevelsController.getDisapprovedVerifLevelsRequirements = async (
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -463,6 +471,7 @@ veriflevelsController.getDisapprovedWholesalePartnersRequirements = async (
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -529,6 +538,7 @@ veriflevelsController.getLimitationsByCountry = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -590,6 +600,7 @@ veriflevelsController.getVerifLevelRequirements = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -661,6 +672,7 @@ veriflevelsController.getWholesalePartnerRequestsRequirementsByEmail = async (
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -961,6 +973,7 @@ veriflevelsController.createPersonaInquiry = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -1011,6 +1024,7 @@ veriflevelsController.getPersonaInquiryStatus = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")

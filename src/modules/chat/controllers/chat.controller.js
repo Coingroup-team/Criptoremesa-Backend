@@ -16,6 +16,7 @@ const logConst = {
   country: null,
   route: null,
   session: null,
+  client_info: null,
 };
 
 chatController.sendMessage = async (req, res, next) => {
@@ -25,6 +26,7 @@ chatController.sendMessage = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -82,6 +84,7 @@ chatController.getMessages = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")

@@ -16,6 +16,7 @@ const logConst = {
   country: null,
   route: null,
   session: null,
+  client_info: null,
 };
 
 reportsController.reportAmountSentByBenef = async (req, res, next) => {
@@ -25,6 +26,7 @@ reportsController.reportAmountSentByBenef = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -86,6 +88,7 @@ reportsController.reportAmountSentByCurrency = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -147,6 +150,7 @@ reportsController.reportTopFrequentBeneficiaries = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -208,6 +212,7 @@ reportsController.reportTopFrequentDestinations = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -269,6 +274,7 @@ reportsController.reportRemittancesByStatus = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -332,6 +338,7 @@ reportsController.reportRemittancesByMonth = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -393,6 +400,7 @@ reportsController.reportRatesTakenAdvantageOf = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")
@@ -454,6 +462,7 @@ reportsController.wholesalePartnersReports = async (req, res, next) => {
 
     log.is_auth = req.isAuthenticated();
     log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
     log.route = req.method + " " + req.originalUrl;
     const resp = await authenticationPGRepository.getIpInfo(
       req.header("Client-Ip")

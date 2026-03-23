@@ -9,13 +9,13 @@ const SILT_DATA_DIR = "/repo-cr/silt-data";
 
 // Common truncation sizes (powers of 2 and common buffer sizes)
 const SUSPICIOUS_SIZES = [
-  65536,    // 64 KB
-  131072,   // 128 KB
-  196608,   // 192 KB
-  262144,   // 256 KB
-  524288,   // 512 KB
-  1048576,  // 1 MB
-  2097152,  // 2 MB
+  65536, // 64 KB
+  131072, // 128 KB
+  196608, // 192 KB
+  262144, // 256 KB
+  524288, // 512 KB
+  1048576, // 1 MB
+  2097152, // 2 MB
 ];
 
 console.log("🔍 Comprehensive SILT File Validation\n");
@@ -61,7 +61,9 @@ for (const siltId of siltDirs) {
     if (SUSPICIOUS_SIZES.includes(stats.size)) {
       issues.truncatedAtBufferSize.add(siltId);
       console.log(
-        `⚠️  SUSPICIOUS SIZE: ${siltId}/${file} (${stats.size} bytes = ${stats.size / 1024} KB)`
+        `⚠️  SUSPICIOUS SIZE: ${siltId}/${file} (${stats.size} bytes = ${
+          stats.size / 1024
+        } KB)`
       );
     }
 
@@ -75,7 +77,9 @@ for (const siltId of siltDirs) {
     // Check 3: PDF content saved as JPG
     if (isPDFContent && !isClaimedPDF) {
       issues.pdfAsJpg.add(siltId);
-      console.log(`🔴 PDF AS JPG: ${siltId}/${file} (PDF content with .jpg extension)`);
+      console.log(
+        `🔴 PDF AS JPG: ${siltId}/${file} (PDF content with .jpg extension)`
+      );
     }
 
     // Check 2: Corrupted PDF (missing EOF marker)
@@ -102,7 +106,9 @@ for (const siltId of siltDirs) {
       // Exclude video frames which can be small
       issues.tooSmall.add(siltId);
       console.log(
-        `⚠️  SMALL FILE: ${siltId}/${file} (${stats.size} bytes = ${(stats.size / 1024).toFixed(2)} KB)`
+        `⚠️  SMALL FILE: ${siltId}/${file} (${stats.size} bytes = ${(
+          stats.size / 1024
+        ).toFixed(2)} KB)`
       );
     }
   }
@@ -124,8 +130,12 @@ console.log(`  - PDFs: ${totalPDFs}`);
 console.log(`  - Images: ${totalImages}`);
 console.log("");
 console.log("🔴 ISSUES FOUND:");
-console.log(`  - Truncated at buffer sizes: ${issues.truncatedAtBufferSize.size} SILT IDs`);
-console.log(`  - Corrupted PDFs (no EOF): ${issues.corruptedPDFs.size} SILT IDs`);
+console.log(
+  `  - Truncated at buffer sizes: ${issues.truncatedAtBufferSize.size} SILT IDs`
+);
+console.log(
+  `  - Corrupted PDFs (no EOF): ${issues.corruptedPDFs.size} SILT IDs`
+);
 console.log(`  - PDFs disguised as JPG: ${issues.pdfAsJpg.size} SILT IDs`);
 console.log(`  - Suspiciously small files: ${issues.tooSmall.size} SILT IDs`);
 console.log("");
@@ -139,7 +149,9 @@ if (allAffectedIds.size > 0) {
   fs.writeFileSync(outputFile, Array.from(allAffectedIds).sort().join("\n"));
   console.log(`✅ Saved affected SILT IDs to: ${outputFile}\n`);
   console.log("To fix these records, run:");
-  console.log("node fetch-silt-data.js --retry-from corrupted-silt-ids.txt --force\n");
+  console.log(
+    "node fetch-silt-data.js --retry-from corrupted-silt-ids.txt --force\n"
+  );
 } else {
   console.log("🎉 All files appear to be valid!\n");
 }
