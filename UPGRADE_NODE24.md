@@ -1,11 +1,13 @@
 # Actualización a Node.js 24 - Criptoremesa-Backend
 
-**Fecha:** 30 de Marzo, 2026
-**Estado:** ✅ Completado Exitosamente
+**Fecha:** 30 de Marzo, 2026 (actualizado 9 de Abril, 2026)
+**Estado:** ✅ Completado Exitosamente — Desplegado en Producción
 
 ## Resumen General
 
 Se actualizaron las dependencias de `Criptoremesa-Backend` para garantizar compatibilidad con Node.js 24, reduciendo las vulnerabilidades de seguridad de **41 a 3**. Las 3 restantes están confinadas al axios interno de `google-spreadsheet@3.x` y `transbank-sdk@4.x`, y requieren migraciones de código para resolverse.
+
+Durante el despliegue en producción se resolvieron dos problemas adicionales: conflicto de peer dependencies de Express 5 con `express-promise-router` y conexión SSL requerida por PostgreSQL en el servidor.
 
 ## Situación Inicial
 
@@ -40,7 +42,7 @@ Se actualizaron las dependencias de `Criptoremesa-Backend` para garantizar compa
 | **twilio**                      | ^3.73.1             | ^5.13.1       | Fix jsonwebtoken forgeable tokens (GHSA-8cf7, GHSA-hjrf, GHSA-qwph) |
 | **winston**                     | ^3.3.3              | ^3.19.0       | Actualización menor                                                 |
 | **ws**                          | ^8.12.1             | ^8.20.0       | Fix DoS con múltiples headers HTTP (GHSA-3h5v)                      |
-| **@bull-board/express**         | ^6.7.10             | ^6.20.6       | Fix path-to-regexp ReDoS + qs Prototype Pollution                   |
+| **@bull-board/express**         | ^6.7.10             | ^5.23.0       | Fix path-to-regexp ReDoS + qs PP; downgrade por compat Express 4    |
 
 ### Dependencias de Desarrollo Actualizadas
 
@@ -78,8 +80,8 @@ Los siguientes paquetes tienen versiones más recientes disponibles pero se mant
 | **connect-flash**          | ^0.1.1              | sin cambios    | Sin versión mayor nueva                                           |
 | **date-and-time**          | ^1.0.0              | 4.4.0          | Cambio de versión mayor                                           |
 | **dotenv**                 | ^8.2.0              | 17.3.1         | Cambio de versión mayor — funcional en versión actual             |
-| **express**                | ^5.0.0-alpha.8      | 5.2.1          | En beta/alpha de v5 — actualizar a 5.2.1 estable                  |
-| **express-promise-router** | ^4.0.1              | 4.1.1          | Conflicto peer con express@5                                      |
+| **express**                | ^5.0.0-alpha.8      | ^4.21.2        | ✅ Downgrade a v4 — Express 5.x rompe peer dep de express-promise-router |
+| **express-promise-router** | ^4.0.1              | 4.1.1          | ✅ Compatible con Express 4 — peer dep `express@^4.0.0`           |
 | **express-queue**          | ^0.0.13             | sin cambios    | Sin versión mayor nueva                                           |
 | **file-type** _(removido)_ | ^17.1.1 → eliminado | 22.0.0         | ✅ Eliminado en Fase 3 — código muerto, nunca importado en `src/` |
 | **formidable**             | ^1.2.2              | 3.5.4          | Cambio de versión mayor — API completamente distinta              |
@@ -183,13 +185,37 @@ Todas las vulnerabilidades restantes provienen del axios interno que bundlean `g
 
 > **Nota sobre `--ignore-scripts`:** `@sentry/profiling-node` compila un módulo nativo de C++ usando `node-gyp`, que requiere Visual Studio Build Tools instalado en Windows. Al no estar disponible en el entorno de desarrollo actual, se usó `--ignore-scripts` para omitir ese paso. El servidor continúa funcionando: el profiling de Sentry se degrada gracefully si el módulo nativo no está compilado.
 
+### Fase 4 — Fix Conexión SSL a PostgreSQL (Despliegue)
+
+10. Al desplegar en producción, `pg_hba.conf` requiere conexión SSL. Se agregó configuración SSL condicional a ambos pools de conexión:
+    ```js
+    const sslConfig = env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
+    ```
+11. Se aplicó `ssl: sslConfig` a `connectionDbSixmap` y `connectionDbCriptoremesa` en `src/db/pg.connection.js`
+12. Se agregó `PG_DB_SSL: process.env.PG_DB_SSL` al mapeo de variables en `src/utils/enviroment.js`
+13. En el servidor se configuró `PG_DB_SSL=true` en el `.env`
+
+### Fase 5 — Downgrade Express 5 → 4 y @bull-board/express 6 → 5 (Despliegue)
+
+14. Al ejecutar `npm install` en producción, `express@^5.0.0-alpha.8` resolvía a **Express 5.2.1** (versión estable publicada), generando conflicto de peer deps:
+    - `express-promise-router@4.1.1` requiere `express@^4.0.0`
+    - `@bull-board/express@6.20.6` requiere `express@^5.x`
+    - 24 archivos de rutas usan `express-promise-router` — paquete crítico
+15. Se verificó que **ningún patrón de Express 5** es usado en el código (req.params, middleware, error handler — todo compatible con Express 4)
+16. Se bajó `express` de `^5.0.0-alpha.8` a `^4.21.2`
+17. Se bajó `@bull-board/express` de `^6.20.6` a `^5.23.0` (misma API: `ExpressAdapter`, `BullAdapter`, `createBullBoard` — la v5 trae `express@^4.19.2` como dependencia directa)
+18. `npm install` — **0 conflictos de peer deps**, 643 paquetes auditados
+19. Commit `ff518ea` — push a `origin/node24`
+
+> **Nota sobre Express 5 vs 4:** Express 5 estable (5.2.1) fue publicado mientras el proyecto usaba `^5.0.0-alpha.8`. El mismo problema se presentó y resolvió en `backend-sixm`. La decisión de mantener Express 4 es correcta mientras `express-promise-router` no publique una versión compatible con Express 5.
+
 ## Stack Tecnológico Actual
 
 ### Dependencias de Producción Principales
 
 | Paquete                 | Versión      | Estado                                      |
 | ----------------------- | ------------ | ------------------------------------------- |
-| **express**             | 5.0.0-beta.1 | ⚠️ Beta — actualizar a 5.2.1 estable        |
+| **express**             | 4.21.2       | ✅ Estable — downgrade desde v5 alpha por compat con express-promise-router |
 | **pg**                  | 8.20.0       | ✅ Actualizado                              |
 | **axios**               | 1.14.0       | ✅ Actualizado — sin vulnerabilidades       |
 | **socket.io**           | 4.8.3        | ✅ Actualizado                              |
@@ -199,7 +225,7 @@ Todas las vulnerabilidades restantes provienen del axios interno que bundlean `g
 | **twilio**              | 5.13.1       | ✅ Actualizado — fix JWT vulnerabilities    |
 | **request-ip**          | 3.3.0        | ✅ Actualizado — fix ReDoS                  |
 | **ws**                  | 8.20.0       | ✅ Actualizado — fix DoS                    |
-| **@bull-board/express** | 6.20.6       | ✅ Actualizado — fix path-to-regexp + qs    |
+| **@bull-board/express** | 5.23.0       | ✅ Downgrade por compat Express 4 — misma API |
 | **redis**               | 3.1.2        | ⚠️ Estable en v3 — migrar a v5 en el futuro |
 | **bull**                | 4.16.5       | ⚠️ Paquete archivado — migrar a `bullmq`    |
 | **google-spreadsheet**  | 3.3.0        | 🔴 Vulnerable (axios interno) — migrar a v5 |
@@ -245,9 +271,10 @@ Todas las vulnerabilidades restantes provienen del axios interno que bundlean `g
    - Impacto: todos los archivos que usan `redisClient.get/set/del/publish`
    - Beneficio: soporte a largo plazo, mejor rendimiento
 
-5. **Migrar `express` de beta a estable**
-   - Express 5 ya tiene versión estable (5.2.1)
-   - Actualizar desde `^5.0.0-beta.1` a `^5.2.1`
+5. **Migrar a Express 5 (futuro)**
+   - Express 5 estable (5.2.1) ya disponible, pero `express-promise-router@4.x` requiere `express@^4`
+   - Opciones: (a) esperar `express-promise-router@5` compatible, o (b) reemplazar por `express.Router()` nativo en las 24 rutas
+   - `@bull-board/express` v6+ ya requiere Express 5 — se podrá subir junto con Express
 
 6. **Migrar `bull` a `bullmq`**
    - `bull` está archivado y sin mantenimiento activo
@@ -288,7 +315,7 @@ npm outdated             # Verificar paquetes desactualizados
 ---
 
 **Actualizado Por:** Anthony Rodriguez
-**Última actualización:** 30 de Marzo, 2026 — Fase 3 (auditoría y limpieza de código muerto)
+**Última actualización:** 9 de Abril, 2026 — Fase 5 (fix despliegue: Express 4 + SSL PostgreSQL)
 **Estado de Revisión:** Verificado con Node.js v24.14.1
-**Vulnerabilidades activas:** 3 altas (`google-spreadsheet` y `transbank-sdk` — axios interno)
-**Listo para Despliegue:** ✅ Sí (con conocimiento de las 3 vulns residuales en dependencias de terceros)
+**Vulnerabilidades activas:** 5 (3 altas por axios interno en `google-spreadsheet` y `transbank-sdk`, resto menores)
+**Listo para Despliegue:** ✅ Desplegado en producción — servidor `ip-10-0-3-62`
