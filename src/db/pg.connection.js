@@ -3,6 +3,8 @@ import { logger } from "../utils/logger";
 import ObjLog from "../utils/ObjLog";
 import { env } from "../utils/enviroment";
 
+const sslConfig = env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
+
 const connectionDbSixmap = {
   user: env.PG_DB_SM_USER,
   host: env.PG_DB_SM_HOST,
@@ -11,6 +13,7 @@ const connectionDbSixmap = {
   port: env.PG_DB_SM_PORT,
   max: 8,
   keepAlive: true,
+  ssl: sslConfig,
   //   currentSchema: "sec_sixmap_users",
 };
 
@@ -22,6 +25,7 @@ const connectionDbCriptoremesa = {
   port: env.PG_DB_CR_PORT,
   max: 8,
   keepAlive: true,
+  ssl: sslConfig,
   //   currentSchema: "sec_sixmap_users",
 };
 

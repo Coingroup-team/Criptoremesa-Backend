@@ -37,6 +37,8 @@ export const env = {
   PERSONA_API_URL: process.env.PERSONA_API_URL,
   PERSONA_API_KEY: process.env.PERSONA_API_KEY,
   PERSONA_INQUIRY_TEMPLATE_ID: process.env.PERSONA_INQUIRY_TEMPLATE_ID,
+  // PostgreSQL SSL
+  PG_DB_SSL: process.env.PG_DB_SSL,
 };
 
 export const ENVIROMENTS = {
