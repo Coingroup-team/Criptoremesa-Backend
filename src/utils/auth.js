@@ -5,7 +5,7 @@ import ObjLog from "./ObjLog";
 import authenticationPGRepository from "../modules/authentication/repositories/authentication.pg.repository";
 import bcrypt from "bcryptjs";
 import { notifyChanges } from "../modules/sockets/sockets.coordinator";
-import fs from 'fs';
+import fs from "fs";
 
 const LocalStrategy = PassportLocal.Strategy;
 const context = "Authentication module";
@@ -41,7 +41,7 @@ async function resp(user) {
     let countryResp = null;
     let sess = null;
 
-    const resp = null /*await authenticationPGRepository.getIpInfo(
+    const resp = null; /*await authenticationPGRepository.getIpInfo(
       expressObj.req.header("Client-Ip")
     );*/
     if (resp) countryResp = resp.country_name;
@@ -56,9 +56,9 @@ async function resp(user) {
       log.failed = true;
       log.status = 401;
       log.response = {
-                        message: 
-                        "There is already an active session with this user. Try again in a few minutes.",
-                      };
+        message:
+          "There is already an active session with this user. Try again in a few minutes.",
+      };
       //await authenticationPGRepository.insertLogMsg(log);
 
       expressObj.res.status(401).send({
@@ -72,18 +72,18 @@ async function resp(user) {
       let response;
       if (user) {
         response = await authenticationPGRepository.loginFailed(
-          user.email_user
+          user.email_user,
         );
       }
       log.success = false;
       log.failed = true;
       log.status = 400;
       log.response = {
-                        user_blocked: user.user_blocked,
-                        id_verif_level: user.id_verif_level,
-                        verif_level_apb: user.verif_level_apb,
-                        atcPhone: response ? response.atcPhone : "NA",
-                      };
+        user_blocked: user.user_blocked,
+        id_verif_level: user.id_verif_level,
+        verif_level_apb: user.verif_level_apb,
+        atcPhone: response ? response.atcPhone : "NA",
+      };
       //await authenticationPGRepository.insertLogMsg(log);
 
       expressObj.res.status(400).send({
@@ -97,10 +97,10 @@ async function resp(user) {
       log.failed = false;
       log.status = 200;
       log.response = {
-                        isAuthenticated: expressObj.isAuthenticated,
-                        user,
-                        captchaSuccess: true,
-                      };
+        isAuthenticated: expressObj.isAuthenticated,
+        user,
+        captchaSuccess: true,
+      };
       //await authenticationPGRepository.insertLogMsg(log);
 
       expressObj.res.status(200).send({
@@ -144,13 +144,15 @@ passport.use(
         //ObjLog.log(`[${context}]: Checking user`);
 
         // if (guard.getUsernameField() === "email")
-        user = await authenticationPGRepository.getUserByEmail(email.toLowerCase());
+        user = await authenticationPGRepository.getUserByEmail(
+          email.toLowerCase(),
+        );
 
         // console.log('USER OBTENIDO🔴:',user)
 
         if (user && user.wholesale_partner_info) {
           user.wholesale_partner_info.logo = fs.readFileSync(
-            user.wholesale_partner_info.logo
+            user.wholesale_partner_info.logo,
           );
           // console.log('USER QUE SE MANDA EN EL LOGIN: ',user)
         }
@@ -214,8 +216,8 @@ passport.use(
               } else {
                 expressObj.isAuthenticated = true;
 
-                // Don't call resp() here — session must be saved first
-                // resp() will be called in the authenticate callback after req.login + session.save
+                await resp(user);
+
                 return done(null, user);
               }
             }
@@ -238,8 +240,8 @@ passport.use(
       } catch (error) {
         throw error;
       }
-    }
-  )
+    },
+  ),
 );
 
 passport.serializeUser(function (user, done) {
@@ -271,14 +273,15 @@ export default {
       log.is_auth = req.isAuthenticated();
       log.ip = req.header("Client-Ip");
       log.route = req.method + " " + req.originalUrl;
-      const resp = {};/*await authenticationPGRepository.getIpInfo(
+      const resp = {}; /*await authenticationPGRepository.getIpInfo(
         req.header("Client-Ip")
       );*/
       if (resp)
         log.country = resp.country_name
           ? resp.country_name
           : "Probably Localhost";
-      if (await authenticationPGRepository.getSessionById(req.sessionID)) // si cambiamos de postgres a redis lo de las sesiones, esto se puede optimizar
+      if (await authenticationPGRepository.getSessionById(req.sessionID))
+        // si cambiamos de postgres a redis lo de las sesiones, esto se puede optimizar
         log.session = req.sessionID;
 
       log.params = req.params;
@@ -289,54 +292,50 @@ export default {
         if (err) {
           return expressObj.next(err);
         }
-
-        // Successful authentication — save session BEFORE sending response
-        if (expressObj.isAuthenticated && user) {
-          req.login(user, function (loginErr) {
-            if (loginErr) {
-              return expressObj.next(loginErr);
-            }
-            req.session.save(function (saveErr) {
-              if (saveErr) {
-                return expressObj.next(saveErr);
-              }
-              console.log('req.sessionID: ', req.sessionID);
-              resp(user);
-            });
-          });
-          return;
-        }
-
-        // Blocked, expired, or active session — already handled in LocalStrategy via resp()
-        if (blockedOrNotVerified || expressObj.userActiveSession) {
-          return;
-        }
-
-        // Failed login (wrong password or user not found)
         let response = null;
-        if (globalUser) {
-          response = await authenticationPGRepository.loginFailed(
-            globalUser.email_user
-          );
-        }
-        log.success = true;
-        log.failed = false;
-        log.status = 200;
-        log.response = {
-                        isAuthenticated: false,
-                        loginAttempts: response ? response.login_attempts : "NA",
-                        atcPhone: response ? response.atcPhone : "NA",
-                        userExists: expressObj.userExists,
-                        captchaSuccess: true,
-                      };
+        if (
+          !blockedOrNotVerified &&
+          !expressObj.isAuthenticated &&
+          !expressObj.userActiveSession
+        ) {
+          if (globalUser) {
+            response = await authenticationPGRepository.loginFailed(
+              globalUser.email_user,
+            );
+          }
+          log.success = true;
+          log.failed = false;
+          log.status = 200;
+          log.response = {
+            isAuthenticated: false,
+            loginAttempts: response ? response.login_attempts : "NA",
+            atcPhone: response ? response.atcPhone : "NA",
+            userExists: expressObj.userExists,
+            captchaSuccess: true,
+          };
+          //await authenticationPGRepository.insertLogMsg(log); Comentado para optimizar
 
-        res.json({
-          isAuthenticated: false,
-          loginAttempts: response ? response.login_attempts : "NA",
-          atcPhone: response ? response.atcPhone : "NA",
-          userExists: expressObj.userExists,
-          captchaSuccess: true,
+          res.json({
+            isAuthenticated: false,
+            loginAttempts: response ? response.login_attempts : "NA",
+            atcPhone: response ? response.atcPhone : "NA",
+            userExists: expressObj.userExists,
+            captchaSuccess: true,
+          });
+          expressObj.next();
+          req.logIn(user, function (err) {
+            if (err) {
+              return next(err);
+            }
+          });
+        }
+        expressObj.next();
+        req.login(user, function (err) {
+          if (err) {
+            return next(err);
+          }
         });
+        console.log("req.sessionID: ", req.sessionID);
       })(req, res, next);
     } catch (error) {
       expressObj.next(error);
@@ -344,13 +343,15 @@ export default {
   },
   logout: async (req, res, next) => {
     try {
-      console.log('req.isAuthenticated(): ',req.isAuthenticated())
-      console.log('req.sessionID: ',req.sessionID)
-      console.log('req.session.destroy(): ',req.session)
+      console.log("req.isAuthenticated(): ", req.isAuthenticated());
+      console.log("req.sessionID: ", req.sessionID);
+      console.log("req.session.destroy(): ", req.session);
 
       log.is_auth = req.isAuthenticated();
       req.session.destroy();
-      await authenticationPGRepository.userHasAnActiveSession(req.params.email_user);
+      await authenticationPGRepository.userHasAnActiveSession(
+        req.params.email_user,
+      );
       log.success = true;
       log.failed = false;
       log.status = 200;
