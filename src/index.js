@@ -25,7 +25,7 @@ if (isLocal) {
         requestCert: true,
         rejectUnauthorized: false,
       },
-      app
+      app,
     );
     logger.info("HTTPS server configured with local self-signed certs");
   } catch (error) {
@@ -36,9 +36,12 @@ if (isLocal) {
 } else if (useHttps) {
   // Production/Dev with SSL certificates
   try {
-    const sslKeyPath = process.env.SSL_KEY_PATH || "/etc/ssl/certs/zero-ssl/private.key";
-    const sslCertPath = process.env.SSL_CERT_PATH || "/etc/ssl/certs/zero-ssl/certificate.crt";
-    const sslCaPath = process.env.SSL_CA_PATH || "/etc/ssl/certs/zero-ssl/ssl-bundle.crt";
+    const sslKeyPath =
+      process.env.SSL_KEY_PATH || "/etc/ssl/certs/zero-ssl/private.key";
+    const sslCertPath =
+      process.env.SSL_CERT_PATH || "/etc/ssl/certs/zero-ssl/certificate.crt";
+    const sslCaPath =
+      process.env.SSL_CA_PATH || "/etc/ssl/certs/zero-ssl/ssl-bundle.crt";
 
     server = https.createServer(
       {
@@ -48,9 +51,11 @@ if (isLocal) {
         requestCert: true,
         rejectUnauthorized: false,
       },
-      app
+      app,
     );
-    logger.info(`HTTPS server configured for environment: ${process.env.ENVIROMENT}`);
+    logger.info(
+      `HTTPS server configured for environment: ${process.env.ENVIROMENT}`,
+    );
   } catch (error) {
     logger.error(`Failed to load SSL certificates: ${error.message}`);
     logger.info("Falling back to HTTP server");
@@ -59,7 +64,9 @@ if (isLocal) {
 } else {
   // No HTTPS — plain HTTP (e.g. behind a load balancer/reverse proxy)
   server = require("http").createServer(app);
-  logger.info(`HTTP server configured for environment: ${process.env.ENVIROMENT}`);
+  logger.info(
+    `HTTP server configured for environment: ${process.env.ENVIROMENT}`,
+  );
 }
 
 server.listen(app.get("port"), "0.0.0.0", () => {

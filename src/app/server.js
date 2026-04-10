@@ -69,13 +69,13 @@ app.use(
       "https://app.bithonor.com",
       "https://app.bithonor.es",
       "https://appsecure.bithonor.es",
-      "http://localhost:3000"
+      "http://localhost:3000",
     ],
     methods: "GET,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
     optionsSuccessStatus: 204,
     credentials: true,
-  })
+  }),
 );
 app.use(helmet());
 app.set("trust proxy", 1);
@@ -92,8 +92,9 @@ app.use(
     cookie: {
       expires: 900000,
       secure: true,
+      sameSite: "none",
     }, // 1 day (1000 ms / sec * 60 sec /1 min * 60 min /1 h * 24 h/1 day)
-  })
+  }),
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -206,7 +207,7 @@ app.use(async function (err, req, res, next) {
   log.status = 500;
 
   const resp = await authenticationPGRepository.getIpInfo(
-    req.header("Client-Ip")
+    req.header("Client-Ip"),
   );
   if (resp)
     log.country = resp.country_name ? resp.country_name : "Probably Localhost";

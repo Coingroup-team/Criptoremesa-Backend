@@ -214,8 +214,8 @@ passport.use(
               } else {
                 expressObj.isAuthenticated = true;
 
-                await resp(user);
-
+                // Don't call resp() here — session must be saved first
+                // resp() will be called in the authenticate callback after req.login + session.save
                 return done(null, user);
               }
             }
@@ -289,50 +289,54 @@ export default {
         if (err) {
           return expressObj.next(err);
         }
-        let response = null;
-        if (
-          !blockedOrNotVerified &&
-          !expressObj.isAuthenticated &&
-          !expressObj.userActiveSession
-        ) {
-          if (globalUser) {
-            response = await authenticationPGRepository.loginFailed(
-              globalUser.email_user
-            );
-          }
-          log.success = true;
-          log.failed = false;
-          log.status = 200;
-          log.response = {
-                          isAuthenticated: false,
-                          loginAttempts: response ? response.login_attempts : "NA",
-                          atcPhone: response ? response.atcPhone : "NA",
-                          userExists: expressObj.userExists,
-                          captchaSuccess: true,
-                        };
-          //await authenticationPGRepository.insertLogMsg(log); Comentado para optimizar
 
-          res.json({
-            isAuthenticated: false,
-            loginAttempts: response ? response.login_attempts : "NA",
-            atcPhone: response ? response.atcPhone : "NA",
-            userExists: expressObj.userExists,
-            captchaSuccess: true,
-          });
-          expressObj.next();
-          req.logIn(user, function (err) {
-            if (err) {
-              return next(err);
+        // Successful authentication — save session BEFORE sending response
+        if (expressObj.isAuthenticated && user) {
+          req.login(user, function (loginErr) {
+            if (loginErr) {
+              return expressObj.next(loginErr);
             }
+            req.session.save(function (saveErr) {
+              if (saveErr) {
+                return expressObj.next(saveErr);
+              }
+              console.log('req.sessionID: ', req.sessionID);
+              resp(user);
+            });
           });
+          return;
         }
-        expressObj.next();
-        req.login(user, function (err) {
-          if (err) {
-            return next(err);
-          }
+
+        // Blocked, expired, or active session — already handled in LocalStrategy via resp()
+        if (blockedOrNotVerified || expressObj.userActiveSession) {
+          return;
+        }
+
+        // Failed login (wrong password or user not found)
+        let response = null;
+        if (globalUser) {
+          response = await authenticationPGRepository.loginFailed(
+            globalUser.email_user
+          );
+        }
+        log.success = true;
+        log.failed = false;
+        log.status = 200;
+        log.response = {
+                        isAuthenticated: false,
+                        loginAttempts: response ? response.login_attempts : "NA",
+                        atcPhone: response ? response.atcPhone : "NA",
+                        userExists: expressObj.userExists,
+                        captchaSuccess: true,
+                      };
+
+        res.json({
+          isAuthenticated: false,
+          loginAttempts: response ? response.login_attempts : "NA",
+          atcPhone: response ? response.atcPhone : "NA",
+          userExists: expressObj.userExists,
+          captchaSuccess: true,
         });
-        console.log('req.sessionID: ',req.sessionID)
       })(req, res, next);
     } catch (error) {
       expressObj.next(error);

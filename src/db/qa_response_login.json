@@ -1,0 +1,753 @@
+{
+    "isAuthenticated": true,
+    "user": {
+        "id_uuid": "1ab3cb17-593e-46f6-89fc-7e996f375e02",
+        "id_user": "116098",
+        "first_name": "QA",
+        "second_name": "",
+        "last_name": "MX",
+        "second_last_name": "",
+        "username": null,
+        "email_user": "bithonor.2023+testmx1@gmail.com",
+        "password": "$2a$10$rqD6dPYIxCLzbsrUdjvbuO4kHq3ZgBn50a2H06zHZifUKGIcTnU.a",
+        "last_session_reg": null,
+        "last_ip_reg": null,
+        "last_ip_city_reg": null,
+        "last_id_log_reg": null,
+        "date_last_conn": "2025-10-21T21:31:21.660Z",
+        "gender": null,
+        "date_birth": null,
+        "ident_doc_number": null,
+        "main_phone": "2221234567",
+        "second_phone": null,
+        "delegated_phone": null,
+        "resid_city": null,
+        "user_active": true,
+        "user_blocked": false,
+        "uuid_profile": "33cb078b-20ea-457f-959f-8b5b2edf696d",
+        "id_service": 1,
+        "id_services_utype": 1,
+        "id_ident_doc_type": null,
+        "id_resid_country": 100000,
+        "id_nationality_country": null,
+        "name_profile": "Cliente",
+        "name_service": "CRIPTOREMESA",
+        "name_services_utype": "Cliente Común",
+        "name_ident_doc_type": null,
+        "name_resid_country": "Mexico",
+        "name_nationality_country": null,
+        "address": null,
+        "cust_cr_cod_pub": "557CR46099",
+        "cod_rank": "Bronce",
+        "referral_node": "",
+        "main_sn_platf": null,
+        "user_main_sn_platf": null,
+        "date_legacy_reg": "2025-10-21T21:31:21.660Z",
+        "id_verif_level": 0,
+        "verif_level_apb": true,
+        "state_name": null,
+        "iso_code_resid_country": "MX",
+        "iso_code_nationality_country": null,
+        "wallets": {
+            "USDT": null,
+            "BTC": null
+        },
+        "wholesale_partner_info": null,
+        "ok_legal_terms": true,
+        "truthful_information": null,
+        "lawful_funds": null,
+        "main_phone_code": "+52",
+        "main_phone_full": "+522221234567",
+        "doc_type_name_country": null,
+        "id_migrated": null,
+        "country_exception": null,
+        "phone_exception": null,
+        "limit_exception": null,
+        "multi_currency_exception": null,
+        "completed_information_migrated": null,
+        "extra_info": {
+            "third_modal": {
+                "category": "Tercer Modal",
+                "items": []
+            }
+        },
+        "last_remittances": null,
+        "pre_remittances": {
+            "date": null,
+            "active": null,
+            "was_expired": null,
+            "pre_remittance": null,
+            "date_last_shown": null,
+            "id_pre_remittance": null
+        },
+        "current_rate": null,
+        "frequent_beneficiaries": null,
+        "notifications": [
+            {
+                "msg": "¡Bienvenido! Verifica tu usuario y empieza a disfrutar del servicio 💸",
+                "type": "notification",
+                "active": true,
+                "is_read": false,
+                "email_user": "bithonor.2023+testmx1@gmail.com",
+                "date_creation": 1761082281.660236,
+                "date_last_modif": 1761082281.660236,
+                "id_notification": 121479,
+                "notification_date": 1761082281.660236,
+                "id_global_notification": 1
+            }
+        ],
+        "limits": {
+            "limits": [
+                {
+                    "def": "                       5.000,00 MXNMXN por semana /                        5.000,00 MXNMXN mensual",
+                    "ident_name": "MAX_REM_AMOUNT",
+                    "is_allowed": null,
+                    "local_amount": 5000,
+                    "id_limitation": 1,
+                    "local_amount_2": 20000,
+                    "id_verification": 0,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": "Máximo 1 beneficiario (en el mismo pais destino)",
+                    "ident_name": "DEST_BENEF",
+                    "is_allowed": null,
+                    "local_amount": null,
+                    "id_limitation": 2,
+                    "local_amount_2": null,
+                    "id_verification": 0,
+                    "beneficiaries_num": 1,
+                    "destiny_countries": []
+                },
+                {
+                    "def": null,
+                    "ident_name": "VALID_OWN_NAT_TRANSF",
+                    "is_allowed": false,
+                    "local_amount": null,
+                    "id_limitation": 3,
+                    "local_amount_2": null,
+                    "id_verification": 0,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": null,
+                    "ident_name": "VALID_OWN_EXT_TRANSF",
+                    "is_allowed": false,
+                    "local_amount": null,
+                    "id_limitation": 4,
+                    "local_amount_2": null,
+                    "id_verification": 0,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": null,
+                    "ident_name": "DEST_COUNTRIES",
+                    "is_allowed": null,
+                    "local_amount": null,
+                    "id_limitation": 7,
+                    "local_amount_2": null,
+                    "id_verification": 0,
+                    "beneficiaries_num": null,
+                    "destiny_countries": [
+                        {
+                            "id_country": 100000,
+                            "viewing_name": "Mexico"
+                        },
+                        {
+                            "id_country": 1,
+                            "viewing_name": "Venezuela"
+                        },
+                        {
+                            "id_country": 2,
+                            "viewing_name": "Colombia"
+                        },
+                        {
+                            "id_country": 3,
+                            "viewing_name": "Perú"
+                        },
+                        {
+                            "id_country": 4,
+                            "viewing_name": "Chile"
+                        },
+                        {
+                            "id_country": 5,
+                            "viewing_name": "Argentina"
+                        },
+                        {
+                            "id_country": 6,
+                            "viewing_name": "Brasil"
+                        },
+                        {
+                            "id_country": 7,
+                            "viewing_name": "Rep. Dom."
+                        },
+                        {
+                            "id_country": 9,
+                            "viewing_name": "España"
+                        }
+                    ]
+                }
+            ],
+            "currency": "MXN",
+            "total_acum": 0,
+            "weekly_acum": 0,
+            "monthly_acum": 0
+        },
+        "limits_by_country": {
+            "name_limitations": [
+                {
+                    "name": "Monto Máximo (semanal/mensual)",
+                    "id_limitation": 1
+                },
+                {
+                    "name": "Número de beneficiarios por operación",
+                    "id_limitation": 2
+                },
+                {
+                    "name": "Transferencia desde cuentas bancarias nacionales",
+                    "id_limitation": 3
+                },
+                {
+                    "name": "Países de destino disponibles",
+                    "id_limitation": 7
+                }
+            ],
+            "limitations": [
+                {
+                    "def": "                       5.000,00 MXNMXN por semana /                        5.000,00 MXNMXN mensual",
+                    "is_allowed": null,
+                    "local_amount": 5000,
+                    "id_limitation": 1,
+                    "local_amount_2": 20000,
+                    "id_verification": 0,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": "                      10.000,00 MXNMXN por semana /                       10.000,00 MXNMXN mensual",
+                    "is_allowed": null,
+                    "local_amount": 10000,
+                    "id_limitation": 1,
+                    "local_amount_2": 40000,
+                    "id_verification": 1,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": "                      15.000,00 MXNMXN por semana /                       15.000,00 MXNMXN mensual",
+                    "is_allowed": null,
+                    "local_amount": 15000,
+                    "id_limitation": 1,
+                    "local_amount_2": 60000,
+                    "id_verification": 2,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": "Máximo 1 beneficiario (en el mismo pais destino)",
+                    "is_allowed": null,
+                    "local_amount": null,
+                    "id_limitation": 2,
+                    "local_amount_2": null,
+                    "id_verification": 0,
+                    "beneficiaries_num": 1,
+                    "destiny_countries": []
+                },
+                {
+                    "def": "Máximo 2 beneficiarios (en el mismo pais destino)",
+                    "is_allowed": null,
+                    "local_amount": null,
+                    "id_limitation": 2,
+                    "local_amount_2": null,
+                    "id_verification": 1,
+                    "beneficiaries_num": 2,
+                    "destiny_countries": []
+                },
+                {
+                    "def": "Máximo 3 beneficiarios (en el mismo pais destino)",
+                    "is_allowed": null,
+                    "local_amount": null,
+                    "id_limitation": 2,
+                    "local_amount_2": null,
+                    "id_verification": 2,
+                    "beneficiaries_num": 3,
+                    "destiny_countries": []
+                },
+                {
+                    "def": null,
+                    "is_allowed": false,
+                    "local_amount": null,
+                    "id_limitation": 3,
+                    "local_amount_2": null,
+                    "id_verification": 0,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": null,
+                    "is_allowed": true,
+                    "local_amount": null,
+                    "id_limitation": 3,
+                    "local_amount_2": null,
+                    "id_verification": 1,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": null,
+                    "is_allowed": true,
+                    "local_amount": null,
+                    "id_limitation": 3,
+                    "local_amount_2": null,
+                    "id_verification": 2,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": null,
+                    "is_allowed": false,
+                    "local_amount": null,
+                    "id_limitation": 4,
+                    "local_amount_2": null,
+                    "id_verification": 0,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": null,
+                    "is_allowed": false,
+                    "local_amount": null,
+                    "id_limitation": 4,
+                    "local_amount_2": null,
+                    "id_verification": 1,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": null,
+                    "is_allowed": true,
+                    "local_amount": null,
+                    "id_limitation": 4,
+                    "local_amount_2": null,
+                    "id_verification": 2,
+                    "beneficiaries_num": null,
+                    "destiny_countries": []
+                },
+                {
+                    "def": null,
+                    "is_allowed": null,
+                    "local_amount": null,
+                    "id_limitation": 7,
+                    "local_amount_2": null,
+                    "id_verification": 0,
+                    "beneficiaries_num": null,
+                    "destiny_countries": [
+                        {
+                            "id_country": 100000,
+                            "name_country": "Mexico",
+                            "viewing_name": "Mexico",
+                            "country_iso_code": "MX"
+                        },
+                        {
+                            "id_country": 1,
+                            "name_country": "Venezuela",
+                            "viewing_name": "Venezuela",
+                            "country_iso_code": "VE"
+                        },
+                        {
+                            "id_country": 2,
+                            "name_country": "Colombia",
+                            "viewing_name": "Colombia",
+                            "country_iso_code": "CO"
+                        },
+                        {
+                            "id_country": 3,
+                            "name_country": "Peru",
+                            "viewing_name": "Perú",
+                            "country_iso_code": "PE"
+                        },
+                        {
+                            "id_country": 4,
+                            "name_country": "Chile",
+                            "viewing_name": "Chile",
+                            "country_iso_code": "CL"
+                        },
+                        {
+                            "id_country": 5,
+                            "name_country": "Argentina",
+                            "viewing_name": "Argentina",
+                            "country_iso_code": "AR"
+                        },
+                        {
+                            "id_country": 6,
+                            "name_country": "Brazil",
+                            "viewing_name": "Brasil",
+                            "country_iso_code": "BR"
+                        },
+                        {
+                            "id_country": 7,
+                            "name_country": "Dominican Republic",
+                            "viewing_name": "Rep. Dom.",
+                            "country_iso_code": "DO"
+                        },
+                        {
+                            "id_country": 9,
+                            "name_country": "Spain",
+                            "viewing_name": "España",
+                            "country_iso_code": "ES"
+                        }
+                    ]
+                },
+                {
+                    "def": null,
+                    "is_allowed": null,
+                    "local_amount": null,
+                    "id_limitation": 7,
+                    "local_amount_2": null,
+                    "id_verification": 1,
+                    "beneficiaries_num": null,
+                    "destiny_countries": [
+                        {
+                            "id_country": 100000,
+                            "name_country": "Mexico",
+                            "viewing_name": "Mexico",
+                            "country_iso_code": "MX"
+                        },
+                        {
+                            "id_country": 1,
+                            "name_country": "Venezuela",
+                            "viewing_name": "Venezuela",
+                            "country_iso_code": "VE"
+                        },
+                        {
+                            "id_country": 2,
+                            "name_country": "Colombia",
+                            "viewing_name": "Colombia",
+                            "country_iso_code": "CO"
+                        },
+                        {
+                            "id_country": 3,
+                            "name_country": "Peru",
+                            "viewing_name": "Perú",
+                            "country_iso_code": "PE"
+                        },
+                        {
+                            "id_country": 4,
+                            "name_country": "Chile",
+                            "viewing_name": "Chile",
+                            "country_iso_code": "CL"
+                        },
+                        {
+                            "id_country": 5,
+                            "name_country": "Argentina",
+                            "viewing_name": "Argentina",
+                            "country_iso_code": "AR"
+                        },
+                        {
+                            "id_country": 6,
+                            "name_country": "Brazil",
+                            "viewing_name": "Brasil",
+                            "country_iso_code": "BR"
+                        },
+                        {
+                            "id_country": 7,
+                            "name_country": "Dominican Republic",
+                            "viewing_name": "Rep. Dom.",
+                            "country_iso_code": "DO"
+                        },
+                        {
+                            "id_country": 9,
+                            "name_country": "Spain",
+                            "viewing_name": "España",
+                            "country_iso_code": "ES"
+                        }
+                    ]
+                },
+                {
+                    "def": null,
+                    "is_allowed": null,
+                    "local_amount": null,
+                    "id_limitation": 7,
+                    "local_amount_2": null,
+                    "id_verification": 2,
+                    "beneficiaries_num": null,
+                    "destiny_countries": [
+                        {
+                            "id_country": 100000,
+                            "name_country": "Mexico",
+                            "viewing_name": "Mexico",
+                            "country_iso_code": "MX"
+                        },
+                        {
+                            "id_country": 1,
+                            "name_country": "Venezuela",
+                            "viewing_name": "Venezuela",
+                            "country_iso_code": "VE"
+                        },
+                        {
+                            "id_country": 2,
+                            "name_country": "Colombia",
+                            "viewing_name": "Colombia",
+                            "country_iso_code": "CO"
+                        },
+                        {
+                            "id_country": 3,
+                            "name_country": "Peru",
+                            "viewing_name": "Perú",
+                            "country_iso_code": "PE"
+                        },
+                        {
+                            "id_country": 4,
+                            "name_country": "Chile",
+                            "viewing_name": "Chile",
+                            "country_iso_code": "CL"
+                        },
+                        {
+                            "id_country": 5,
+                            "name_country": "Argentina",
+                            "viewing_name": "Argentina",
+                            "country_iso_code": "AR"
+                        },
+                        {
+                            "id_country": 6,
+                            "name_country": "Brazil",
+                            "viewing_name": "Brasil",
+                            "country_iso_code": "BR"
+                        },
+                        {
+                            "id_country": 7,
+                            "name_country": "Dominican Republic",
+                            "viewing_name": "Rep. Dom.",
+                            "country_iso_code": "DO"
+                        },
+                        {
+                            "id_country": 9,
+                            "name_country": "Spain",
+                            "viewing_name": "España",
+                            "country_iso_code": "ES"
+                        }
+                    ]
+                }
+            ]
+        },
+        "full_rates": {
+            "vipAcum": null,
+            "userRates": {
+                "promoRates": null,
+                "manualRates": [
+                    {
+                        "active": true,
+                        "operation": "mul",
+                        "rate_factor": 0.24,
+                        "amount_limit": null,
+                        "id_rate_type": 2,
+                        "date_creation": 1761080560.466929,
+                        "id_manual_rate": 266842,
+                        "rate_type_name": "Preferencial",
+                        "date_last_modif": 1761080560.466929,
+                        "amount_days_limit": null,
+                        "id_origin_country": 100000,
+                        "id_destiny_country": 1,
+                        "id_origin_currency": 13,
+                        "id_destiny_currency": 1,
+                        "currency_origin_iso_code": "MXN"
+                    },
+                    {
+                        "active": true,
+                        "operation": "mul",
+                        "rate_factor": 0.24,
+                        "amount_limit": null,
+                        "id_rate_type": 3,
+                        "date_creation": 1761080561.355926,
+                        "id_manual_rate": 266843,
+                        "rate_type_name": "Mayorista",
+                        "date_last_modif": 1761080561.355926,
+                        "amount_days_limit": null,
+                        "id_origin_country": 100000,
+                        "id_destiny_country": 1,
+                        "id_origin_currency": 13,
+                        "id_destiny_currency": 1,
+                        "currency_origin_iso_code": "MXN"
+                    },
+                    {
+                        "active": true,
+                        "operation": "mul",
+                        "rate_factor": 0.241,
+                        "amount_limit": null,
+                        "id_rate_type": 6,
+                        "date_creation": 1761080564.050912,
+                        "id_manual_rate": 266846,
+                        "rate_type_name": "Primera Operación",
+                        "date_last_modif": 1761080564.050912,
+                        "amount_days_limit": null,
+                        "id_origin_country": 100000,
+                        "id_destiny_country": 1,
+                        "id_origin_currency": 13,
+                        "id_destiny_currency": 1,
+                        "currency_origin_iso_code": "MXN"
+                    },
+                    {
+                        "active": true,
+                        "operation": "mul",
+                        "rate_factor": 7.59,
+                        "amount_limit": null,
+                        "id_rate_type": 1,
+                        "date_creation": 1773673272.128649,
+                        "id_manual_rate": 267047,
+                        "rate_type_name": "Normal",
+                        "date_last_modif": 1773673272.128649,
+                        "amount_days_limit": null,
+                        "id_origin_country": 100000,
+                        "id_destiny_country": 1,
+                        "id_origin_currency": 13,
+                        "id_destiny_currency": 1,
+                        "currency_origin_iso_code": "MXN"
+                    }
+                ],
+                "individualRate": null
+            },
+            "manualRates": [
+                {
+                    "active": true,
+                    "operation": "mul",
+                    "rate_factor": 0.24,
+                    "amount_limit": null,
+                    "id_rate_type": 2,
+                    "date_creation": 1761080560.466929,
+                    "id_manual_rate": 266842,
+                    "rate_type_name": "Preferencial",
+                    "date_last_modif": 1761080560.466929,
+                    "amount_days_limit": null,
+                    "id_origin_country": 100000,
+                    "id_destiny_country": 1,
+                    "id_origin_currency": 13,
+                    "id_destiny_currency": 1,
+                    "currency_origin_iso_code": "MXN"
+                },
+                {
+                    "active": true,
+                    "operation": "mul",
+                    "rate_factor": 0.24,
+                    "amount_limit": null,
+                    "id_rate_type": 3,
+                    "date_creation": 1761080561.355926,
+                    "id_manual_rate": 266843,
+                    "rate_type_name": "Mayorista",
+                    "date_last_modif": 1761080561.355926,
+                    "amount_days_limit": null,
+                    "id_origin_country": 100000,
+                    "id_destiny_country": 1,
+                    "id_origin_currency": 13,
+                    "id_destiny_currency": 1,
+                    "currency_origin_iso_code": "MXN"
+                },
+                {
+                    "active": true,
+                    "operation": "mul",
+                    "rate_factor": 0.241,
+                    "amount_limit": null,
+                    "id_rate_type": 4,
+                    "date_creation": 1761080562.281907,
+                    "id_manual_rate": 266844,
+                    "rate_type_name": "Asociado Mayorista",
+                    "date_last_modif": 1761080562.281907,
+                    "amount_days_limit": null,
+                    "id_origin_country": 100000,
+                    "id_destiny_country": 1,
+                    "id_origin_currency": 13,
+                    "id_destiny_currency": 1,
+                    "currency_origin_iso_code": "MXN"
+                },
+                {
+                    "active": true,
+                    "operation": "mul",
+                    "rate_factor": 0.241,
+                    "amount_limit": null,
+                    "id_rate_type": 5,
+                    "date_creation": 1761080563.179922,
+                    "id_manual_rate": 266845,
+                    "rate_type_name": "Cumpleaños",
+                    "date_last_modif": 1761080563.179922,
+                    "amount_days_limit": null,
+                    "id_origin_country": 100000,
+                    "id_destiny_country": 1,
+                    "id_origin_currency": 13,
+                    "id_destiny_currency": 1,
+                    "currency_origin_iso_code": "MXN"
+                },
+                {
+                    "active": true,
+                    "operation": "mul",
+                    "rate_factor": 0.241,
+                    "amount_limit": null,
+                    "id_rate_type": 6,
+                    "date_creation": 1761080564.050912,
+                    "id_manual_rate": 266846,
+                    "rate_type_name": "Primera Operación",
+                    "date_last_modif": 1761080564.050912,
+                    "amount_days_limit": null,
+                    "id_origin_country": 100000,
+                    "id_destiny_country": 1,
+                    "id_origin_currency": 13,
+                    "id_destiny_currency": 1,
+                    "currency_origin_iso_code": "MXN"
+                },
+                {
+                    "active": true,
+                    "operation": "mul",
+                    "rate_factor": 0.242,
+                    "amount_limit": 10000,
+                    "id_rate_type": 7,
+                    "date_creation": 1761080564.929914,
+                    "id_manual_rate": 266847,
+                    "rate_type_name": "VIP Fidelidad",
+                    "date_last_modif": 1761080564.929914,
+                    "amount_days_limit": 30,
+                    "id_origin_country": 100000,
+                    "id_destiny_country": 1,
+                    "id_origin_currency": 13,
+                    "id_destiny_currency": 1,
+                    "currency_origin_iso_code": "MXN"
+                },
+                {
+                    "active": true,
+                    "operation": "mul",
+                    "rate_factor": 7.59,
+                    "amount_limit": null,
+                    "id_rate_type": 1,
+                    "date_creation": 1773673272.128649,
+                    "id_manual_rate": 267047,
+                    "rate_type_name": "Normal",
+                    "date_last_modif": 1773673272.128649,
+                    "amount_days_limit": null,
+                    "id_origin_country": 100000,
+                    "id_destiny_country": 1,
+                    "id_origin_currency": 13,
+                    "id_destiny_currency": 1,
+                    "currency_origin_iso_code": "MXN"
+                }
+            ],
+            "regularRate": {
+                "active": true,
+                "operation": "mul",
+                "rate_factor": 7.59,
+                "id_rate_type": 1,
+                "date_creation": 1773673272.128649,
+                "id_manual_rate": 267047,
+                "rate_type_name": "Normal",
+                "date_last_modif": 1773673272.128649,
+                "id_origin_country": 100000,
+                "id_destiny_country": 1,
+                "id_origin_currency": 13,
+                "id_destiny_currency": 1
+            },
+            "improvedRate": null
+        },
+        "show_verification_modal": true,
+        "persona_inquiry_id": null
+    },
+    "captchaSuccess": true
+}

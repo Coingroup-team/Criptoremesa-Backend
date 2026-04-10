@@ -1,9 +1,10 @@
-import { Pool, Client } from 'pg';
+import { Pool, Client } from "pg";
 import { logger } from "../utils/logger";
 import ObjLog from "../utils/ObjLog";
 import { env } from "../utils/enviroment";
 
-const sslConfig = env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
+const sslConfig =
+  env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
 
 const connectionDbSixmap = {
   user: env.PG_DB_SM_USER,
@@ -37,13 +38,11 @@ poolSM
   .then((response) => {
     logger.info("PG-DB-SM is connected");
     ObjLog.log("PG-DB-SM is connected");
-    poolSM.on(
-      'connect', clientSM => {
-        clientSM.on('notice', notice => {
-          console.log(notice.message)
-        })
-      }
-    )
+    poolSM.on("connect", (clientSM) => {
+      clientSM.on("notice", (notice) => {
+        console.log(notice.message);
+      });
+    });
   })
   .catch((err) => {
     logger.error(`PGDBSM is not connected: ${err}`);
@@ -51,9 +50,9 @@ poolSM
     clientSM.end();
   });
 
-  poolSM.on('error', (err, client) => {
-    console.error('[PG POOL SM] Error inesperado en cliente idle:', err.message);
-  });
+poolSM.on("error", (err, client) => {
+  console.error("[PG POOL SM] Error inesperado en cliente idle:", err.message);
+});
 
 export const poolCR = new Pool(connectionDbCriptoremesa);
 const clientCR = new Client(connectionDbCriptoremesa);
@@ -63,13 +62,11 @@ poolCR
   .then((response) => {
     logger.info("PG-DB-CR is connected");
     ObjLog.log("PG-DB-CR is connected");
-    poolCR.on(
-      'connect', clientCR => {
-        clientCR.on('notice', notice => {
-          console.log(notice.message)
-        })
-      }
-    )
+    poolCR.on("connect", (clientCR) => {
+      clientCR.on("notice", (notice) => {
+        console.log(notice.message);
+      });
+    });
   })
   .catch((err) => {
     logger.error(`PGDBCR is not connected: ${err}`);
@@ -77,6 +74,6 @@ poolCR
     clientCR.end();
   });
 
-  poolCR.on('error', (err, client) => {
-    console.error('[PG POOL CR] Error inesperado en cliente idle:', err.message);
-  });
+poolCR.on("error", (err, client) => {
+  console.error("[PG POOL CR] Error inesperado en cliente idle:", err.message);
+});
