@@ -22,12 +22,28 @@ function between(min, max) {
   )
 }
 
-function getFromRedis(key) {
-  return new Promise((resolve, reject) => {
-    redisClient.get(key, (err, reply) => {
-      if (err) return reject(err);
-      return resolve(reply);
-    });
+function getFromRedis(key, timeoutMs = 5000) {
+  if (!redisClient || !redisClient.connected) return Promise.resolve(null);
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      console.log(`⚠️ Redis GET timed out for key: ${key}`);
+      resolve(null); // treat timeout as cache miss
+    }, timeoutMs);
+
+    try {
+      redisClient.get(key, (err, reply) => {
+        clearTimeout(timer);
+        if (err) {
+          console.log(`⚠️ Redis GET error for key ${key}:`, err.message);
+          return resolve(null); // cache miss on error
+        }
+        return resolve(reply);
+      });
+    } catch (e) {
+      clearTimeout(timer);
+      console.log(`⚠️ Redis GET exception for key ${key}:`, e.message);
+      resolve(null);
+    }
   });
 }
 
