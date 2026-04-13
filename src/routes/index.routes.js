@@ -24,6 +24,7 @@ import walletsRouter from "../modules/wallets/wallets.routes";
 import wholesale_partnersRouter from "../modules/wholesale_partners/wholesale_partners.routes";
 import transbankRouter from "../modules/transbank/transbank.routes";
 import siltRouter from "../modules/silt/silt.routes";
+import twofaRouter from "../modules/twilio/twofa.routes";
 import mail from "../utils/mail";
 
 const router = Router();
@@ -37,7 +38,7 @@ router.get("/", authenticationController.logout);
 router.get(
   "/protected-route",
   // guard.verifyAdmin("/protected-route"),
-  authenticationController.protected
+  authenticationController.protected,
 );
 
 router.post("/mail", mail.sendAnyMail);
@@ -66,5 +67,6 @@ router.use("/wallets", walletsRouter);
 router.use("/wholesale_partners", wholesale_partnersRouter);
 router.use("/transbank", transbankRouter);
 router.use("/silt", siltRouter);
+router.use("/twofa", twofaRouter);
 
 export default router;
