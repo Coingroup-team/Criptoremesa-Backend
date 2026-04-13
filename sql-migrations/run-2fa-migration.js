@@ -2,7 +2,15 @@
  * Run 2FA SQL migration using the same DB connection as the backend.
  *
  * ONE-TIME manual execution from project root:
+ *
+ *   # Default — uses PG_DB_SM_* credentials from .env
  *   node sql-migrations/run-2fa-migration.js
+ *
+ *   # With admin/owner credentials (needed if app user isn't table owner)
+ *   node sql-migrations/run-2fa-migration.js --user ADMIN_USER --password ADMIN_PASS
+ *
+ *   # Diagnose: show current user, table owner and permissions
+ *   node sql-migrations/run-2fa-migration.js --diagnose
  *
  * SAFE: Everything runs inside a TRANSACTION.
  * If ANY step fails, ALL changes are rolled back — nothing breaks.
@@ -14,6 +22,16 @@
 const fs = require("fs");
 const path = require("path");
 const { Client } = require("pg");
+
+// ── Parse CLI arguments ──
+const args = process.argv.slice(2);
+function getArg(flag) {
+  const idx = args.indexOf(flag);
+  return idx !== -1 && idx + 1 < args.length ? args[idx + 1] : null;
+}
+const isDiagnose = args.includes("--diagnose");
+const cliUser = getArg("--user");
+const cliPassword = getArg("--password");
 
 // ── Load .env manually (no dotenv dependency needed) ──
 const envPath = path.resolve(__dirname, "..", ".env");
@@ -33,11 +51,15 @@ if (fs.existsSync(envPath)) {
 const sslConfig =
   process.env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
 
+// CLI --user / --password override .env credentials
+const dbUser = cliUser || process.env.PG_DB_SM_USER;
+const dbPassword = cliPassword || process.env.PG_DB_SM_PASSWORD;
+
 const client = new Client({
-  user: process.env.PG_DB_SM_USER,
+  user: dbUser,
   host: process.env.PG_DB_SM_HOST,
   database: process.env.PG_DB_SM_NAME,
-  password: process.env.PG_DB_SM_PASSWORD,
+  password: dbPassword,
   port: process.env.PG_DB_SM_PORT || 5432,
   ssl: sslConfig,
 });
@@ -86,14 +108,75 @@ function splitStatements(sql) {
 }
 
 async function run() {
+  console.log(`Connecting to DB: ${process.env.PG_DB_SM_HOST} / ${process.env.PG_DB_SM_NAME}`);
+  console.log(`Connecting as user: ${dbUser}${cliUser ? " (CLI override)" : " (from .env)"}\n`);
+
+  await client.connect();
+
+  // ── DIAGNOSE MODE ──
+  if (isDiagnose) {
+    console.log("🔍 Running diagnostics...\n");
+
+    const whoami = await client.query("SELECT current_user, session_user");
+    console.log(`  Current user:  ${whoami.rows[0].current_user}`);
+    console.log(`  Session user:  ${whoami.rows[0].session_user}\n`);
+
+    const owner = await client.query(
+      "SELECT tableowner FROM pg_tables WHERE schemaname = 'sec_cust' AND tablename = 'ms_sixmap_users'"
+    );
+    if (owner.rows.length > 0) {
+      console.log(`  Table owner:   ${owner.rows[0].tableowner}`);
+      const isSame = owner.rows[0].tableowner === whoami.rows[0].current_user;
+      console.log(`  You are owner: ${isSame ? "✅ YES" : "❌ NO — you need to connect as '" + owner.rows[0].tableowner + "'"}\n`);
+    } else {
+      console.log("  ⚠️  Table sec_cust.ms_sixmap_users not found\n");
+    }
+
+    // Check if current user is superuser or has rds_superuser
+    const roles = await client.query(
+      "SELECT rolname, rolsuper FROM pg_roles WHERE rolname = current_user"
+    );
+    if (roles.rows.length > 0) {
+      console.log(`  Is superuser:  ${roles.rows[0].rolsuper ? "YES" : "NO"}`);
+    }
+
+    const memberOf = await client.query(
+      "SELECT r.rolname FROM pg_roles r " +
+      "JOIN pg_auth_members m ON m.roleid = r.oid " +
+      "WHERE m.member = (SELECT oid FROM pg_roles WHERE rolname = current_user)"
+    );
+    if (memberOf.rows.length > 0) {
+      console.log(`  Member of:     ${memberOf.rows.map(r => r.rolname).join(", ")}`);
+    }
+
+    // Check existing 2FA columns (already migrated?)
+    const cols = await client.query(
+      "SELECT column_name FROM information_schema.columns " +
+      "WHERE table_schema='sec_cust' AND table_name='ms_sixmap_users' " +
+      "AND column_name IN ('two_factor_enabled','two_factor_factor_sid') " +
+      "ORDER BY column_name"
+    );
+    if (cols.rows.length > 0) {
+      console.log(`\n  2FA columns already exist: ${cols.rows.map(r => r.column_name).join(", ")}`);
+    } else {
+      console.log("\n  2FA columns: not yet created");
+    }
+
+    console.log("\n💡 To run migration as the table owner:");
+    if (owner.rows.length > 0) {
+      console.log(`   node sql-migrations/run-2fa-migration.js --user ${owner.rows[0].tableowner} --password YOUR_PASSWORD`);
+    }
+
+    await client.end();
+    return;
+  }
+
+  // ── MIGRATION MODE ──
   const sqlFile = path.resolve(__dirname, "2fa_setup.sql");
   const sql = fs.readFileSync(sqlFile, "utf8");
   const statements = splitStatements(sql);
 
-  console.log(`Connecting to DB: ${process.env.PG_DB_SM_HOST} / ${process.env.PG_DB_SM_NAME}`);
   console.log(`Found ${statements.length} SQL statements to execute\n`);
-
-  await client.connect();
 
   try {
     // ── BEGIN TRANSACTION ──
