@@ -235,7 +235,7 @@ twofaService.challengeLogin = async (req, res, next) => {
 twofaService.challenge = async (req, res, next) => {
   try {
     const email_user =
-      req.user?.email_user || req.session?.passport?.user || null;
+      req.user?.email_user || req.session?.passport?.user || req.body?.email_user || null;
     if (!email_user) return res.status(401).json({ error: "No autenticado." });
 
     const { code } = req.body;
@@ -275,7 +275,7 @@ twofaService.challenge = async (req, res, next) => {
 twofaService.disable2FA = async (req, res, next) => {
   try {
     const email_user =
-      req.user?.email_user || req.session?.passport?.user || null;
+      req.user?.email_user || req.session?.passport?.user || req.body?.email_user || null;
     if (!email_user) return res.status(401).json({ error: "No autenticado." });
 
     const { code } = req.body;
