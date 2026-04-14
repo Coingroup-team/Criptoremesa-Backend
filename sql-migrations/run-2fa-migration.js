@@ -108,8 +108,12 @@ function splitStatements(sql) {
 }
 
 async function run() {
-  console.log(`Connecting to DB: ${process.env.PG_DB_SM_HOST} / ${process.env.PG_DB_SM_NAME}`);
-  console.log(`Connecting as user: ${dbUser}${cliUser ? " (CLI override)" : " (from .env)"}\n`);
+  console.log(
+    `Connecting to DB: ${process.env.PG_DB_SM_HOST} / ${process.env.PG_DB_SM_NAME}`,
+  );
+  console.log(
+    `Connecting as user: ${dbUser}${cliUser ? " (CLI override)" : " (from .env)"}\n`,
+  );
 
   await client.connect();
 
@@ -122,19 +126,21 @@ async function run() {
     console.log(`  Session user:  ${whoami.rows[0].session_user}\n`);
 
     const owner = await client.query(
-      "SELECT tableowner FROM pg_tables WHERE schemaname = 'sec_cust' AND tablename = 'ms_sixmap_users'"
+      "SELECT tableowner FROM pg_tables WHERE schemaname = 'sec_cust' AND tablename = 'ms_sixmap_users'",
     );
     if (owner.rows.length > 0) {
       console.log(`  Table owner:   ${owner.rows[0].tableowner}`);
       const isSame = owner.rows[0].tableowner === whoami.rows[0].current_user;
-      console.log(`  You are owner: ${isSame ? "✅ YES" : "❌ NO — you need to connect as '" + owner.rows[0].tableowner + "'"}\n`);
+      console.log(
+        `  You are owner: ${isSame ? "✅ YES" : "❌ NO — you need to connect as '" + owner.rows[0].tableowner + "'"}\n`,
+      );
     } else {
       console.log("  ⚠️  Table sec_cust.ms_sixmap_users not found\n");
     }
 
     // Check if current user is superuser or has rds_superuser
     const roles = await client.query(
-      "SELECT rolname, rolsuper FROM pg_roles WHERE rolname = current_user"
+      "SELECT rolname, rolsuper FROM pg_roles WHERE rolname = current_user",
     );
     if (roles.rows.length > 0) {
       console.log(`  Is superuser:  ${roles.rows[0].rolsuper ? "YES" : "NO"}`);
@@ -142,29 +148,35 @@ async function run() {
 
     const memberOf = await client.query(
       "SELECT r.rolname FROM pg_roles r " +
-      "JOIN pg_auth_members m ON m.roleid = r.oid " +
-      "WHERE m.member = (SELECT oid FROM pg_roles WHERE rolname = current_user)"
+        "JOIN pg_auth_members m ON m.roleid = r.oid " +
+        "WHERE m.member = (SELECT oid FROM pg_roles WHERE rolname = current_user)",
     );
     if (memberOf.rows.length > 0) {
-      console.log(`  Member of:     ${memberOf.rows.map(r => r.rolname).join(", ")}`);
+      console.log(
+        `  Member of:     ${memberOf.rows.map((r) => r.rolname).join(", ")}`,
+      );
     }
 
     // Check existing 2FA columns (already migrated?)
     const cols = await client.query(
       "SELECT column_name FROM information_schema.columns " +
-      "WHERE table_schema='sec_cust' AND table_name='ms_sixmap_users' " +
-      "AND column_name IN ('two_factor_enabled','two_factor_factor_sid') " +
-      "ORDER BY column_name"
+        "WHERE table_schema='sec_cust' AND table_name='ms_sixmap_users' " +
+        "AND column_name IN ('two_factor_enabled','two_factor_factor_sid') " +
+        "ORDER BY column_name",
     );
     if (cols.rows.length > 0) {
-      console.log(`\n  2FA columns already exist: ${cols.rows.map(r => r.column_name).join(", ")}`);
+      console.log(
+        `\n  2FA columns already exist: ${cols.rows.map((r) => r.column_name).join(", ")}`,
+      );
     } else {
       console.log("\n  2FA columns: not yet created");
     }
 
     console.log("\n💡 To run migration as the table owner:");
     if (owner.rows.length > 0) {
-      console.log(`   node sql-migrations/run-2fa-migration.js --user ${owner.rows[0].tableowner} --password YOUR_PASSWORD`);
+      console.log(
+        `   node sql-migrations/run-2fa-migration.js --user ${owner.rows[0].tableowner} --password YOUR_PASSWORD`,
+      );
     }
 
     await client.end();
@@ -200,31 +212,41 @@ async function run() {
     // ── Verification ──
     const colCheck = await client.query(
       "SELECT column_name FROM information_schema.columns " +
-      "WHERE table_schema='sec_cust' AND table_name='ms_sixmap_users' " +
-      "AND column_name IN ('two_factor_enabled','two_factor_factor_sid') " +
-      "ORDER BY column_name"
+        "WHERE table_schema='sec_cust' AND table_name='ms_sixmap_users' " +
+        "AND column_name IN ('two_factor_enabled','two_factor_factor_sid') " +
+        "ORDER BY column_name",
     );
-    console.log("Columns added:", colCheck.rows.map((r) => r.column_name).join(", ") || "⚠️  NONE");
+    console.log(
+      "Columns added:",
+      colCheck.rows.map((r) => r.column_name).join(", ") || "⚠️  NONE",
+    );
 
     const funcCheck = await client.query(
       "SELECT routine_name FROM information_schema.routines " +
-      "WHERE routine_schema='sec_cust' " +
-      "AND routine_name IN ('get_2fa_status_by_email','sp_save_pending_2fa_factor','sp_enable_2fa','sp_disable_2fa') " +
-      "ORDER BY routine_name"
+        "WHERE routine_schema='sec_cust' " +
+        "AND routine_name IN ('get_2fa_status_by_email','sp_save_pending_2fa_factor','sp_enable_2fa','sp_disable_2fa') " +
+        "ORDER BY routine_name",
     );
-    console.log("Functions created:", funcCheck.rows.map((r) => r.routine_name).join(", ") || "⚠️  NONE");
+    console.log(
+      "Functions created:",
+      funcCheck.rows.map((r) => r.routine_name).join(", ") || "⚠️  NONE",
+    );
 
     const sigCheck = await client.query(
       "SELECT pg_get_function_result(oid) as result FROM pg_proc " +
-      "WHERE proname='get_all_users_by_email' " +
-      "AND pronamespace=(SELECT oid FROM pg_namespace WHERE nspname='sec_cust')"
+        "WHERE proname='get_all_users_by_email' " +
+        "AND pronamespace=(SELECT oid FROM pg_namespace WHERE nspname='sec_cust')",
     );
-    if (sigCheck.rows.length > 0 && sigCheck.rows[0].result.includes("two_factor_enabled")) {
+    if (
+      sigCheck.rows.length > 0 &&
+      sigCheck.rows[0].result.includes("two_factor_enabled")
+    ) {
       console.log("get_all_users_by_email includes two_factor_enabled: ✅");
     } else {
-      console.log("⚠️  WARNING: get_all_users_by_email may not include two_factor_enabled");
+      console.log(
+        "⚠️  WARNING: get_all_users_by_email may not include two_factor_enabled",
+      );
     }
-
   } catch (err) {
     // ── ROLLBACK — nothing changes ──
     await client.query("ROLLBACK");
