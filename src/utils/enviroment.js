@@ -41,6 +41,8 @@ export const env = {
   PERSONA_INQUIRY_TEMPLATE_ID: process.env.PERSONA_INQUIRY_TEMPLATE_ID,
   // PostgreSQL SSL
   PG_DB_SSL: process.env.PG_DB_SSL,
+  // API Key for frontend authentication
+  INTERNAL_API_KEY: process.env.INTERNAL_API_KEY,
 };
 
 export const ENVIROMENTS = {

@@ -72,6 +72,15 @@ app.use(
       "http://localhost:3000",
     ],
     methods: "GET,PUT,PATCH,POST,DELETE",
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "x-api-key",
+      "Client-Ip",
+      "Client-Info",
+      "sentry-trace",
+      "baggage",
+    ],
     preflightContinue: false,
     optionsSuccessStatus: 204,
     credentials: true,
@@ -117,6 +126,19 @@ app.use((req, res, next) => {
 
   logger.silly("ANTES DEL REQUEST SEGUN YO");
 
+  next();
+});
+
+// ── API Key guard ────────────────────────────────────────────
+const API_KEY = env.INTERNAL_API_KEY;
+app.use((req, res, next) => {
+  // Excluir health-check del ALB y Bull Board
+  if (req.path === '/' || req.path.startsWith('/admin/queues')) return next();
+
+  const key = req.headers['x-api-key'];
+  if (!key || key !== API_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   next();
 });
 
