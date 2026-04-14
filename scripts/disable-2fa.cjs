@@ -7,28 +7,11 @@
  * Uses PG_DB_CR_* credentials from .env automatically.
  */
 
-const fs = require("fs");
 const path = require("path");
 const { Client } = require("pg");
 
-// ── Load .env manually ──
-const envPath = path.resolve(__dirname, "..", ".env");
-if (fs.existsSync(envPath)) {
-  const lines = fs.readFileSync(envPath, "utf8").split("\n");
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const eqIdx = trimmed.indexOf("=");
-    if (eqIdx === -1) continue;
-    const key = trimmed.slice(0, eqIdx).trim();
-    let val = trimmed.slice(eqIdx + 1).trim();
-    // Strip surrounding quotes
-    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-      val = val.slice(1, -1);
-    }
-    if (!process.env[key]) process.env[key] = val;
-  }
-}
+// ── Load .env with dotenv (handles special chars correctly) ──
+require("dotenv").config({ path: path.resolve(__dirname, "..", ".env") });
 
 const EMAIL = "bithonor.2023+06@gmail.com";
 
