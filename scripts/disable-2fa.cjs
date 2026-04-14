@@ -32,45 +32,48 @@ const sslConfig =
   process.env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
 
 const client = new Client({
-  user: process.env.PG_DB_CR_USER,
-  host: process.env.PG_DB_CR_HOST,
-  database: process.env.PG_DB_CR_NAME,
-  password: process.env.PG_DB_CR_PASSWORD,
-  port: process.env.PG_DB_CR_PORT || 5432,
+  user: process.env.PG_DB_SM_USER,
+  host: process.env.PG_DB_SM_HOST,
+  database: process.env.PG_DB_SM_NAME,
+  password: process.env.PG_DB_SM_PASSWORD,
+  port: process.env.PG_DB_SM_PORT || 5432,
   ssl: sslConfig,
 });
 
 (async () => {
   try {
     await client.connect();
-    console.log("Connected to DB:", process.env.PG_DB_CR_NAME);
+    console.log("Connected to DB:", process.env.PG_DB_SM_NAME);
 
-    const r = await client.query(
-      `UPDATE users SET two_factor_enabled = FALSE, two_factor_factor_sid = NULL
-       WHERE email_user = $1
-       RETURNING email_user, two_factor_enabled, two_factor_factor_sid`,
-      [EMAIL]
+    // Find which schema has the users table
+    const schemas = await client.query(
+      `SELECT schemaname FROM pg_tables WHERE tablename = 'users'`
     );
+    console.log("Schemas with 'users' table:", schemas.rows.map(r => r.schemaname));
 
-    if (r.rowCount === 0) {
-      // Try with schema prefix
-      const r2 = await client.query(
-        `SELECT schemaname, tablename FROM pg_tables WHERE tablename = 'users'`
-      );
-      console.log("Table 'users' found in schemas:", r2.rows);
+    if (schemas.rows.length === 0) {
+      console.error("No 'users' table found in any schema!");
+      await client.end();
+      process.exit(1);
+    }
 
-      if (r2.rows.length > 0) {
-        const schema = r2.rows[0].schemaname;
-        const r3 = await client.query(
-          `UPDATE ${schema}.users SET two_factor_enabled = FALSE, two_factor_factor_sid = NULL
+    for (const row of schemas.rows) {
+      const schema = row.schemaname;
+      try {
+        const r = await client.query(
+          `UPDATE "${schema}".users SET two_factor_enabled = FALSE, two_factor_factor_sid = NULL
            WHERE email_user = $1
            RETURNING email_user, two_factor_enabled, two_factor_factor_sid`,
           [EMAIL]
         );
-        console.log("Rows updated:", r3.rowCount, r3.rows[0]);
+        if (r.rowCount > 0) {
+          console.log(`✅ Updated in ${schema}.users:`, r.rowCount, r.rows[0]);
+        } else {
+          console.log(`Schema ${schema}: user not found`);
+        }
+      } catch (e) {
+        console.log(`Schema ${schema}: ${e.message}`);
       }
-    } else {
-      console.log("Rows updated:", r.rowCount, r.rows[0]);
     }
 
     await client.end();
