@@ -7,29 +7,44 @@
  * Uses PG_DB_CR_* credentials from .env automatically.
  */
 
-const path = require("path");
+const { execSync } = require("child_process");
 const { Client } = require("pg");
 
-// ── Load .env with dotenv (handles special chars correctly) ──
-require("dotenv").config({ path: path.resolve(__dirname, "..", ".env") });
+// ── Get env vars from the running PM2 process (production has correct creds) ──
+let pm2Env = {};
+try {
+  const pm2List = JSON.parse(execSync("pm2 jlist", { encoding: "utf8" }));
+  const app = pm2List.find((p) => p.name === "prod-be-bh:api");
+  if (app && app.pm2_env) {
+    pm2Env = app.pm2_env;
+    console.log("✅ Loaded env from PM2 process 'prod-be-bh:api'");
+  } else {
+    console.log("⚠️  PM2 process not found, falling back to .env");
+    require("dotenv").config({ path: require("path").resolve(__dirname, "..", ".env") });
+    pm2Env = process.env;
+  }
+} catch (e) {
+  console.log("⚠️  PM2 not available, falling back to .env");
+  require("dotenv").config({ path: require("path").resolve(__dirname, "..", ".env") });
+  pm2Env = process.env;
+}
 
 const EMAIL = "bithonor.2023+06@gmail.com";
 
-// Debug: show what credentials were loaded
-console.log("DB User:", process.env.PG_DB_SM_USER);
-console.log("DB Host:", process.env.PG_DB_SM_HOST);
-console.log("DB Name:", process.env.PG_DB_SM_NAME);
-console.log("DB Pass length:", process.env.PG_DB_SM_PASSWORD?.length, "first 3:", process.env.PG_DB_SM_PASSWORD?.slice(0, 3));
+console.log("DB User:", pm2Env.PG_DB_SM_USER);
+console.log("DB Host:", pm2Env.PG_DB_SM_HOST);
+console.log("DB Name:", pm2Env.PG_DB_SM_NAME);
+console.log("DB Pass length:", pm2Env.PG_DB_SM_PASSWORD?.length);
 
 const sslConfig =
-  process.env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
+  pm2Env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
 
 const client = new Client({
-  user: process.env.PG_DB_SM_USER,
-  host: process.env.PG_DB_SM_HOST,
-  database: process.env.PG_DB_SM_NAME,
-  password: process.env.PG_DB_SM_PASSWORD,
-  port: process.env.PG_DB_SM_PORT || 5432,
+  user: pm2Env.PG_DB_SM_USER,
+  host: pm2Env.PG_DB_SM_HOST,
+  database: pm2Env.PG_DB_SM_NAME,
+  password: pm2Env.PG_DB_SM_PASSWORD,
+  port: pm2Env.PG_DB_SM_PORT || 5432,
   ssl: sslConfig,
 });
 
