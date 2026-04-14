@@ -21,12 +21,22 @@ if (fs.existsSync(envPath)) {
     const eqIdx = trimmed.indexOf("=");
     if (eqIdx === -1) continue;
     const key = trimmed.slice(0, eqIdx).trim();
-    const val = trimmed.slice(eqIdx + 1).trim();
+    let val = trimmed.slice(eqIdx + 1).trim();
+    // Strip surrounding quotes
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.slice(1, -1);
+    }
     if (!process.env[key]) process.env[key] = val;
   }
 }
 
 const EMAIL = "bithonor.2023+06@gmail.com";
+
+// Debug: show what credentials were loaded
+console.log("DB User:", process.env.PG_DB_SM_USER);
+console.log("DB Host:", process.env.PG_DB_SM_HOST);
+console.log("DB Name:", process.env.PG_DB_SM_NAME);
+console.log("DB Pass length:", process.env.PG_DB_SM_PASSWORD?.length, "first 3:", process.env.PG_DB_SM_PASSWORD?.slice(0, 3));
 
 const sslConfig =
   process.env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
