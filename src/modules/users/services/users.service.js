@@ -967,6 +967,14 @@ usersService.newPassword = async (req, res, next) => {
     let matchLast = true;
     let match = false;
 
+    // Debug: log password list order
+    logger.info(`[${context}]: passwordList count: ${passwordList.length}`);
+    for (let i = 0; i < passwordList.length; i++) {
+      const hash = passwordList[i].password;
+      const matchesInput = await bcrypt.compare(req.body.last_password || '', hash);
+      logger.info(`[${context}]: passwordList[${i}] hash starts: ${hash?.substring(0, 15)}... matches last_password: ${matchesInput}`);
+    }
+
     if (req.body.last_password) {
       match = await bcrypt.compare(
         req.body.last_password,

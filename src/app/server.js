@@ -133,11 +133,11 @@ app.use((req, res, next) => {
 const API_KEY = env.INTERNAL_API_KEY;
 app.use((req, res, next) => {
   // Excluir health-check del ALB y Bull Board
-  if (req.path === '/' || req.path.startsWith('/admin/queues')) return next();
+  if (req.path === "/" || req.path.startsWith("/admin/queues")) return next();
 
-  const key = req.headers['x-api-key'];
+  const key = req.headers["x-api-key"];
   if (!key || key !== API_KEY) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: "Unauthorized" });
   }
   next();
 });
