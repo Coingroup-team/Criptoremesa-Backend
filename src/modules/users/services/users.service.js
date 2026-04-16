@@ -312,7 +312,7 @@ function createFile(f, email_user, level) {
       let number = between(10000, 99999);
       pathName = join(
         env.FILES_DIR,
-        `/level-${level}-req-${email_user}_${number}_${f.name}`
+        `/level-${level}-req-${email_user}_${number}_${f.name}`,
       );
       if (!fs.existsSync(pathName)) {
         exists = false;
@@ -325,7 +325,7 @@ function createFile(f, email_user, level) {
             if (error) {
               next(error);
             }
-          }
+          },
         );
       }
     }
@@ -805,13 +805,13 @@ usersService.requestLevelTwo = async (req, res, next) => {
         let residency_proof_path = createFile(
           files.residency_proof,
           fields.email_user,
-          "two"
+          "two",
         );
 
         if (!fileError) {
           JSON.parse(fields.answers).forEach((a) => {
             setAnswersToRepo(
-              getAnswersToRepo() + `,\'${JSON.stringify(a)}\'::JSON`
+              getAnswersToRepo() + `,\'${JSON.stringify(a)}\'::JSON`,
             );
           });
 
@@ -821,17 +821,17 @@ usersService.requestLevelTwo = async (req, res, next) => {
           logger.silly(fields);
 
           let industryAnswer = JSON.parse(fields.answers).find(
-            (e) => e.question_number === 5
+            (e) => e.question_number === 5,
           );
 
           console.log("industryAnswer: ", industryAnswer);
           console.log(
             "industryAnswer.answers[0].alert: ",
-            industryAnswer.answers[0].alert
+            industryAnswer.answers[0].alert,
           );
           console.log(
             "JSON.parse(fields.answers)[2].answers[0].alert: ",
-            JSON.parse(fields.answers)[2].answers[0].alert
+            JSON.parse(fields.answers)[2].answers[0].alert,
           );
 
           if (industryAnswer && industryAnswer.answers[0].alert) {
@@ -892,16 +892,16 @@ usersService.forgotPassword = async (req, res, next) => {
     ObjLog.log(`[${context}]: Forgot password request`);
 
     let user = await usersPGRepository.getusersClientByEmail(
-      `'${req.body.email_user.toLowerCase()}'`
+      `'${req.body.email_user.toLowerCase()}'`,
     );
     let data = await usersPGRepository.generateCode(
       req.body.email_user,
-      "email"
+      "email",
     );
 
     if (data.msg === "Code generated") {
       let atcNumber = await usersPGRepository.getATCNumberByIdCountry(
-        `${user[0].id_resid_country}`
+        `${user[0].id_resid_country}`,
       );
 
       if (atcNumber.length > 1) atcNumber = atcNumber.join(" / ");
@@ -961,7 +961,7 @@ usersService.newPassword = async (req, res, next) => {
     ObjLog.log(`[${context}]: Checking new password`);
 
     let passwordList = await usersPGRepository.getLastPasswords(
-      req.body.email_user
+      req.body.email_user,
     );
     setMatchPass(false);
     let matchLast = true;
@@ -970,7 +970,7 @@ usersService.newPassword = async (req, res, next) => {
     if (req.body.last_password) {
       match = await bcrypt.compare(
         req.body.last_password,
-        passwordList[0].password
+        passwordList[0].password,
       );
 
       if (!match) {
@@ -998,7 +998,7 @@ usersService.newPassword = async (req, res, next) => {
               failed: true,
             });
           }
-        })
+        }),
       );
       if (!getMatchPass()) {
         let newPass = await bcrypt.hash(req.body.new_password, 10);
@@ -1063,12 +1063,12 @@ usersService.sendVerificationCodeByEmail = async (req, res, next) => {
 
     let data = await usersPGRepository.generateCode(
       req.body.email_user,
-      "email"
+      "email",
     );
 
     if (data.msg === "Code generated") {
       let atcNumber = await usersPGRepository.getATCNumberByIdCountry(
-        `${req.body.id_resid_country}`
+        `${req.body.id_resid_country}`,
       );
 
       if (atcNumber.length > 1) atcNumber = atcNumber.join(" / ");
@@ -1111,7 +1111,7 @@ usersService.getLevelQuestions = async (req, res, next) => {
 
     let data = await usersPGRepository.getLevelQuestions();
     let answers = await usersPGRepository.getLevelAnswers(
-      req.params.id_resid_country
+      req.params.id_resid_country,
     );
     let respArr = [];
 
@@ -1146,14 +1146,14 @@ usersService.sendVerificationCodeBySMS = async (req, res, next) => {
 
     let data = await usersPGRepository.generateCode(
       req.body.main_phone_full,
-      "sms"
+      "sms",
     );
 
     if (data.msg === "Code generated") {
       if (
         sendSMS(
           req.body.main_phone_full,
-          `<Bithonor> ${req.body.first_name}, tu código de verificación es ${data.code}`
+          `<Bithonor> ${req.body.first_name}, tu código de verificación es ${data.code}`,
         )
       )
         return {
@@ -1184,13 +1184,13 @@ usersService.sendVerificationCodeByWhatsApp = async (req, res, next) => {
 
     let data = await usersPGRepository.generateCode(
       req.body.main_phone_full,
-      "whatsapp"
+      "whatsapp",
     );
 
     if (data.msg === "Code generated") {
       const whaResp = await sendWhatsappMessage(
         req.body.main_phone_full,
-        `💰<Bithonor>💰 ${req.body.first_name}, tu código de verificación es ${data.code}. No lo compartas con nadie.`
+        `💰<Bithonor>💰 ${req.body.first_name}, tu código de verificación es ${data.code}. No lo compartas con nadie.`,
       );
       if (whaResp.status === "Message sended")
         return {
@@ -1242,12 +1242,12 @@ usersService.verifyIdentUser = async (req, res, next) => {
     if (!req.body.except) {
       data = await usersPGRepository.verifyIdentUser(
         req.body.email_user,
-        req.body.phone_number
+        req.body.phone_number,
       );
     } else {
       data = await usersPGRepository.verifyIdentUserExceptThemself(
         req.body.except,
-        req.body.phone_number
+        req.body.phone_number,
       );
     }
     return {
@@ -1298,7 +1298,7 @@ usersService.getReferralsOperations = async (req, res, next) => {
     logger.info(`[${context}]: Getting referrals operations`);
     ObjLog.log(`[${context}]: Getting referrals operations`);
     let data = await usersPGRepository.getReferralsOperations(
-      req.params.email_user
+      req.params.email_user,
     );
     return {
       data,
@@ -1316,7 +1316,7 @@ usersService.getReferralsByCountry = async (req, res, next) => {
     logger.info(`[${context}]: Getting referrals by country`);
     ObjLog.log(`[${context}]: Getting referrals by country`);
     let data = await usersPGRepository.getReferralsByCountry(
-      req.params.email_user
+      req.params.email_user,
     );
     return {
       data,
@@ -1334,7 +1334,7 @@ usersService.getReferralsByStatus = async (req, res, next) => {
     logger.info(`[${context}]: Getting referrals by status`);
     ObjLog.log(`[${context}]: Getting referrals by status`);
     let data = await usersPGRepository.getReferralsByStatus(
-      req.params.email_user
+      req.params.email_user,
     );
     return {
       data,
@@ -1383,7 +1383,7 @@ usersService.verifReferrallByCodPub = async (req, res, next) => {
     logger.info(`[${context}]: Making ambassador request`);
     ObjLog.log(`[${context}]: Making ambassador request`);
     let data = await usersPGRepository.verifReferrallByCodPub(
-      req.params.cust_cr_cod_pub
+      req.params.cust_cr_cod_pub,
     );
     if (data && data.message === "Exists public code.")
       return {
@@ -1414,7 +1414,7 @@ usersService.insertUserAccount = async (req, res, next) => {
     ObjLog.log(`[${context}]: Inserting user account`);
     let data = await usersPGRepository.insertUserAccount(
       req.body,
-      req.params.email_user
+      req.params.email_user,
     );
     if (data)
       return {
@@ -1579,7 +1579,7 @@ usersService.validateCode = async (req, res, next) => {
     ObjLog.log(`[${context}]: Validating code`);
     let data = await usersPGRepository.verifCode(
       req.body.ident_user,
-      req.body.code
+      req.body.code,
     );
 
     console.log("DATA: ", data);
@@ -1672,7 +1672,11 @@ usersService.editLevelOneInfo = async (req, res, next) => {
 usersService.saveExtraInfoThirdModal = async (idUser, industry, range) => {
   logger.info(`[${context}]: Saving extra info info on db`);
   ObjLog.log(`[${context}]: Saving extra info info on db`);
-  const resp = await usersPGRepository.saveExtraInfoThirdModal(idUser, industry, range);
+  const resp = await usersPGRepository.saveExtraInfoThirdModal(
+    idUser,
+    industry,
+    range,
+  );
   return resp;
 };
 
@@ -1680,7 +1684,9 @@ usersService.getFullInfo = async (req, res, next) => {
   try {
     logger.info(`[${context}]: Getting full info`);
     ObjLog.log(`[${context}]: Getting full info`);
-    let data = await authenticationPGRepository.getUserByEmail(req.params.email_user.toLowerCase());
+    let data = await authenticationPGRepository.getUserByEmail(
+      req.params.email_user.toLowerCase(),
+    );
 
     if (data)
       return {
@@ -1698,11 +1704,10 @@ usersService.getFullInfo = async (req, res, next) => {
         success: false,
         failed: true,
       };
-  }
-  catch (error) {
+  } catch (error) {
     next(error);
   }
-}
+};
 
 export default usersService;
 export { events };

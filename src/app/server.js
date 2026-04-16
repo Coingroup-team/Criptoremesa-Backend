@@ -35,6 +35,7 @@ import transactionsJob from "../utils/jobs/transactions";
 
 // SETTINGS
 const app = express();
+app.disable('x-powered-by');
 
 // si no se quiere enviar nunca 304
 // app.disable('etag');
