@@ -35,7 +35,7 @@ import transactionsJob from "../utils/jobs/transactions";
 
 // SETTINGS
 const app = express();
-app.disable('x-powered-by');
+app.disable("x-powered-by");
 
 // si no se quiere enviar nunca 304
 // app.disable('etag');
@@ -70,6 +70,7 @@ app.use(
       "https://app.bithonor.com",
       "https://app.bithonor.es",
       "https://appsecure.bithonor.es",
+      "https://appsecure.bithonor.com",
       "http://localhost:3000",
     ],
     methods: "GET,PUT,PATCH,POST,DELETE",
