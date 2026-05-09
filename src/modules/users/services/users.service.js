@@ -5,7 +5,7 @@ import authenticationPGRepository from "../../authentication/repositories/authen
 import bcrypt from "bcryptjs";
 import formidable from "formidable";
 import fs from "fs";
-import { env } from "../../../utils/enviroment";
+import { env, ENVIROMENTS } from "../../../utils/enviroment";
 import mailSender from "../../../utils/mail";
 import { join, resolve } from "path";
 import axios from "axios";
@@ -1740,7 +1740,10 @@ usersService.sendActionVerificationCode = async (req, res, next) => {
           failed: true,
         };
       }
-    } else if (!req.isAuthenticated || !req.isAuthenticated()) {
+    } else if (
+      env.ENVIROMENT === ENVIROMENTS.PRODUCTION &&
+      (!req.isAuthenticated || !req.isAuthenticated())
+    ) {
       return {
         data: { msg: "Unauthorized" },
         status: 401,
