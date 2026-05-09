@@ -43,6 +43,8 @@ export const env = {
   PG_DB_SSL: process.env.PG_DB_SSL,
   // API Key for frontend authentication
   INTERNAL_API_KEY: process.env.INTERNAL_API_KEY,
+  // Deployment region: "europe" or unset (Latam)
+  DEPLOYMENT_REGION: process.env.DEPLOYMENT_REGION,
 };
 
 export const ENVIROMENTS = {

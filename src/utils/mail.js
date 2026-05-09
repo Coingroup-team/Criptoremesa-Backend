@@ -47,6 +47,17 @@ export default {
       return error;
     }
   },
+  sendVerifyActionMail: async (body) => {
+    let url = `${env.MAIL_SENDER}/sendVerifyActionMail`
+    try {
+      let resp = await axios.post(url,body)
+      log(body.email_user,url,body,resp.data)
+      return resp.data;
+    } catch (error) {
+      log(body.email_user,url,body,error)
+      return error;
+    }
+  },
   sendAmbassadorMail: async (body) => {
     let url = `${env.MAIL_SENDER}/sendAmbassadorMail`
     try {

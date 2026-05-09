@@ -1709,5 +1709,107 @@ usersService.getFullInfo = async (req, res, next) => {
   }
 };
 
+usersService.sendActionVerificationCode = async (req, res, next) => {
+  try {
+    logger.info(`[${context}]: Sending action verification code by email`);
+    ObjLog.log(`[${context}]: Sending action verification code by email`);
+
+    const email_user = req.body.email_user;
+    const password = req.body.password;
+
+    const user = await authenticationPGRepository.getUserByEmail(
+      email_user ? email_user.toLowerCase() : "",
+    );
+
+    if (!user) {
+      return {
+        data: { msg: "Invalid credentials" },
+        status: 401,
+        success: false,
+        failed: true,
+      };
+    }
+
+    if (password !== undefined) {
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return {
+          data: { msg: "Invalid credentials" },
+          status: 401,
+          success: false,
+          failed: true,
+        };
+      }
+    } else if (!req.isAuthenticated || !req.isAuthenticated()) {
+      return {
+        data: { msg: "Unauthorized" },
+        status: 401,
+        success: false,
+        failed: true,
+      };
+    }
+
+    const data = await usersPGRepository.generateCode(email_user, "email");
+
+    if (data.msg === "Code generated") {
+      const mailResp = await mailSender.sendVerifyActionMail({
+        email_user,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        code: data.code,
+      });
+
+      return {
+        data: {
+          msg: "Code sent",
+          mailResp,
+        },
+        status: 200,
+        success: true,
+        failed: false,
+      };
+    } else {
+      return {
+        data: { msg: data.msg || "An error ocurred generating code." },
+        status: 400,
+        success: false,
+        failed: true,
+      };
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+usersService.validateActionCode = async (req, res, next) => {
+  try {
+    logger.info(`[${context}]: Validating action code`);
+    ObjLog.log(`[${context}]: Validating action code`);
+
+    const data = await usersPGRepository.verifCode(
+      req.body.email_user,
+      req.body.code,
+    );
+
+    if (data && data.msg === "Valid code")
+      return { data, status: 200, success: true, failed: false };
+    else if (data && data.msg === "Invalid code")
+      return { data, status: 400, success: false, failed: true };
+    else if (data && data.msg === "Expired code")
+      return { data, status: 403, success: false, failed: true };
+    else if (data && data.msg === "Invalid user")
+      return { data, status: 400, success: false, failed: true };
+    else
+      return {
+        data: { msg: "An error has ocurred." },
+        status: 500,
+        success: false,
+        failed: true,
+      };
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default usersService;
 export { events };

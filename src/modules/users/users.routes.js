@@ -65,6 +65,16 @@ usersRouter.post(
 );
 
 usersRouter.post(
+  "/sendActionVerificationCode",
+  usersController.sendActionVerificationCode
+);
+
+usersRouter.post(
+  "/validateActionCode",
+  usersController.validateActionCode
+);
+
+usersRouter.post(
   "/sendVerificationCodeByWhatsApp",
   // guard.verifyAdmin("/login"),
   usersController.sendVerificationCodeByWhatsApp

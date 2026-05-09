@@ -1642,4 +1642,96 @@ usersController.getFullInfo = async (req, res, next) => {
   }
 };
 
+usersController.sendActionVerificationCode = async (req, res, next) => {
+  try {
+    let log = logConst;
+    log.is_auth = req.isAuthenticated();
+    log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
+    log.route = req.method + " " + req.originalUrl;
+    const ipInfo = await authenticationPGRepository.getIpInfo(
+      req.header("Client-Ip"),
+    );
+    if (ipInfo)
+      log.country = ipInfo.country_name
+        ? ipInfo.country_name
+        : "Probably Localhost";
+    if (await authenticationPGRepository.getSessionById(req.sessionID))
+      log.session = req.sessionID;
+
+    logger.info(`[${context}]: Sending action verification code`);
+    ObjLog.log(`[${context}]: Sending action verification code`);
+
+    let finalResp;
+    const verif = await limitByIpPGRepository.verifyRouteByIp(
+      "/users/sendActionVerificationCode",
+      req.header("Client-Ip"),
+    );
+    if (verif === "Requests limit by ip hasnt been reached")
+      finalResp = await usersService.sendActionVerificationCode(req, res, next);
+    else res.status(400).json({ msg: verif });
+
+    if (finalResp) {
+      log.success = finalResp.success;
+      log.failed = finalResp.failed;
+      log.params = req.params;
+      log.query = req.query;
+      log.body = { ...req.body, password: req.body.password ? "***" : undefined };
+      log.status = finalResp.status;
+      log.response = finalResp.data;
+      await authenticationPGRepository.insertLogMsg(log);
+
+      res.status(finalResp.status).json(finalResp.data);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+usersController.validateActionCode = async (req, res, next) => {
+  try {
+    let log = logConst;
+    log.is_auth = req.isAuthenticated();
+    log.ip = req.header("Client-Ip");
+    log.client_info = req.header("Client-Info") || null;
+    log.route = req.method + " " + req.originalUrl;
+    const ipInfo = await authenticationPGRepository.getIpInfo(
+      req.header("Client-Ip"),
+    );
+    if (ipInfo)
+      log.country = ipInfo.country_name
+        ? ipInfo.country_name
+        : "Probably Localhost";
+    if (await authenticationPGRepository.getSessionById(req.sessionID))
+      log.session = req.sessionID;
+
+    logger.info(`[${context}]: Validating action code`);
+    ObjLog.log(`[${context}]: Validating action code`);
+
+    let finalResp;
+    const verif = await limitByIpPGRepository.verifyRouteByIp(
+      "/users/validateActionCode",
+      req.header("Client-Ip"),
+    );
+    if (verif === "Requests limit by ip hasnt been reached")
+      finalResp = await usersService.validateActionCode(req, res, next);
+    else res.status(400).json({ msg: verif });
+
+    if (finalResp) {
+      log.success = finalResp.success;
+      log.failed = finalResp.failed;
+      log.params = req.params;
+      log.query = req.query;
+      log.body = req.body;
+      log.status = finalResp.status;
+      log.response = finalResp.data;
+      await authenticationPGRepository.insertLogMsg(log);
+
+      res.status(finalResp.status).json(finalResp.data);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default usersController;
