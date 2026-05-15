@@ -5,11 +5,17 @@ import ObjLog from "../../../utils/ObjLog";
 const twofaPGRepository = {};
 const context = "TwoFA PG Repository";
 
+// Emails are stored lowercased by the signup flow, but the FE may submit
+// them with any casing. Normalize at the repository boundary so callers
+// don't have to remember.
+const norm = (email) => (email ? String(email).toLowerCase() : email);
+
 /**
  * Get 2FA status by email_user
  */
 twofaPGRepository.get2FAStatusByEmail = async (email_user) => {
   try {
+    email_user = norm(email_user);
     logger.info(`[${context}]: Getting 2FA status for ${email_user}`);
     ObjLog.log(`[${context}]: Getting 2FA status for ${email_user}`);
 
@@ -31,6 +37,7 @@ twofaPGRepository.get2FAStatusByEmail = async (email_user) => {
  */
 twofaPGRepository.savePendingFactor = async (email_user, factorSid) => {
   try {
+    email_user = norm(email_user);
     logger.info(`[${context}]: Saving pending 2FA factor for ${email_user}`);
     ObjLog.log(`[${context}]: Saving pending 2FA factor for ${email_user}`);
 
@@ -51,6 +58,7 @@ twofaPGRepository.savePendingFactor = async (email_user, factorSid) => {
  */
 twofaPGRepository.enable2FA = async (email_user, factorSid) => {
   try {
+    email_user = norm(email_user);
     logger.info(`[${context}]: Enabling 2FA for ${email_user}`);
     ObjLog.log(`[${context}]: Enabling 2FA for ${email_user}`);
 
@@ -71,6 +79,7 @@ twofaPGRepository.enable2FA = async (email_user, factorSid) => {
  */
 twofaPGRepository.disable2FA = async (email_user) => {
   try {
+    email_user = norm(email_user);
     logger.info(`[${context}]: Disabling 2FA for ${email_user}`);
     ObjLog.log(`[${context}]: Disabling 2FA for ${email_user}`);
 
@@ -88,6 +97,7 @@ twofaPGRepository.disable2FA = async (email_user) => {
  */
 twofaPGRepository.getCredentialsByEmail = async (email_user) => {
   try {
+    email_user = norm(email_user);
     logger.info(`[${context}]: Getting credentials for ${email_user}`);
     ObjLog.log(`[${context}]: Getting credentials for ${email_user}`);
 
