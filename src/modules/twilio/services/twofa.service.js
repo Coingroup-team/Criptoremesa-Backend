@@ -61,11 +61,13 @@ twofaService.getStatus = async (req, res, next) => {
     ObjLog.log(`[${context}]: getStatus for ${email_user}`);
 
     const row = await twofaPGRepository.get2FAStatusByEmail(email_user);
-    if (!row) return res.status(404).json({ error: "Usuario no encontrado." });
 
+    // No row → user exists in auth tables (ms_sixmap_users) but doesn't yet
+    // have a sec_cust.users row tracking 2FA flags. Treat as "no 2FA" so the
+    // FE shows the setup flow instead of failing the login with a hard 404.
     return res.status(200).json({
       success: true,
-      two_factor_enabled: row.two_factor_enabled,
+      two_factor_enabled: row ? row.two_factor_enabled : false,
     });
   } catch (error) {
     logger.error(`[${context}]: getStatus error: ${error.message}`);
