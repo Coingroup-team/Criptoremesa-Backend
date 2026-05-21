@@ -15,7 +15,14 @@ export const personaQueue = new Queue("personaQueue", {
   redis: {
     port: env.REDIS_PORT,
     host: env.REDIS_HOST,
-    db: env.REDIS_DB_PERSONA_QUEUE || env.REDIS_DB_SILT_QUEUE + 1, // Use separate DB or SILT DB + 1
+    // env vars come from dotenv as strings; the previous expression
+    // `env.REDIS_DB_SILT_QUEUE + 1` did string concatenation
+    // ("11" + 1 = "111") which selects a non-existent Redis DB and
+    // makes personaQueue.add() fail silently. Parse to int explicitly.
+    // The env var should always be set; the fallback is only defense.
+    db:
+      parseInt(env.REDIS_DB_PERSONA_QUEUE, 10) ||
+      parseInt(env.REDIS_DB_SILT_QUEUE, 10) + 1,
     password: env.REDIS_PASSWORD,
   },
 });
