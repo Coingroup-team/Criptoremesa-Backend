@@ -1283,13 +1283,15 @@ veriflevelsController.levelOneVerificationPersona = async (req, res, next) => {
     );
     logger.error(`[${context}]: Error stack: ${error.stack}`);
 
-    // Still return 200 to Persona to avoid retries
+    // Still return 200 to Persona to avoid retries.
+    // IMPORTANT: do NOT call next(error) after sending a response — the global
+    // error handler would try to res.status(500).send() on an already-closed
+    // response, triggering ERR_HTTP_HEADERS_SENT and crashing the process
+    // (which is exactly what happened on 2026-05-20).
     res.status(200).send({
       message: "Persona webhook received but encountered processing error",
       error: error.message,
     });
-
-    next(error);
   }
 };
 

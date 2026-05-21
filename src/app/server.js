@@ -197,6 +197,15 @@ app.use(async function (err, req, res, next) {
   logger.error(`${context}: ${err.message}`);
   ObjLog.log(`${context}: ${err.message}`);
 
+  // If the response has already been sent (typical when a controller calls
+  // next(error) after res.send), do NOT touch res again — calling
+  // res.status/setHeader/send on a closed response throws
+  // ERR_HTTP_HEADERS_SENT and crashes the Node process. Delegate to Express's
+  // default error handler, which just closes the connection safely.
+  if (res.headersSent) {
+    return next(err);
+  }
+
   // declaring log object
   const logConst = {
     is_auth: null,
