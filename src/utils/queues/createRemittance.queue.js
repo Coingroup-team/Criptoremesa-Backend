@@ -12,7 +12,8 @@ export const remittanceQueue = new Queue('createRemittances', {
         port: env.REDIS_PORT,
         host: env.REDIS_HOST,
         db: env.REDIS_DB_REM_QUEUE,
-        password: env.REDIS_PASSWORD
+        password: env.REDIS_PASSWORD,
+        tls: {}
     }
 })
 

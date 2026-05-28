@@ -8,6 +8,7 @@ if (process.env.ENVIROMENT !== "local") {
     password: env.REDIS_PASSWORD,
     db: parseInt(env.REDIS_DB) || 1,
     read_timeout: parseInt(env.REDIS_READ_TIMEOUT) || 60,
+    tls: {},
   });
 
   client.on("error", function (error) {

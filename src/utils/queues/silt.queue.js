@@ -12,7 +12,8 @@ export const siltQueue = new Queue('siltQueue', {
         port: env.REDIS_PORT,
         host: env.REDIS_HOST,
         db: env.REDIS_DB_SILT_QUEUE,
-        password: env.REDIS_PASSWORD
+        password: env.REDIS_PASSWORD,
+        tls: {}
     }
 });
 
