@@ -35,8 +35,9 @@ async function sendSMS(to, body) {
         return message;
       })
       .catch((err) => {
-        logger.silly(err);
-        next(err);
+        logger.error(
+          `[sendSMS] Twilio send failed for ${to}: ${err && err.message}`
+        );
       });
     // const params = new url.URLSearchParams({
     //   To: to,
@@ -55,7 +56,7 @@ async function sendSMS(to, body) {
     //   );
     // return message.data
   } catch (error) {
-    next(error);
+    logger.error(`[sendSMS] unexpected error: ${error && error.message}`);
   }
 }
 
