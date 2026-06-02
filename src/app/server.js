@@ -5,7 +5,6 @@ import morgan from "morgan";
 import { logger } from "../utils/logger";
 import ObjLog from "../utils/ObjLog";
 import { env } from "../utils/enviroment";
-import "../utils/sentry";
 import routerIndex from "../routes/index.routes";
 import passport from "passport";
 import session from "express-session";
@@ -18,7 +17,6 @@ import ws from "../utils/websocketTradeAPIs";
 import bodyParser from "body-parser";
 import whatsapp from "../utils/whatsapp";
 import queue from "express-queue";
-import * as Sentry from "@sentry/node";
 import { createBullBoard } from "@bull-board/api";
 import { BullAdapter } from "@bull-board/api/bullAdapter";
 import { ExpressAdapter } from "@bull-board/express";
@@ -80,8 +78,6 @@ app.use(
       "x-api-key",
       "Client-Ip",
       "Client-Info",
-      "sentry-trace",
-      "baggage",
     ],
     preflightContinue: false,
     optionsSuccessStatus: 204,
@@ -185,8 +181,6 @@ app.use(async (req, res, next) => {
     next(error);
   }
 });
-
-Sentry.setupExpressErrorHandler(app);
 
 // ERROR HANDLER
 // app.use(queue.errorHandler());
