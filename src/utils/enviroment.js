@@ -17,6 +17,7 @@ export const env = {
   reCAPTCHA_SECRET_KEY: process.env.reCAPTCHA_SECRET_KEY,
   FILES_DIR: process.env.FILES_DIR,
   LOCAL_FILES_DIR: process.env.LOCAL_FILES_DIR,
+  SILT_DATA_DIR: process.env.SILT_DATA_DIR || "/repo-cr",
   MAIL_SENDER: process.env.MAIL_SENDER,
   MESSAGE_SERVER_BASE_URL: process.env.MESSAGE_SERVER_BASE_URL,
   TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,

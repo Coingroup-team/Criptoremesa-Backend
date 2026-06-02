@@ -1,6 +1,7 @@
 import { poolSM } from "../../db/pg.connection";
 import fs from "fs";
 import path from "path";
+import { env } from "../../utils/enviroment";
 
 /**
  * Get all SILT records with pagination
@@ -195,8 +196,8 @@ export const getSiltById = async (req, res) => {
     // Get images from filesystem directory
     const record = result.rows[0];
     const imageDir = isExternal
-      ? `/repo-cr/external-silt-data/${record.flow_name}/${silt_id}`
-      : `/repo-cr/silt-data/${silt_id}`;
+      ? path.join(env.SILT_DATA_DIR, "external-silt-data", record.flow_name, silt_id)
+      : path.join(env.SILT_DATA_DIR, "silt-data", silt_id);
     let images = [];
 
     try {
@@ -257,14 +258,15 @@ export const getSiltImage = async (req, res) => {
     if (flow_name && flow_name !== "Bithonor") {
       // External SILT data
       imagePath = path.join(
-        "/repo-cr/external-silt-data",
+        env.SILT_DATA_DIR,
+        "external-silt-data",
         flow_name,
         silt_id,
         filename
       );
     } else {
       // Internal Bithonor data
-      imagePath = path.join("/repo-cr/silt-data", silt_id, filename);
+      imagePath = path.join(env.SILT_DATA_DIR, "silt-data", silt_id, filename);
     }
 
     if (!fs.existsSync(imagePath)) {
