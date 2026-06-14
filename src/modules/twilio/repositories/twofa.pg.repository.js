@@ -93,10 +93,14 @@ twofaPGRepository.disable2FA = async (email_user) => {
 };
 
 /**
- * Get the ISO code of the user's residence country by email.
- * Used by the public /twofa/status endpoint to detect cross-region login
- * attempts (Latam user trying to log in on .es, or vice versa) before any
- * 2FA modal is shown.
+ * Look up the user's residence country ISO code by email, also reporting
+ * whether the user exists in this region's database at all. The new
+ * eu-south-2 deployment splits PRODUC-CG (Europe) and LPRODUC-CG (Latam)
+ * into independent DBs, so a Latam user reaching app.bithonor.es is simply
+ * not present here and the login flow must treat the request as invalid
+ * credentials instead of opening a 2FA modal.
+ *
+ * Returns { exists: boolean, iso: string|null }.
  */
 twofaPGRepository.getResidCountryByEmail = async (email_user) => {
   try {
@@ -108,7 +112,13 @@ twofaPGRepository.getResidCountryByEmail = async (email_user) => {
        LIMIT 1`,
       [email_user],
     );
-    return resp.rows[0]?.iso_code_resid_country || null;
+    if (resp.rows.length === 0) {
+      return { exists: false, iso: null };
+    }
+    return {
+      exists: true,
+      iso: resp.rows[0].iso_code_resid_country || null,
+    };
   } catch (error) {
     logger.error(
       `[${context}]: getResidCountryByEmail: ${error.message}`,

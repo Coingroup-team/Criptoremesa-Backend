@@ -75,33 +75,38 @@ twofaService.getStatus = async (req, res, next) => {
     logger.info(`[${context}]: getStatus for ${email_user}`);
     ObjLog.log(`[${context}]: getStatus for ${email_user}`);
 
-    const [row, iso] = await Promise.all([
+    const [row, country] = await Promise.all([
       twofaPGRepository.get2FAStatusByEmail(email_user),
-      domain === "es" || domain === "com"
-        ? twofaPGRepository.getResidCountryByEmail(email_user)
-        : Promise.resolve(null),
+      twofaPGRepository.getResidCountryByEmail(email_user),
     ]);
 
-    // No row → user exists in auth tables (ms_sixmap_users) but doesn't yet
-    // have a sec_cust.users row tracking 2FA flags. Treat as "no 2FA" so the
-    // FE shows the setup flow instead of failing the login with a hard 404.
+    // Each region runs against its own database (PRODUC-CG for Europe,
+    // LPRODUC-CG for Latam). If the email is absent from this region's DB
+    // the user simply doesn't exist here and the FE must treat the login
+    // attempt as invalid credentials — no 2FA modal, no email code.
+    if (!country.exists) {
+      return res
+        .status(200)
+        .json({ success: true, user_exists: false, two_factor_enabled: false });
+    }
+
     const response = {
       success: true,
+      user_exists: true,
       two_factor_enabled: row ? row.two_factor_enabled : false,
     };
 
-    // Cross-region check: only signal wrong_domain when we have both a
-    // resolvable country and the FE told us which storefront it's on. When
-    // the user has no country yet (new signup) we keep wrong_domain false to
-    // preserve current behavior.
+    // Cross-region check: applies only when the user does exist in this DB
+    // but their country doesn't match the storefront they're trying to log
+    // in on (e.g. a European user reaching app.bithonor.com).
     if (domain === "es" || domain === "com") {
-      if (iso) {
-        const userInAmerica = isInAmerica(iso);
+      if (country.iso) {
+        const userInAmerica = isInAmerica(country.iso);
         const wrong_domain =
           (userInAmerica && domain === "es") ||
           (!userInAmerica && domain === "com");
         response.wrong_domain = wrong_domain;
-        response.correct_iso_code = iso;
+        response.correct_iso_code = country.iso;
       } else {
         response.wrong_domain = false;
         response.correct_iso_code = null;
