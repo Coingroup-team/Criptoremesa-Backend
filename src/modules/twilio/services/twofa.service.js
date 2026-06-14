@@ -50,25 +50,65 @@ async function createChallenge(identity, factorSid, code) {
     .challenges.create({ factorSid, authPayload: code });
 }
 
-// ── 1. GET /twofa/status?email=xxx ──────────────────────────
+// ISO codes considered "Latam" by the cross-region domain check. Must match
+// the list in the FE router guard (src/router/index.ts) and Login.vue.
+const AMERICA_ISO_CODES = new Set([
+  "AR", "BO", "BR", "CL", "CO", "CR", "CU", "DO", "EC", "SV",
+  "GT", "HN", "MX", "NI", "PA", "PY", "PE", "PR", "UY", "VE",
+  "CA", "US", "AG", "BS", "BB", "BZ", "DM", "GD", "HT", "JM",
+  "KN", "LC", "VC", "TT", "SR", "GY",
+]);
+
+function isInAmerica(iso) {
+  return !!iso && AMERICA_ISO_CODES.has(iso.toUpperCase());
+}
+
+// ── 1. GET /twofa/status?email=xxx[&domain=es|com] ──────────
 twofaService.getStatus = async (req, res, next) => {
   try {
     const email_user = req.query.email || req.query.email_user;
     if (!email_user)
       return res.status(400).json({ error: "email es requerido." });
 
+    const domain = (req.query.domain || "").toString().toLowerCase();
+
     logger.info(`[${context}]: getStatus for ${email_user}`);
     ObjLog.log(`[${context}]: getStatus for ${email_user}`);
 
-    const row = await twofaPGRepository.get2FAStatusByEmail(email_user);
+    const [row, iso] = await Promise.all([
+      twofaPGRepository.get2FAStatusByEmail(email_user),
+      domain === "es" || domain === "com"
+        ? twofaPGRepository.getResidCountryByEmail(email_user)
+        : Promise.resolve(null),
+    ]);
 
     // No row → user exists in auth tables (ms_sixmap_users) but doesn't yet
     // have a sec_cust.users row tracking 2FA flags. Treat as "no 2FA" so the
     // FE shows the setup flow instead of failing the login with a hard 404.
-    return res.status(200).json({
+    const response = {
       success: true,
       two_factor_enabled: row ? row.two_factor_enabled : false,
-    });
+    };
+
+    // Cross-region check: only signal wrong_domain when we have both a
+    // resolvable country and the FE told us which storefront it's on. When
+    // the user has no country yet (new signup) we keep wrong_domain false to
+    // preserve current behavior.
+    if (domain === "es" || domain === "com") {
+      if (iso) {
+        const userInAmerica = isInAmerica(iso);
+        const wrong_domain =
+          (userInAmerica && domain === "es") ||
+          (!userInAmerica && domain === "com");
+        response.wrong_domain = wrong_domain;
+        response.correct_iso_code = iso;
+      } else {
+        response.wrong_domain = false;
+        response.correct_iso_code = null;
+      }
+    }
+
+    return res.status(200).json(response);
   } catch (error) {
     logger.error(`[${context}]: getStatus error: ${error.message}`);
     next(error);

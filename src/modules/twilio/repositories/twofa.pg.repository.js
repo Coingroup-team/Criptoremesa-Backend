@@ -93,6 +93,32 @@ twofaPGRepository.disable2FA = async (email_user) => {
 };
 
 /**
+ * Get the ISO code of the user's residence country by email.
+ * Used by the public /twofa/status endpoint to detect cross-region login
+ * attempts (Latam user trying to log in on .es, or vice versa) before any
+ * 2FA modal is shown.
+ */
+twofaPGRepository.getResidCountryByEmail = async (email_user) => {
+  try {
+    email_user = norm(email_user);
+    await poolSM.query("SET SCHEMA 'sec_cust'");
+    const resp = await poolSM.query(
+      `SELECT iso_code_resid_country
+       FROM sec_cust.get_all_users_by_email($1)
+       LIMIT 1`,
+      [email_user],
+    );
+    return resp.rows[0]?.iso_code_resid_country || null;
+  } catch (error) {
+    logger.error(
+      `[${context}]: getResidCountryByEmail: ${error.message}`,
+    );
+    ObjLog.log(`[${context}]: getResidCountryByEmail: ${error.message}`);
+    throw error;
+  }
+};
+
+/**
  * Get user credentials (password hash) for 2FA activation verification
  */
 twofaPGRepository.getCredentialsByEmail = async (email_user) => {
