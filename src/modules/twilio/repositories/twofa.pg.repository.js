@@ -26,6 +26,17 @@ twofaPGRepository.get2FAStatusByEmail = async (email_user) => {
     );
     return resp.rows[0] || null;
   } catch (error) {
+    // 42883 = undefined_function. The 2FA SPs were only deployed to
+    // PRODUC-CG (Europe); LPRODUC-CG (Latam) doesn't use TOTP, so the
+    // function is absent there. Don't fail the whole status response —
+    // just report no 2FA so the caller can carry on with user_exists /
+    // wrong_domain.
+    if (error && error.code === "42883") {
+      logger.warn(
+        `[${context}]: get_2fa_status_by_email not in this DB, treating as no 2FA for ${email_user}`,
+      );
+      return null;
+    }
     logger.error(`[${context}]: ${error.message}`);
     ObjLog.log(`[${context}]: ${error.message}`);
     throw error;
