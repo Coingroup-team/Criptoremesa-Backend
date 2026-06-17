@@ -37,7 +37,8 @@ usersPGRepository.createNewClient = async (body) => {
         await mailSender.sendWelcomeMail({
           email_user: body.email_user,
           first_name: body.first_name,
-          last_name: body.last_name
+          last_name: body.last_name,
+          domain: body.domain,
         });
       }
 

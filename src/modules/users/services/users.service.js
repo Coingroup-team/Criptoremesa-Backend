@@ -7,6 +7,7 @@ import formidable from "formidable";
 import fs from "fs";
 import { env } from "../../../utils/enviroment";
 import mailSender from "../../../utils/mail";
+import { inferDomainFromRequest } from "../../../utils/region";
 import { join, resolve } from "path";
 import axios from "axios";
 import whatsapp from "../../../utils/whatsapp";
@@ -106,6 +107,7 @@ usersService.createNewClient = async (req, res, next) => {
 
     userObj.password = password;
     userObj.last_ip_registred = req.header("Client-Ip");
+    userObj.domain = inferDomainFromRequest(req);
 
     const response = await usersPGRepository.createNewClient(userObj);
 
@@ -913,6 +915,7 @@ usersService.forgotPassword = async (req, res, next) => {
         last_name: user[0].last_name,
         code: data.code,
         atcNumber,
+        domain: inferDomainFromRequest(req),
       });
 
       return {
@@ -1080,6 +1083,7 @@ usersService.sendVerificationCodeByEmail = async (req, res, next) => {
         last_name: req.body.last_name,
         code: data.code,
         atcNumber,
+        domain: inferDomainFromRequest(req),
       });
 
       return {
