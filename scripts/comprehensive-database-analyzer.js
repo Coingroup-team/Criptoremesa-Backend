@@ -2,23 +2,34 @@ const { Pool } = require("pg");
 const fs = require("fs");
 const path = require("path");
 
-// Database connections
+// Los nombres de schema/tabla en este archivo vienen de information_schema
+// (catalogo del sistema), no de input externo, pero se valida el formato
+// antes de interpolarlos como identificadores en SQL (defensa en profundidad).
+function isSafeIdentifier(name) {
+  return typeof name === "string" && /^[a-zA-Z0-9_]+$/.test(name);
+}
+
+// Database connections — credenciales via variables de entorno.
+// Antes estaban hardcodeadas en este archivo (usuario/password/IP en texto
+// plano). Se movieron a .env; ese password expuesto debe rotarse.
+require("dotenv").config({ path: path.resolve(__dirname, "..", ".env") });
+
 const connectionDbSixmap = {
-  user: "postgres",
-  host: "18.222.5.211",
-  database: "PRE-QA-CG",
-  password: "XTesta/819021!",
-  port: 5432,
+  user: process.env.PG_DB_SM_USER || "postgres",
+  host: process.env.PG_DB_SM_HOST,
+  database: process.env.PG_DB_SM_NAME || "PRE-QA-CG",
+  password: process.env.PG_DB_SM_PASSWORD,
+  port: process.env.PG_DB_SM_PORT || 5432,
   max: 8,
   keepAlive: true,
 };
 
 const connectionDbCriptoremesa = {
-  user: "postgres",
-  host: "18.222.5.211",
-  database: "criptoremesa-cg",
-  password: "XTesta/819021!",
-  port: 5432,
+  user: process.env.PG_DB_CR_USER || "postgres",
+  host: process.env.PG_DB_CR_HOST,
+  database: process.env.PG_DB_CR_NAME || "criptoremesa-cg",
+  password: process.env.PG_DB_CR_PASSWORD,
+  port: process.env.PG_DB_CR_PORT || 5432,
   max: 8,
   keepAlive: true,
 };
@@ -144,6 +155,11 @@ class ComprehensiveDatabaseAnalyzer {
 
       // Get row count with timeout
       let rowCount = 0;
+      if (!isSafeIdentifier(schemaName) || !isSafeIdentifier(tableName)) {
+        console.log(
+          `    ⚠️  Nombre de schema/tabla inesperado, se omite el conteo: ${fullTableName}`
+        );
+      } else {
       try {
         const countResult = await Promise.race([
           pool.query(
@@ -174,6 +190,7 @@ class ComprehensiveDatabaseAnalyzer {
         } catch (estimateErr) {
           // Silent fail
         }
+      }
       }
 
       // Get constraints
