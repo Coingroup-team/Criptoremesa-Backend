@@ -3,8 +3,13 @@ import { logger } from "../utils/logger";
 import ObjLog from "../utils/ObjLog";
 import { env } from "../utils/enviroment";
 
+// Por defecto se valida el certificado TLS contra las CAs de confianza del
+// sistema. Solo se desactiva si se define explícitamente
+// PG_DB_SSL_REJECT_UNAUTHORIZED=false (uso temporal/excepcional, documentar el motivo).
 const sslConfig =
-  env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
+  env.PG_DB_SSL === "true"
+    ? { rejectUnauthorized: env.PG_DB_SSL_REJECT_UNAUTHORIZED !== "false" }
+    : false;
 
 const connectionDbSixmap = {
   user: env.PG_DB_SM_USER,
