@@ -3,3 +3,11 @@ dist
 .env
 settings.json
 logs
+
+# Certificados y llaves locales de desarrollo (nunca deben versionarse)
+private.key
+*.pem
+*.key
+*.crt
+*.cert
+!src/utils/cert/.gitkeep
