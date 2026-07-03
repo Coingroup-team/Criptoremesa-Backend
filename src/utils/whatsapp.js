@@ -5,8 +5,10 @@ const https = require('https');
 
 const context = "WHATSAPP MODULE";
 
+// Por defecto se valida el certificado TLS del gateway de WhatsApp.
+// Solo se desactiva si WHATSAPP_TLS_INSECURE=true esta definido explicitamente.
 const agent = new https.Agent({
-  rejectUnauthorized: false
+  rejectUnauthorized: env.WHATSAPP_TLS_INSECURE !== "true"
 });
 
 export default {
