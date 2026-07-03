@@ -52,7 +52,9 @@ console.log("DB Name:", pm2Env.PG_DB_SM_NAME);
 console.log("DB Pass length:", pm2Env.PG_DB_SM_PASSWORD?.length);
 
 const sslConfig =
-  pm2Env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
+  pm2Env.PG_DB_SSL === "true"
+    ? { rejectUnauthorized: pm2Env.PG_DB_SSL_REJECT_UNAUTHORIZED !== "false" }
+    : false;
 
 const client = new Client({
   user: pm2Env.PG_DB_SM_USER,
@@ -85,6 +87,13 @@ const client = new Client({
 
     for (const row of schemas.rows) {
       const schema = row.schemaname;
+      // Defensa en profundidad: aunque `schema` viene del catalogo del sistema
+      // (pg_tables), no de input externo, se valida el formato antes de
+      // interpolarlo como identificador en la query.
+      if (!/^[a-zA-Z0-9_]+$/.test(schema)) {
+        console.log(`Schema con nombre inesperado, se omite: ${schema}`);
+        continue;
+      }
       try {
         const r = await client.query(
           `UPDATE "${schema}".users SET two_factor_enabled = FALSE, two_factor_factor_sid = NULL

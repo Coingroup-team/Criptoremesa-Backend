@@ -49,7 +49,9 @@ if (fs.existsSync(envPath)) {
 }
 
 const sslConfig =
-  process.env.PG_DB_SSL === "true" ? { rejectUnauthorized: false } : false;
+  process.env.PG_DB_SSL === "true"
+    ? { rejectUnauthorized: process.env.PG_DB_SSL_REJECT_UNAUTHORIZED !== "false" }
+    : false;
 
 // CLI --user / --password override .env credentials
 const dbUser = cliUser || process.env.PG_DB_SM_USER;
