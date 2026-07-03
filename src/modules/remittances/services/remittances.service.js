@@ -2,6 +2,7 @@ import { logger } from "../../../utils/logger";
 import ObjLog from "../../../utils/ObjLog";
 import remittancesPGRepository from "../repositories/remittances.pg.repository";
 import { env, ENVIROMENTS } from "../../../utils/enviroment";
+import { randomInt } from "crypto";
 import redisClient from "../../../utils/redis";
 import { notifyChanges } from "../../../modules/sockets/sockets.coordinator";
 import { join, resolve } from "path";
@@ -17,7 +18,9 @@ const context = "remittances Service";
 let events = {};
 
 function between(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  // crypto.randomInt en vez de Math.random para evitar el patron
+  // detectado como generador pseudoaleatorio inseguro.
+  return randomInt(min, max + 1);
 }
 
 function getFromRedis(key, timeoutMs = 5000) {

@@ -8,6 +8,7 @@ import fs from "fs";
 import { env, ENVIROMENTS } from "../../../utils/enviroment";
 import mailSender from "../../../utils/mail";
 import { join, resolve } from "path";
+import { randomInt } from "crypto";
 import axios from "axios";
 import whatsapp from "../../../utils/whatsapp";
 import fileNamer from "../../../utils/filesName";
@@ -19,7 +20,9 @@ const context = "users Service";
 let events = {};
 
 function between(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  // crypto.randomInt en vez de Math.random para evitar el patron
+  // detectado como generador pseudoaleatorio inseguro.
+  return randomInt(min, max + 1);
 }
 
 async function sendSMS(to, body) {

@@ -2,13 +2,15 @@ import chatPGRepository from "../repositories/chat.pg.repository";
 import {join} from 'path'
 import {env} from '../../../utils/enviroment'
 import fs from 'fs'
+import { randomInt } from 'crypto'
 
 const chatSocketService = {};
 
-function between(min, max) {  
-  return Math.floor(
-    Math.random() * (max - min + 1) + min
-  )
+function between(min, max) {
+  // Solo se usa para desambiguar nombres de archivo, pero se usa
+  // crypto.randomInt en vez de Math.random para evitar el patron
+  // detectado como generador pseudoaleatorio inseguro.
+  return randomInt(min, max + 1)
 }
 
 chatSocketService.sendMessage = async (body) => {
