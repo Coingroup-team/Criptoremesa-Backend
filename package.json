@@ -13,7 +13,8 @@
     "start:rem": "babel-node src/utils/workers/createRemittance.worker.js",
     "start:silt": "babel-node src/utils/workers/silt.worker.js",
     "start:persona": "babel-node src/utils/workers/persona.worker.js",
-    "start:all": "concurrently \"npm run start:api\" \"npm run start:rem\" \"npm run start:silt\" \"npm run start:persona\" --names \"API,REM,SILT,PERSONA\" --prefix-colors \"blue,green,yellow,magenta\""
+    "start:all": "concurrently \"npm run start:api\" \"npm run start:rem\" \"npm run start:silt\" \"npm run start:persona\" --names \"API,REM,SILT,PERSONA\" --prefix-colors \"blue,green,yellow,magenta\"",
+    "security:semgrep": "powershell -ExecutionPolicy Bypass -File ./scripts/semgrep-scan.ps1"
   },
   "repository": {
     "type": "git",
