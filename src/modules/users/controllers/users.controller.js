@@ -1642,4 +1642,15 @@ usersController.getFullInfo = async (req, res, next) => {
   }
 };
 
+usersController.dismissDowngradeNotice = async (req, res, next) => {
+  try {
+    logger.info(`[${context}]: Dismissing downgrade notice`);
+    ObjLog.log(`[${context}]: Dismissing downgrade notice`);
+    let finalResp = await usersService.dismissDowngradeNotice(req, res, next);
+    res.status(finalResp.status).json(finalResp.data);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default usersController;

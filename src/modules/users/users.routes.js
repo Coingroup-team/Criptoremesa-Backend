@@ -201,4 +201,10 @@ usersRouter.get(
   usersController.getFullInfo
 );
 
+usersRouter.patch(
+  "/dismiss-downgrade-notice/:email_user",
+  // guard.verifyAdmin("/login"),
+  usersController.dismissDowngradeNotice
+);
+
 export default usersRouter;

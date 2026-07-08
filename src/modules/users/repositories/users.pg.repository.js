@@ -6,6 +6,23 @@ import mailSender from "../../../utils/mail";
 const usersPGRepository = {};
 const context = "users PG Repository";
 
+usersPGRepository.dismissDowngradeNotice = async (email) => {
+  try {
+    logger.info(`[${context}]: Dismissing downgrade notice on db`);
+    ObjLog.log(`[${context}]: Dismissing downgrade notice on db`);
+    const resp = await poolSM.query(
+      `UPDATE sec_cust.ms_sixmap_users
+          SET has_downgraded_level = false
+        WHERE LOWER(TRIM(email_user)) = LOWER(TRIM($1))
+      RETURNING id_user, has_downgraded_level`,
+      [email],
+    );
+    return resp.rows[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
 usersPGRepository.createNewClient = async (body) => {
   try {
     logger.info(`[${context}]: Inserting new client in db`);

@@ -53,8 +53,22 @@ authenticationPGRepository.getUserByEmail = async (email) => {
     const resp = await poolSM.query(
       `SELECT * FROM get_all_users_by_email('${email}')`,
     );
-    // console.log(resp.rows[0]);
-    return resp.rows[0];
+    const user = resp.rows[0];
+    // El SP get_all_users_by_email no devuelve has_downgraded_level; se anexa aparte
+    // para exponerlo en la info del login sin modificar el stored procedure.
+    if (user) {
+      const dg = await poolSM.query(
+        `SELECT has_downgraded_level, downgraded_level_at
+           FROM sec_cust.ms_sixmap_users
+          WHERE LOWER(TRIM(email_user)) = LOWER(TRIM($1))`,
+        [email],
+      );
+      if (dg.rows[0]) {
+        user.has_downgraded_level = dg.rows[0].has_downgraded_level;
+        user.downgraded_level_at = dg.rows[0].downgraded_level_at;
+      }
+    }
+    return user;
   } catch (error) {
     throw error;
   }

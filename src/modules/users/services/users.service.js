@@ -1708,5 +1708,26 @@ usersService.getFullInfo = async (req, res, next) => {
   }
 }
 
+usersService.dismissDowngradeNotice = async (req, res, next) => {
+  try {
+    logger.info(`[${context}]: Dismissing downgrade notice`);
+    ObjLog.log(`[${context}]: Dismissing downgrade notice`);
+    const updated = await usersPGRepository.dismissDowngradeNotice(
+      req.params.email_user.toLowerCase(),
+    );
+    return {
+      data: {
+        success: true,
+        has_downgraded_level: updated ? updated.has_downgraded_level : false,
+      },
+      status: 200,
+      success: true,
+      failed: false,
+    };
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default usersService;
 export { events };
