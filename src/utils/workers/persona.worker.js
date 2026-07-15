@@ -1,5 +1,6 @@
 import { personaQueue } from "../queues/persona.queue";
 import veriflevelsPGRepository from "../../modules/veriflevels/repositories/veriflevels.pg.repository";
+import usersPGRepository from "../../modules/users/repositories/users.pg.repository";
 import { logger } from "../logger";
 
 const context = "Persona Queue";
@@ -36,6 +37,23 @@ personaQueue.process(1, async (job, done) => {
       await veriflevelsPGRepository.levelOneVerificationPersonaEnhanced(
         personaRequest
       );
+    }
+
+    // Persona aprobada (SUCCESS = subió a nivel 1 / Intermedio): apagar el flag
+    // has_downgraded_level para que el banner de "bajaste a nivel básico" deje de
+    // mostrarse. Best-effort: si el UPDATE falla no debe romper el webhook (el usuario
+    // igual quedó aprobado y puede cerrar el banner manualmente).
+    if (personaRequest.personaStatus === "SUCCESS" && personaRequest.emailUser) {
+      try {
+        await usersPGRepository.dismissDowngradeNotice(personaRequest.emailUser);
+        logger.info(
+          `[${context}] has_downgraded_level cleared for approved user ${personaRequest.emailUser}`
+        );
+      } catch (flagError) {
+        logger.error(
+          `[${context}] Could not clear has_downgraded_level for ${personaRequest.emailUser}: ${flagError}`
+        );
+      }
     }
 
     logger.info(`[${context}] Persona request processed successfully`);
