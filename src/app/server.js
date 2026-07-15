@@ -85,7 +85,29 @@ app.use(
     credentials: true,
   }),
 );
-app.use(helmet());
+// helmet() sin configurar trae defaults con comodines (https: en font-src
+// y style-src), 'unsafe-inline' en style-src, y no incluye form-action.
+// Esta API solo responde JSON (no sirve HTML), asi que CSP no protege
+// paginas aca, pero se deja explicita como defensa en profundidad y para
+// no repetir esos hallazgos si en el futuro esta app llega a servir algo
+// mas que JSON.
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        imgSrc: ["'self'", "data:"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+      },
+    },
+  }),
+);
 app.set("trust proxy", 1);
 app.use(
   session({
