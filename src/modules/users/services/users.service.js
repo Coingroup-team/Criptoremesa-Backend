@@ -1734,6 +1734,16 @@ usersService.sendActionVerificationCode = async (req, res, next) => {
     if (password !== undefined) {
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
+        // Mismo mecanismo de bloqueo del login clásico: sp_login_failed
+        // cuenta el intento fallido y bloquea el usuario al exceder el
+        // límite. Best-effort: un fallo aquí no debe cambiar la respuesta.
+        try {
+          await authenticationPGRepository.loginFailed(user.email_user);
+        } catch (blockError) {
+          logger.error(
+            `[${context}]: loginFailed error: ${blockError.message}`,
+          );
+        }
         return {
           data: { msg: "Invalid credentials" },
           status: 401,

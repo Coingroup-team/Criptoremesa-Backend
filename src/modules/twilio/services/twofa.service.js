@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { logger } from "../../../utils/logger";
 import ObjLog from "../../../utils/ObjLog";
 import twofaPGRepository from "../repositories/twofa.pg.repository";
+import authenticationPGRepository from "../../authentication/repositories/authentication.pg.repository";
 import { env } from "../../../utils/enviroment";
 
 const twofaService = {};
@@ -208,8 +209,15 @@ twofaService.activate = async (req, res, next) => {
       return res.status(401).json({ error: "Credenciales inválidas." });
 
     const passwordOk = await bcrypt.compare(password, creds.password);
-    if (!passwordOk)
+    if (!passwordOk) {
+      // Mismo mecanismo de bloqueo del login clásico (sp_login_failed).
+      try {
+        await authenticationPGRepository.loginFailed(email_user.toLowerCase());
+      } catch (blockError) {
+        logger.error(`[${context}]: loginFailed error: ${blockError.message}`);
+      }
       return res.status(401).json({ error: "Credenciales inválidas." });
+    }
 
     // Verify first TOTP code with Twilio
     const identity = toIdentity(email_user);
