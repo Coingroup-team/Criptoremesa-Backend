@@ -22,8 +22,6 @@ if (isLocal) {
       {
         key: fs.readFileSync("src/utils/cert/key.pem"),
         cert: fs.readFileSync("src/utils/cert/cert.pem"),
-        requestCert: true,
-        rejectUnauthorized: false,
       },
       app,
     );
@@ -48,8 +46,6 @@ if (isLocal) {
         key: fs.readFileSync(sslKeyPath),
         cert: fs.readFileSync(sslCertPath),
         ca: fs.readFileSync(sslCaPath),
-        requestCert: true,
-        rejectUnauthorized: false,
       },
       app,
     );

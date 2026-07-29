@@ -6,11 +6,12 @@ import { env } from "../../../utils/enviroment";
 const veriflevelsHTTPRepository = {};
 const context = "Verif Levels HTTP Repository";
 
-// Clave de API de GeoNames
-const username = 'thonygrz';
+// Usuario de la API de GeoNames (funciona como credencial de acceso).
+// Antes estaba hardcodeado en el codigo fuente.
+const username = env.GEONAMES_USERNAME || "thonygrz";
 
-// Endpoint de GeoNames
-const url = `http://api.geonames.org/countryInfoJSON?username=${username}`;
+// Endpoint de GeoNames (HTTPS, antes usaba HTTP sin cifrar)
+const url = `https://api.geonames.org/countryInfoJSON?username=${username}`;
 
 // Función para obtener el código alfa-2 dado el código alfa-3
 const getCca2FromCca3 = async (cca3) => {

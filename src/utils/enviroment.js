@@ -20,6 +20,7 @@ export const env = {
   SILT_DATA_DIR: process.env.SILT_DATA_DIR || "/repo-cr",
   MAIL_SENDER: process.env.MAIL_SENDER,
   MESSAGE_SERVER_BASE_URL: process.env.MESSAGE_SERVER_BASE_URL,
+  WHATSAPP_TLS_INSECURE: process.env.WHATSAPP_TLS_INSECURE,
   TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
   TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
   TWILIO_VERIFY_SID: process.env.TWILIO_VERIFY_SID,
@@ -41,8 +42,14 @@ export const env = {
   PERSONA_API_URL: process.env.PERSONA_API_URL,
   PERSONA_API_KEY: process.env.PERSONA_API_KEY,
   PERSONA_INQUIRY_TEMPLATE_ID: process.env.PERSONA_INQUIRY_TEMPLATE_ID,
+  // Usuario de la API de GeoNames (antes hardcodeado en el codigo)
+  GEONAMES_USERNAME: process.env.GEONAMES_USERNAME,
   // PostgreSQL SSL
   PG_DB_SSL: process.env.PG_DB_SSL,
+  // Verificación estricta del certificado TLS de Postgres (por defecto: true/seguro).
+  // Solo se debe poner en "false" temporalmente si el proveedor de la BD usa
+  // un certificado que aun no se ha podido validar contra una CA de confianza.
+  PG_DB_SSL_REJECT_UNAUTHORIZED: process.env.PG_DB_SSL_REJECT_UNAUTHORIZED,
   // API Key for frontend authentication
   INTERNAL_API_KEY: process.env.INTERNAL_API_KEY,
   // Deployment region: "europe" or unset (Latam)

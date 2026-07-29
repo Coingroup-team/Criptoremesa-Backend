@@ -3,6 +3,33 @@ import fs from "fs";
 import path from "path";
 import { env } from "../../utils/enviroment";
 
+// silt_id / flow_name / filename vienen de req.params y req.query (input
+// externo). Se validan contra un patron seguro y, ademas, se verifica que la
+// ruta resuelta quede dentro del directorio base esperado antes de leer o
+// servir cualquier archivo (defensa en profundidad contra path traversal).
+const SAFE_SEGMENT = /^[a-zA-Z0-9_.-]+$/;
+
+function isSafePathSegment(segment) {
+  return (
+    typeof segment === "string" &&
+    segment.length > 0 &&
+    SAFE_SEGMENT.test(segment) &&
+    !segment.includes("..")
+  );
+}
+
+function resolveWithinBase(baseDir, ...segments) {
+  const resolvedBase = path.resolve(baseDir);
+  const resolvedTarget = path.resolve(resolvedBase, ...segments);
+  if (
+    resolvedTarget !== resolvedBase &&
+    !resolvedTarget.startsWith(resolvedBase + path.sep)
+  ) {
+    return null;
+  }
+  return resolvedTarget;
+}
+
 /**
  * Get all SILT records with pagination
  */
@@ -14,11 +41,25 @@ export const getSiltRecords = async (req, res) => {
     const siltIdFilter = req.query.silt_id || "";
     const flowFilter = req.query.flow_name || ""; // New flow filter parameter
 
-    // Build WHERE clause for flow filtering
-    const flowCondition =
-      flowFilter && flowFilter !== "All Flows"
-        ? `AND flow_name = '${flowFilter}'`
-        : "";
+    // Los valores vienen de query params (input externo). Antes se
+    // interpolaban directamente en el SQL (SQL injection). Ahora se pasan
+    // como parametros ligados ($1, $2, ...).
+    const filterParams = [];
+    let siltIdPlaceholder = null;
+    if (siltIdFilter) {
+      filterParams.push(`%${siltIdFilter}%`);
+      siltIdPlaceholder = `$${filterParams.length}`;
+    }
+    let flowPlaceholder = null;
+    const flowIsSpecific =
+      flowFilter && flowFilter !== "All Flows" && flowFilter !== "Bithonor";
+    if (flowIsSpecific) {
+      filterParams.push(flowFilter);
+      flowPlaceholder = `$${filterParams.length}`;
+    }
+    const bithonorExcluded =
+      flowFilter && flowFilter !== "All Flows" && flowFilter !== "Bithonor";
+    const externalExcluded = flowFilter === "Bithonor";
 
     // Get total count from both tables
     const countQuery = `
@@ -31,40 +72,29 @@ export const getSiltRecords = async (req, res) => {
           AND ued.id_item = (SELECT id_item FROM sec_cust.ms_item WHERE name = 'silt_full_json')
         WHERE ulv.silt_id IS NOT NULL 
           AND ued.value IS NOT NULL
-          ${siltIdFilter ? `AND ulv.silt_id ILIKE '%${siltIdFilter}%'` : ""}
-          ${
-            flowFilter === "Bithonor" ||
-            !flowFilter ||
-            flowFilter === "All Flows"
-              ? ""
-              : "AND 1=0"
-          }
+          ${siltIdPlaceholder ? `AND ulv.silt_id ILIKE ${siltIdPlaceholder}` : ""}
+          ${bithonorExcluded ? "AND 1=0" : ""}
         
         UNION ALL
         
         SELECT esd.public_id::text as identifier, esd.flow_name
         FROM sec_cust.lnk_external_silt_data esd
         WHERE esd.active = TRUE
-          ${
-            siltIdFilter
-              ? `AND esd.public_id::text ILIKE '%${siltIdFilter}%'`
-              : ""
-          }
-          ${
-            flowFilter &&
-            flowFilter !== "All Flows" &&
-            flowFilter !== "Bithonor"
-              ? `AND esd.flow_name = '${flowFilter}'`
-              : ""
-          }
-          ${flowFilter === "Bithonor" ? "AND 1=0" : ""}
+          ${siltIdPlaceholder ? `AND esd.public_id::text ILIKE ${siltIdPlaceholder}` : ""}
+          ${flowPlaceholder ? `AND esd.flow_name = ${flowPlaceholder}` : ""}
+          ${externalExcluded ? "AND 1=0" : ""}
       ) combined
     `;
 
-    const countResult = await poolSM.query(countQuery);
+    const countResult = await poolSM.query(countQuery, filterParams);
     const total = parseInt(countResult.rows[0].total);
 
     // Get paginated records from both tables
+    // LIMIT/OFFSET van despues de los filtros ya asignados arriba.
+    const limitPlaceholder = `$${filterParams.length + 1}`;
+    const offsetPlaceholder = `$${filterParams.length + 2}`;
+    const dataParams = [...filterParams, limit, offset];
+
     const dataQuery = `
       SELECT * FROM (
         SELECT 
@@ -80,14 +110,8 @@ export const getSiltRecords = async (req, res) => {
           AND ued.id_item = (SELECT id_item FROM sec_cust.ms_item WHERE name = 'silt_full_json')
         WHERE ulv.silt_id IS NOT NULL 
           AND ued.value IS NOT NULL
-          ${siltIdFilter ? `AND ulv.silt_id ILIKE '%${siltIdFilter}%'` : ""}
-          ${
-            flowFilter === "Bithonor" ||
-            !flowFilter ||
-            flowFilter === "All Flows"
-              ? ""
-              : "AND 1=0"
-          }
+          ${siltIdPlaceholder ? `AND ulv.silt_id ILIKE ${siltIdPlaceholder}` : ""}
+          ${bithonorExcluded ? "AND 1=0" : ""}
         
         UNION ALL
         
@@ -99,25 +123,15 @@ export const getSiltRecords = async (req, res) => {
           esd.date_creation as fetch_date
         FROM sec_cust.lnk_external_silt_data esd
         WHERE esd.active = TRUE
-          ${
-            siltIdFilter
-              ? `AND esd.public_id::text ILIKE '%${siltIdFilter}%'`
-              : ""
-          }
-          ${
-            flowFilter &&
-            flowFilter !== "All Flows" &&
-            flowFilter !== "Bithonor"
-              ? `AND esd.flow_name = '${flowFilter}'`
-              : ""
-          }
-          ${flowFilter === "Bithonor" ? "AND 1=0" : ""}
+          ${siltIdPlaceholder ? `AND esd.public_id::text ILIKE ${siltIdPlaceholder}` : ""}
+          ${flowPlaceholder ? `AND esd.flow_name = ${flowPlaceholder}` : ""}
+          ${externalExcluded ? "AND 1=0" : ""}
       ) combined
       ORDER BY fetch_date DESC
-      LIMIT $1 OFFSET $2
+      LIMIT ${limitPlaceholder} OFFSET ${offsetPlaceholder}
     `;
 
-    const dataResult = await poolSM.query(dataQuery, [limit, offset]);
+    const dataResult = await poolSM.query(dataQuery, dataParams);
 
     res.json({
       success: true,
@@ -195,30 +209,47 @@ export const getSiltById = async (req, res) => {
 
     // Get images from filesystem directory
     const record = result.rows[0];
-    const imageDir = isExternal
-      ? path.join(env.SILT_DATA_DIR, "external-silt-data", record.flow_name, silt_id)
-      : path.join(env.SILT_DATA_DIR, "silt-data", silt_id);
     let images = [];
 
-    try {
-      if (fs.existsSync(imageDir)) {
-        const files = fs.readdirSync(imageDir);
-        images = files
-          .filter((file) => /\.(jpg|jpeg|png|gif|webp)$/i.test(file))
-          .map((file) => ({
-            img_name: file,
-            img_type: file.split("_")[1]?.split("-")[0] || "UNKNOWN",
-            img_storage_path: `/silt/${silt_id}/image/${file}`,
-          }));
-        console.log(`Found ${images.length} images in ${imageDir}`);
+    if (
+      !isSafePathSegment(silt_id) ||
+      (isExternal && !isSafePathSegment(record.flow_name))
+    ) {
+      console.error(`Unsafe silt_id/flow_name for image lookup: ${silt_id}`);
+    } else {
+      const imageDir = isExternal
+        ? resolveWithinBase(
+            env.SILT_DATA_DIR,
+            "external-silt-data",
+            record.flow_name,
+            silt_id
+          )
+        : resolveWithinBase(env.SILT_DATA_DIR, "silt-data", silt_id);
+
+      if (!imageDir) {
+        console.error(`Path traversal attempt blocked for silt_id: ${silt_id}`);
       } else {
-        console.log(`Directory not found: ${imageDir}`);
+        try {
+          if (fs.existsSync(imageDir)) {
+            const files = fs.readdirSync(imageDir);
+            images = files
+              .filter((file) => /\.(jpg|jpeg|png|gif|webp)$/i.test(file))
+              .map((file) => ({
+                img_name: file,
+                img_type: file.split("_")[1]?.split("-")[0] || "UNKNOWN",
+                img_storage_path: `/silt/${silt_id}/image/${file}`,
+              }));
+            console.log(`Found ${images.length} images in ${imageDir}`);
+          } else {
+            console.log(`Directory not found: ${imageDir}`);
+          }
+        } catch (error) {
+          console.error(
+            `Error reading image directory for ${silt_id}:`,
+            error.message
+          );
+        }
       }
-    } catch (error) {
-      console.error(
-        `Error reading image directory for ${silt_id}:`,
-        error.message
-      );
     }
 
     // Parse silt_data for display
@@ -253,11 +284,22 @@ export const getSiltImage = async (req, res) => {
     const { silt_id, filename } = req.params;
     const flow_name = req.query.flow_name; // Optional flow name for external images
 
+    if (
+      !isSafePathSegment(silt_id) ||
+      !isSafePathSegment(filename) ||
+      (flow_name !== undefined && !isSafePathSegment(flow_name))
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid image path",
+      });
+    }
+
     // Determine image path based on whether it's internal or external
     let imagePath;
     if (flow_name && flow_name !== "Bithonor") {
       // External SILT data
-      imagePath = path.join(
+      imagePath = resolveWithinBase(
         env.SILT_DATA_DIR,
         "external-silt-data",
         flow_name,
@@ -266,7 +308,19 @@ export const getSiltImage = async (req, res) => {
       );
     } else {
       // Internal Bithonor data
-      imagePath = path.join(env.SILT_DATA_DIR, "silt-data", silt_id, filename);
+      imagePath = resolveWithinBase(
+        env.SILT_DATA_DIR,
+        "silt-data",
+        silt_id,
+        filename
+      );
+    }
+
+    if (!imagePath) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid image path",
+      });
     }
 
     if (!fs.existsSync(imagePath)) {

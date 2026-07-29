@@ -9,7 +9,7 @@
         "second_last_name": "",
         "username": null,
         "email_user": "bithonor.2023+testmx1@gmail.com",
-        "password": "$2a$10$rqD6dPYIxCLzbsrUdjvbuO4kHq3ZgBn50a2H06zHZifUKGIcTnU.a",
+        "password": "[REDACTED-BCRYPT-HASH]",
         "last_session_reg": null,
         "last_ip_reg": null,
         "last_ip_city_reg": null,

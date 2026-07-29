@@ -3,3 +3,14 @@ dist
 .env
 settings.json
 logs
+
+# Certificados y llaves locales de desarrollo (nunca deben versionarse)
+private.key
+*.pem
+*.key
+*.crt
+*.cert
+!src/utils/cert/.gitkeep
+# CA bundle publico de AWS RDS (no es secreto): necesario para verificar el
+# certificado TLS del RDS. Se versiona a proposito.
+!src/utils/cert/rds-global-bundle.pem

@@ -1,4 +1,5 @@
 import express, { json } from "express";
+import crypto from "crypto";
 import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
@@ -84,7 +85,29 @@ app.use(
     credentials: true,
   }),
 );
-app.use(helmet());
+// helmet() sin configurar trae defaults con comodines (https: en font-src
+// y style-src), 'unsafe-inline' en style-src, y no incluye form-action.
+// Esta API solo responde JSON (no sirve HTML), asi que CSP no protege
+// paginas aca, pero se deja explicita como defensa en profundidad y para
+// no repetir esos hallazgos si en el futuro esta app llega a servir algo
+// mas que JSON.
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        imgSrc: ["'self'", "data:"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+      },
+    },
+  }),
+);
 app.set("trust proxy", 1);
 app.use(
   session({
@@ -129,12 +152,23 @@ app.use((req, res, next) => {
 
 // ── API Key guard ────────────────────────────────────────────
 const API_KEY = env.INTERNAL_API_KEY;
+const apiKeyBuffer = Buffer.from(API_KEY || "", "utf8");
+
+function isValidApiKey(candidate) {
+  if (!candidate || !API_KEY) return false;
+  const candidateBuffer = Buffer.from(candidate, "utf8");
+  // Las longitudes deben coincidir antes de comparar en tiempo constante,
+  // timingSafeEqual lanza si los buffers tienen tamanos distintos.
+  if (candidateBuffer.length !== apiKeyBuffer.length) return false;
+  return crypto.timingSafeEqual(candidateBuffer, apiKeyBuffer);
+}
+
 app.use((req, res, next) => {
   // Excluir health-check del ALB y Bull Board
   if (req.path === "/" || req.path.startsWith("/admin/queues")) return next();
 
   const key = req.headers["x-api-key"];
-  if (!key || key !== API_KEY) {
+  if (!isValidApiKey(key)) {
     return res.status(401).json({ error: "Unauthorized" });
   }
   next();
