@@ -2,13 +2,25 @@ import { Pool, Client } from "pg";
 import { logger } from "../utils/logger";
 import ObjLog from "../utils/ObjLog";
 import { env } from "../utils/enviroment";
+import fs from "fs";
+import path from "path";
 
-// Por defecto se valida el certificado TLS contra las CAs de confianza del
-// sistema. Solo se desactiva si se define explícitamente
-// PG_DB_SSL_REJECT_UNAUTHORIZED=false (uso temporal/excepcional, documentar el motivo).
+// TLS verificado hacia Postgres: se valida la identidad del servidor contra el
+// CA bundle oficial de AWS RDS. El certificado del RDS lo firma una CA de
+// Amazon que NO esta en el trust store por defecto de Node, por eso hay que
+// proveer el bundle explicitamente (si no, "self-signed certificate in
+// certificate chain" y no conecta). Por defecto rejectUnauthorized=true
+// (verificacion real anti-MITM app<->BD); solo se relaja poniendo
+// PG_DB_SSL_REJECT_UNAUTHORIZED=false de forma explicita y temporal.
+const rdsCa = fs
+  .readFileSync(path.join(__dirname, "..", "utils", "cert", "rds-global-bundle.pem"))
+  .toString();
 const sslConfig =
   env.PG_DB_SSL === "true"
-    ? { rejectUnauthorized: env.PG_DB_SSL_REJECT_UNAUTHORIZED !== "false" }
+    ? {
+        ca: rdsCa,
+        rejectUnauthorized: env.PG_DB_SSL_REJECT_UNAUTHORIZED !== "false",
+      }
     : false;
 
 const connectionDbSixmap = {
