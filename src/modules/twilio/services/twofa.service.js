@@ -477,4 +477,47 @@ twofaService.disableWithEmailCode = async (req, res, next) => {
   }
 };
 
+// ── 10. POST /twofa/config ─────────────────────────────────
+// Cambia la fecha que se muestra en el aviso, sin desplegar nada.
+// Header: x-config-token: <TWOFA_CONFIG_TOKEN>
+// Body:   { "mandatory_date": "AAAA-MM-DD" }
+twofaService.setConfig = async (req, res, next) => {
+  try {
+    const expected = env.TWOFA_CONFIG_TOKEN;
+    // Sin token configurado se rechaza: nunca queda abierto por accidente.
+    if (!expected) {
+      logger.error(`[${context}]: TWOFA_CONFIG_TOKEN no esta definido`);
+      return res.status(503).json({ error: "CONFIG_TOKEN_NOT_SET" });
+    }
+    if (req.get("x-config-token") !== expected) {
+      return res.status(401).json({ error: "UNAUTHORIZED" });
+    }
+
+    const value = req.body ? req.body.mandatory_date : null;
+    if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(String(value))) {
+      return res.status(400).json({
+        error: "BAD_REQUEST",
+        message: 'Se espera { "mandatory_date": "AAAA-MM-DD" }',
+      });
+    }
+    // Que ademas sea una fecha real (rechaza 2026-02-31 y similares).
+    const d = new Date(value + "T00:00:00Z");
+    if (isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== value) {
+      return res
+        .status(400)
+        .json({ error: "BAD_REQUEST", message: "La fecha no existe." });
+    }
+
+    await twofaPGRepository.setMandatoryDate(value);
+    return res.status(200).json({
+      success: true,
+      required: env.TWOFA_REQUIRED === true,
+      mandatory_date: value,
+    });
+  } catch (error) {
+    logger.error(`[${context}]: setConfig error: ${error.message}`);
+    next(error);
+  }
+};
+
 export default twofaService;

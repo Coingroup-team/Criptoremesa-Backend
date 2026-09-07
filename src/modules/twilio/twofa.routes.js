@@ -20,6 +20,8 @@ router.delete("/disable", twofaController.disable2FA);
 // ── Configuracion del despliegue gradual ────────────────────
 // GET /cr/twofa/config -> { required, mandatory_date }
 router.get("/config", twofaController.getConfig);
+// POST /cr/twofa/config -> cambia la fecha. Protegido con x-config-token.
+router.post("/config", twofaController.setConfig);
 
 // ── Alta/baja de 2FA por codigo al correo (Latam) ───────────
 // El codigo se solicita antes con POST /cr/users/sendActionVerificationCode

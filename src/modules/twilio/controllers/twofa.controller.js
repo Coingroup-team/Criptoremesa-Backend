@@ -47,4 +47,12 @@ twofaController.disableWithEmailCode = (req, res, next) => {
   }
 };
 
+twofaController.setConfig = (req, res, next) => {
+  try {
+    twofaService.setConfig(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default twofaController;

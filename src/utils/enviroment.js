@@ -28,6 +28,10 @@ export const env = {
   // entrar sin 2FA y solo se le muestra el aviso. Al ponerlo en true, quien
   // no lo tenga activo es enviado directo al flujo de activacion.
   TWOFA_REQUIRED: process.env.TWOFA_REQUIRED === "true",
+  // Token para cambiar la fecha obligatoria con POST /cr/twofa/config.
+  // Es distinto del x-api-key: ese lo lleva horneado el frontend y no
+  // sirve como control de administracion.
+  TWOFA_CONFIG_TOKEN: process.env.TWOFA_CONFIG_TOKEN,
   APP_NAME: process.env.APP_NAME || "Bithonor",
   ENVIROMENT: process.env.ENVIROMENT,
   NOTIFY_ENV: process.env.NOTIFY_ENV,

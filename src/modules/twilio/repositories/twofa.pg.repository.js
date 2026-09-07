@@ -189,4 +189,37 @@ twofaPGRepository.getMandatoryDate = async () => {
   }
 };
 
+/**
+ * Cambia la fecha en la que el 2FA pasa a ser obligatorio.
+ *
+ * sec_cust.env_variables no tiene clave primaria y arrastra filas duplicadas
+ * de otras claves, asi que un UPDATE normal podria dejar dos valores
+ * distintos para la misma clave. Por eso se borra y se inserta una sola fila,
+ * dentro de una transaccion y tocando UNICAMENTE nuestra clave.
+ */
+twofaPGRepository.setMandatoryDate = async (value) => {
+  const client = await poolSM.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query(`DELETE FROM sec_cust.env_variables WHERE key = $1`, [
+      "twofa_mandatory_date",
+    ]);
+    await client.query(
+      `INSERT INTO sec_cust.env_variables (key, value) VALUES ($1, $2)`,
+      ["twofa_mandatory_date", value],
+    );
+    await client.query("COMMIT");
+    logger.info(`[${context}]: mandatory_date actualizada a ${value}`);
+    return value;
+  } catch (error) {
+    try {
+      await client.query("ROLLBACK");
+    } catch (_) {}
+    logger.error(`[${context}]: setMandatoryDate: ${error.message}`);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
 export default twofaPGRepository;
