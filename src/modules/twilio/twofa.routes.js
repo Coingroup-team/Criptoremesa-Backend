@@ -16,4 +16,14 @@ router.post("/activate", twofaController.activate);
 router.post("/challenge", twofaController.challenge);
 router.delete("/disable", twofaController.disable2FA);
 
+
+// ── Configuracion del despliegue gradual ────────────────────
+// GET /cr/twofa/config -> { required, mandatory_date }
+router.get("/config", twofaController.getConfig);
+
+// ── Alta/baja de 2FA por codigo al correo (Latam) ───────────
+// El codigo se solicita antes con POST /cr/users/sendActionVerificationCode
+router.post("/activate-email", twofaController.activateWithEmailCode);
+router.post("/disable-email", twofaController.disableWithEmailCode);
+
 export default router;

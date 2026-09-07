@@ -163,4 +163,30 @@ twofaPGRepository.getCredentialsByEmail = async (email_user) => {
   }
 };
 
+/**
+ * Fecha en la que el 2FA pasa a ser obligatorio.
+ *
+ * Vive en sec_cust.env_variables, la tabla de configuracion que ya existia.
+ * Ojo: esa tabla no tiene clave primaria y arrastra filas duplicadas de otras
+ * claves, por eso se lee con LIMIT 1.
+ *
+ * Para cambiarla:
+ *   UPDATE sec_cust.env_variables SET value = 'AAAA-MM-DD'
+ *    WHERE key = 'twofa_mandatory_date';
+ */
+twofaPGRepository.getMandatoryDate = async () => {
+  try {
+    await poolSM.query("SET SCHEMA 'sec_cust'");
+    const resp = await poolSM.query(
+      `SELECT value FROM sec_cust.env_variables WHERE key = $1 LIMIT 1`,
+      ["twofa_mandatory_date"],
+    );
+    return resp.rows[0] ? resp.rows[0].value : null;
+  } catch (error) {
+    // Nunca hacemos fallar el login por no poder leer la configuracion.
+    logger.error(`[${context}]: getMandatoryDate: ${error.message}`);
+    return null;
+  }
+};
+
 export default twofaPGRepository;

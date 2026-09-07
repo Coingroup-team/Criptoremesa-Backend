@@ -5,6 +5,7 @@ import { logger } from "../../../utils/logger";
 import ObjLog from "../../../utils/ObjLog";
 import twofaPGRepository from "../repositories/twofa.pg.repository";
 import authenticationPGRepository from "../../authentication/repositories/authentication.pg.repository";
+import usersPGRepository from "../../users/repositories/users.pg.repository";
 import { env } from "../../../utils/enviroment";
 
 const twofaService = {};
@@ -374,6 +375,104 @@ twofaService.disable2FA = async (req, res, next) => {
     return res.status(200).json({ success: true, message: "2FA desactivado." });
   } catch (error) {
     logger.error(`[${context}]: disable2FA error: ${error.message}`);
+    next(error);
+  }
+};
+
+// ── 7. GET /twofa/config ───────────────────────────────────
+// Lo consume el FE para saber si el 2FA ya es obligatorio y que fecha
+// mostrar en el aviso. Esta pensado para no fallar nunca: ante cualquier
+// problema responde required=false, que es el comportamiento permisivo.
+twofaService.getConfig = async (req, res, next) => {
+  try {
+    const mandatory_date = await twofaPGRepository.getMandatoryDate();
+    return res.status(200).json({
+      success: true,
+      required: env.TWOFA_REQUIRED === true,
+      mandatory_date,
+    });
+  } catch (error) {
+    logger.error(`[${context}]: getConfig error: ${error.message}`);
+    return res
+      .status(200)
+      .json({ success: true, required: false, mandatory_date: null });
+  }
+};
+
+// ── 8. POST /twofa/activate-email ──────────────────────────
+// Alta de 2FA para Latam. Alli el segundo factor es un codigo enviado al
+// correo, no TOTP, asi que se guarda SIN factorSid (queda en NULL).
+// El codigo se pide antes con POST /cr/users/sendActionVerificationCode.
+twofaService.activateWithEmailCode = async (req, res, next) => {
+  try {
+    const email_user = (req.body && req.body.email_user
+      ? String(req.body.email_user)
+      : ""
+    ).toLowerCase();
+    const code = req.body ? req.body.code : null;
+
+    if (!email_user)
+      return res.status(400).json({ error: "email_user es requerido." });
+    if (!code || !/^\d{4,8}$/.test(String(code)))
+      return res.status(400).json({ error: "Código inválido." });
+
+    logger.info(`[${context}]: activateWithEmailCode for ${email_user}`);
+    ObjLog.log(`[${context}]: activateWithEmailCode for ${email_user}`);
+
+    const check = await usersPGRepository.verifCode(email_user, code);
+    const msg = check && check.msg;
+    if (msg !== "Valid code") {
+      return res.status(401).json({
+        success: false,
+        error: msg === "Expired code" ? "El código expiró." : "Código incorrecto.",
+      });
+    }
+
+    await twofaPGRepository.enable2FA(email_user, null);
+    return res
+      .status(200)
+      .json({ success: true, message: "2FA activado correctamente." });
+  } catch (error) {
+    logger.error(`[${context}]: activateWithEmailCode error: ${error.message}`);
+    next(error);
+  }
+};
+
+// ── 9. POST /twofa/disable-email ───────────────────────────
+// Baja de 2FA para Latam, verificando un codigo enviado al correo.
+twofaService.disableWithEmailCode = async (req, res, next) => {
+  try {
+    const email_user = (req.body && req.body.email_user
+      ? String(req.body.email_user)
+      : ""
+    ).toLowerCase();
+    const code = req.body ? req.body.code : null;
+
+    if (!email_user)
+      return res.status(400).json({ error: "email_user es requerido." });
+    if (!code || !/^\d{4,8}$/.test(String(code)))
+      return res.status(400).json({ error: "Código inválido." });
+
+    logger.info(`[${context}]: disableWithEmailCode for ${email_user}`);
+    ObjLog.log(`[${context}]: disableWithEmailCode for ${email_user}`);
+
+    const row = await twofaPGRepository.get2FAStatusByEmail(email_user);
+    if (!row || !row.two_factor_enabled)
+      return res.status(400).json({ error: "Sin 2FA activo." });
+
+    const check = await usersPGRepository.verifCode(email_user, code);
+    const msg = check && check.msg;
+    if (msg !== "Valid code") {
+      return res.status(401).json({
+        success: false,
+        error: msg === "Expired code" ? "El código expiró." : "Código incorrecto.",
+      });
+    }
+
+    await twofaPGRepository.disable2FA(email_user);
+    return res.status(200).json({ success: true, message: "2FA desactivado." });
+  } catch (error) {
+    logger.error(`[${context}]: disableWithEmailCode error: ${error.message}`);
     next(error);
   }
 };

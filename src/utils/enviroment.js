@@ -24,6 +24,10 @@ export const env = {
   TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
   TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
   TWILIO_VERIFY_SID: process.env.TWILIO_VERIFY_SID,
+  // Interruptor del 2FA obligatorio. Mientras sea false el usuario puede
+  // entrar sin 2FA y solo se le muestra el aviso. Al ponerlo en true, quien
+  // no lo tenga activo es enviado directo al flujo de activacion.
+  TWOFA_REQUIRED: process.env.TWOFA_REQUIRED === "true",
   APP_NAME: process.env.APP_NAME || "Bithonor",
   ENVIROMENT: process.env.ENVIROMENT,
   NOTIFY_ENV: process.env.NOTIFY_ENV,

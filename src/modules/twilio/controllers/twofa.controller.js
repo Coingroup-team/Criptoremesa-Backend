@@ -23,4 +23,28 @@ twofaController.challenge = (req, res, next) =>
 twofaController.disable2FA = (req, res, next) =>
   twofaService.disable2FA(req, res, next);
 
+twofaController.getConfig = (req, res, next) => {
+  try {
+    twofaService.getConfig(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+};
+
+twofaController.activateWithEmailCode = (req, res, next) => {
+  try {
+    twofaService.activateWithEmailCode(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+};
+
+twofaController.disableWithEmailCode = (req, res, next) => {
+  try {
+    twofaService.disableWithEmailCode(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default twofaController;
