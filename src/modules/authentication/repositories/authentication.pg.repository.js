@@ -10,7 +10,7 @@ authenticationPGRepository.getUserById = async (id) => {
     logger.info(`[${context}]: Getting user by id from db`);
     ObjLog.log(`[${context}]: Getting user by id from db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
-    const resp = await poolSM.query(`SELECT * FROM get_user_by_id($1)`, [
+    const resp = await poolSM.query(`SELECT * FROM sec_cust.get_user_by_id($1::uuid)`, [
       `${id}`,
     ]);
     return resp.rows[0];
@@ -24,7 +24,7 @@ authenticationPGRepository.loginFailed = async (email_user) => {
     logger.info(`[${context}]: Checking login failed in db`);
     ObjLog.log(`[${context}]: Checking login failed in db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
-    const resp = await poolSM.query(`SELECT * FROM sp_login_failed($1)`, [
+    const resp = await poolSM.query(`SELECT * FROM sec_cust.sp_login_failed($1::varchar)`, [
       `${email_user}`,
     ]);
     return resp.rows[0].sp_login_failed;
@@ -38,7 +38,7 @@ authenticationPGRepository.getUserByUsername = async (username) => {
     logger.info(`[${context}]: Getting user by username from db`);
     ObjLog.log(`[${context}]: Getting user by username from db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
-    const resp = await poolSM.query(`SELECT * FROM get_user_by_username($1)`, [
+    const resp = await poolSM.query(`SELECT * FROM sec_cust.get_user_by_username($1::varchar)`, [
       `${username}`,
     ]);
     return resp.rows[0];
@@ -54,7 +54,7 @@ authenticationPGRepository.getUserByEmail = async (email) => {
     await poolSM.query("SET SCHEMA 'sec_cust'");
     // Parametrizado: el email llega del body del login (SQLi explotado el 2026-09-16)
     const resp = await poolSM.query(
-      `SELECT * FROM get_all_users_by_email($1)`,
+      `SELECT * FROM sec_cust.get_all_users_by_email($1::varchar)`,
       [`${email}`],
     );
     const user = resp.rows[0];
@@ -139,7 +139,7 @@ authenticationPGRepository.updateIPSession = async (sessionID, ip) => {
     };
     await poolSM.query("SET SCHEMA 'sec_emp'");
 
-    let resp = await poolSM.query(`SELECT * FROM get_ip_info($1)`, [`${ip}`]);
+    let resp = await poolSM.query(`SELECT * FROM sec_emp.get_ip_info($1::varchar)`, [`${ip}`]);
 
     if (resp.rows[0] === undefined) {
       ipInfo.network = "Probably localhost";
@@ -195,7 +195,7 @@ authenticationPGRepository.updateIPUser = async (uuid_user, ip, sessionID) => {
 
     logger.silly(`ip a pasar en get_ip_info(): ${ip}`);
 
-    let resp = await poolSM.query(`SELECT * FROM get_ip_info($1)`, [`${ip}`]);
+    let resp = await poolSM.query(`SELECT * FROM sec_emp.get_ip_info($1::varchar)`, [`${ip}`]);
 
     // logger.silly(`pais de la ip ${resp.rows[0].country_name}`);
 
@@ -220,7 +220,7 @@ authenticationPGRepository.updateIPUser = async (uuid_user, ip, sessionID) => {
     valsArray.push(ipInfo.city_name);
 
     let userResp = await poolSM.query(
-      `SELECT * FROM sec_cust.get_user_by_id($1)`,
+      `SELECT * FROM sec_cust.get_user_by_id($1::uuid)`,
       [`${uuid_user}`],
     );
 
@@ -342,7 +342,7 @@ authenticationPGRepository.insertLogMsg = async (log) => {
 
     // Todo parametrizado: ip (header Client-Ip) y route (URL) los controla el cliente
     let resp = await poolSM.query(
-      `SELECT * FROM SP_LOGS_ACTIONS_OBJ_INSERT($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+      `SELECT * FROM sec_cust.sp_logs_actions_obj_insert($1::boolean, $2::boolean, $3::boolean, $4::varchar, $5::varchar, $6::varchar, $7::json, $8::json, $9::json, $10::integer, $11::json, $12::varchar, $13::jsonb)`,
       [
         typeof log.is_auth === "boolean" ? log.is_auth : null,
         typeof log.success === "boolean" ? log.success : null,
@@ -372,7 +372,7 @@ authenticationPGRepository.getIpInfo = async (ip) => {
     ObjLog.log(`[${context}]: Getting ipInfo from DB`);
     await poolSM.query("SET SCHEMA 'sec_emp'");
 
-    let resp = await poolSM.query(`SELECT * FROM get_ip_info($1)`, [
+    let resp = await poolSM.query(`SELECT * FROM sec_emp.get_ip_info($1::varchar)`, [
       ip ? `${ip}` : "0.0.0.0",
     ]);
     if (resp.rows[0] === undefined) return "Probably localhost";
