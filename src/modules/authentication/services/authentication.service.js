@@ -237,10 +237,7 @@ authenticationService.protected = async (req, res, next) => {
     let countryResp = null;
     let sess = null;
     if (req.isAuthenticated()) {
-      const resp = authenticationPGRepository.getIpInfo(
-        req.header("Client-Ip")
-      );
-      if (resp) countryResp = resp.country_name;
+      // get_ip_info tarda 2 a 3 segundos y agota el pool: no se usa aqui
       if (await authenticationPGRepository.getSessionById(req.sessionID))
         sess = req.sessionID;
 
@@ -259,13 +256,9 @@ authenticationService.protected = async (req, res, next) => {
     } else {
       req.session.destroy();
 
-      const resp = authenticationPGRepository.getIpInfo(
-        req.header("Client-Ip")
-      );
-      let countryResp = null;
+      // get_ip_info tarda 2 a 3 segundos y agota el pool: no se usa aqui
+      countryResp = null;
       sess = null;
-
-      if (resp) countryResp = resp.country_name;
 
       if (await authenticationPGRepository.getSessionById(req.sessionID))
         sess = req.sessionID;

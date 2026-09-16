@@ -204,13 +204,11 @@ app.use(async function (err, req, res, next) {
   log.body = req.body;
   log.status = 500;
 
-  const resp = await authenticationPGRepository.getIpInfo(
-    req.header("Client-Ip")
-  );
-  if (resp)
-    log.country = resp.country_name ? resp.country_name : "Probably Localhost";
-  if (await authenticationPGRepository.getSessionById(req.sessionID))
-    log.session = req.sessionID;
+  // NO se consulta get_ip_info aqui: esa funcion tarda 2 a 3 segundos y solo servia
+  // para rellenar el pais en el log. Al llamarla desde el manejador de errores se
+  // creaba un circulo vicioso (error -> consulta lenta -> pool agotado -> mas errores)
+  // que dejo el login inservible durante el incidente del 2026-09-16.
+  log.country = null;
 
   if (
     err.message ===
