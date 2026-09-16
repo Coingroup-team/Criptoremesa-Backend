@@ -15,6 +15,9 @@ export const env = {
   PG_DB_CR_USER: process.env.PG_DB_CR_USER,
   PG_DB_CR_PASSWORD: process.env.PG_DB_CR_PASSWORD,
   reCAPTCHA_SECRET_KEY: process.env.reCAPTCHA_SECRET_KEY,
+  // "true" activa la validacion del token contra Google. El chequeo de que el
+  // captcha viene informado es siempre obligatorio, independientemente de esto.
+  RECAPTCHA_VERIFY: process.env.RECAPTCHA_VERIFY,
   FILES_DIR: process.env.FILES_DIR,
   LOCAL_FILES_DIR: process.env.LOCAL_FILES_DIR,
   MAIL_SENDER: process.env.MAIL_SENDER,

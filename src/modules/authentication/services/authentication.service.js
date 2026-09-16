@@ -68,6 +68,69 @@ authenticationService.login = async (req, res, next) => {
     }
     req.body.email = email.trim();
 
+    // CAPTCHA OBLIGATORIO.
+    // Evidencia del incidente 2026-09-16: en los 7 dias previos, el 100% de los
+    // logins legitimos trajo este campo informado, y ninguna de las ~10.300
+    // peticiones del ataque lo traia (mandaban "captchaToken" vacio).
+    const captcha = req.body ? req.body.captcha : undefined;
+    if (typeof captcha !== "string" || captcha.trim() === "") {
+      logger.warn(
+        `[${context}]: Login rechazado sin captcha desde ${JSON.stringify(log.client_info)}`
+      );
+      log.success = false;
+      log.failed = true;
+      log.status = 400;
+      log.response = { rejected: "missing_captcha" };
+      authenticationPGRepository.insertLogMsg(log).catch((e) =>
+        logger.error(`[${context}]: insertLogMsg: ${e.message}`)
+      );
+      return res.status(400).json({
+        captchaSuccess: false,
+        msg: "Ha ocurrido un error. Por favor completa el captcha",
+      });
+    }
+
+    // Validacion del token contra Google, detras de interruptor RECAPTCHA_VERIFY.
+    // Si Google no responde o da error de red se DEJA PASAR (y se registra), para
+    // que una caida de Google no bloquee el login de todos los clientes.
+    if (env.RECAPTCHA_VERIFY === "true" && env.reCAPTCHA_SECRET_KEY) {
+      let veredicto = null;
+      try {
+        const verificacion = await axios.post(
+          "https://www.google.com/recaptcha/api/siteverify",
+          new URLSearchParams({
+            secret: env.reCAPTCHA_SECRET_KEY,
+            response: captcha.trim(),
+          }).toString(),
+          {
+            timeout: 5000,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          }
+        );
+        veredicto = verificacion && verificacion.data ? verificacion.data : null;
+      } catch (e) {
+        logger.warn(
+          `[${context}]: no se pudo validar el captcha con Google (${e.message}); se deja pasar`
+        );
+      }
+      if (veredicto && veredicto.success === false) {
+        logger.warn(
+          `[${context}]: captcha invalido (${JSON.stringify(veredicto["error-codes"] || [])}) desde ${JSON.stringify(log.client_info)}`
+        );
+        log.success = false;
+        log.failed = true;
+        log.status = 400;
+        log.response = { rejected: "invalid_captcha" };
+        authenticationPGRepository.insertLogMsg(log).catch((e) =>
+          logger.error(`[${context}]: insertLogMsg: ${e.message}`)
+        );
+        return res.status(400).json({
+          captchaSuccess: false,
+          msg: "Falló la verificación del Captcha",
+        });
+      }
+    }
+
     if (await authenticationPGRepository.getSessionById(req.sessionID))
       log.session = req.sessionID;
 
