@@ -113,16 +113,22 @@ export function soloSuPropiaFicha(req, res, next) {
 // Los limites de palabra son imprescindibles: sin ellos "select" casaria con rutas
 // reales como /rates/selected, y por eso tampoco se incluyen verbos genericos como
 // create o update, que aparecen en /persona/create-inquiry y /webpayplus/create.
+// El atacante fue esquivando versiones anteriores de este filtro cambiando de
+// forma: primero (SELECT ...), luego CAST(version() AS integer) y version()::integer.
+// Por eso tambien se bloquean el operador de cast, las llamadas a funciones de
+// PostgreSQL y las palabras propias de una consulta.
 const PATRONES_SQL = new RegExp(
   [
     "\\bselect\\b",
     "\\bunion\\b",
-    "pg_sleep",
-    "pg_read_file",
-    "pg_read_binary_file",
-    "pg_shadow",
-    "pg_authid",
-    "pg_catalog",
+    "\\bfrom\\b",
+    "\\bwhere\\b",
+    "\\bcast\\s*\\(",
+    "\\bversion\\s*\\(",
+    "to_number\\s*\\(",
+    "::",
+    ";",
+    "pg_",
     "information_schema",
     "dblink",
     "current_database",
