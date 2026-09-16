@@ -33,6 +33,20 @@ import "../utils/workers/persona.worker"; // Initialize Persona worker
 //jobs
 import transactionsJob from "../utils/jobs/transactions";
 
+// Sin estos manejadores, cualquier error dentro de una promesa no capturada mata el
+// proceso entero (Node 16). En el incidente del 2026-09-16 un error lanzado desde
+// dentro de una funcion de PostgreSQL ("more than one row returned by a subquery")
+// tumbaba la API y pm2 la reiniciaba en bucle, lo que dejaba el login inservible.
+// Se registra el error y el servicio sigue en pie.
+process.on("unhandledRejection", (reason) => {
+  const detalle = reason && reason.message ? reason.message : String(reason);
+  logger.error(`[unhandledRejection]: ${detalle}`);
+});
+process.on("uncaughtException", (err) => {
+  const detalle = err && err.message ? err.message : String(err);
+  logger.error(`[uncaughtException]: ${detalle}`);
+});
+
 // SETTINGS
 const app = express();
 
