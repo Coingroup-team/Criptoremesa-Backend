@@ -8,101 +8,74 @@ import axios from "axios";
 const authenticationService = {};
 const context = "Authentication Service";
 
-// declaring log object
-const logConst = {
-  is_auth: null,
-  success: true,
-  failed: false,
-  ip: null,
-  country: null,
-  route: null,
-  session: null,
-};
+// Todos los emails de clientes existentes cumplen este patron (verificado en BD).
+const EMAIL_RE = /^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/;
+
+// IP real de la peticion (Client-Ip la pone el FE y cualquiera la puede falsear)
+function networkInfo(req) {
+  return {
+    cf_connecting_ip: req.header("cf-connecting-ip") || null,
+    x_forwarded_for: req.header("x-forwarded-for") || null,
+    remote_address: req.socket ? req.socket.remoteAddress : null,
+    client_ip_header: req.header("Client-Ip") || null,
+    user_agent: req.header("user-agent") || null,
+  };
+}
 
 authenticationService.login = async (req, res, next) => {
   try {
-    // filling log object info
-    let log = logConst;
+    // objeto de log nuevo por peticion (antes se compartia entre peticiones)
+    const log = {
+      is_auth: req.isAuthenticated(),
+      success: true,
+      failed: false,
+      ip: req.header("Client-Ip"),
+      country: null,
+      route: req.method + " " + req.originalUrl,
+      session: null,
+      params: req.params,
+      query: req.query,
+      // nunca se guarda la contrasena en el log
+      body: Object.assign({}, req.body, { password: undefined, captcha: undefined }),
+      client_info: networkInfo(req),
+    };
 
-    log.is_auth = req.isAuthenticated();
-    log.ip = req.header("Client-Ip");
-    log.route = req.method + " " + req.originalUrl;
-    
-    /*
-    const resp = await authenticationPGRepository.getIpInfo(
-      req.header("Client-Ip")
-    );
-    */
-    // const resp = null;/*await authenticationPGRepository.getIpInfo(
-    //   req.header("Client-Ip")
-    // );*/
-    // if (resp)
-    //   log.country = resp.country_name
-    //     ? resp.country_name
-    //     : "Probably Localhost";
+    const email = req.body ? req.body.email : undefined;
+    if (
+      typeof email !== "string" ||
+      email.length > 254 ||
+      !EMAIL_RE.test(email.trim()) ||
+      typeof (req.body ? req.body.password : undefined) !== "string"
+    ) {
+      logger.warn(
+        `[${context}]: Login rechazado por formato invalido desde ${JSON.stringify(log.client_info)}`
+      );
+      log.success = false;
+      log.failed = true;
+      log.status = 400;
+      log.response = { rejected: "invalid_login_payload" };
+      authenticationPGRepository.insertLogMsg(log).catch((e) =>
+        logger.error(`[${context}]: insertLogMsg: ${e.message}`)
+      );
+      // misma forma que un login fallido con usuario inexistente
+      return res.json({
+        isAuthenticated: false,
+        loginAttempts: "NA",
+        atcPhone: "NA",
+        userExists: false,
+        captchaSuccess: true,
+      });
+    }
+    req.body.email = email.trim();
+
     if (await authenticationPGRepository.getSessionById(req.sessionID))
       log.session = req.sessionID;
 
-    log.params = req.params;
-    log.query = req.query;
-    log.body = req.body;
-
-    
-
-    // logger.info(`[${context}]: Verifying captcha`);
-    // ObjLog.log(`[${context}]: Verifying captcha`);
-
-    // if (!req.body.captcha) {
-    //   log.success = false;
-    //   log.failed = true;
-    //   log.status = 500;
-    //   log.response = {
-    //     captchaSuccess: false,
-    //     msg: "Ha ocurrido un error. Por favor completa el captcha",
-    //   };
-    //   await authenticationPGRepository.insertLogMsg(log);
-    //   res.status(500).json({
-    //     captchaSuccess: false,
-    //     msg: "Ha ocurrido un error. Por favor completa el captcha",
-    //   });
-    // } else {
-    //   // Secret key
-    //   const secretKey = env.reCAPTCHA_SECRET_KEY;
-
-    //   // Verify URL
-    //   const verifyURL = `https://google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${
-    //     req.body.captcha
-    //   }&remoteip=${req.header("Client-Ip")}`;
-
-    //   // Make a request to verifyURL
-    //   const body = await axios.get(verifyURL);
-
-    //   // If not successful
-    //   if (body.data.success === false) {
-    //     log.success = false;
-    //     log.failed = true;
-    //     log.status = 500;
-    //     log.response = {
-    //       captchaSuccess: false,
-    //       msg: "Falló la verificación del Captcha",
-    //     };
-    //     await authenticationPGRepository.insertLogMsg(log);
-    //     res
-    //       .status(500)
-    //       .json({
-    //         captchaSuccess: false,
-    //         msg: "Falló la verificación del Captcha",
-    //       });
-    //   } else {
-        // If successful
-
-        logger.info(`[${context}]: Sending module to verify`);
-        ObjLog.log(`[${context}]: Sending module to verify`);
+    logger.info(`[${context}]: Sending module to verify`);
+    ObjLog.log(`[${context}]: Sending module to verify`);
 
     auth.verify(req, res, next);
     await authenticationPGRepository.insertLogMsg(log);
-    //   }
-    // }
   } catch (error) {
     next(error);
   }

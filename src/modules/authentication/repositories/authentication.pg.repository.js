@@ -10,7 +10,9 @@ authenticationPGRepository.getUserById = async (id) => {
     logger.info(`[${context}]: Getting user by id from db`);
     ObjLog.log(`[${context}]: Getting user by id from db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
-    const resp = await poolSM.query(`SELECT * FROM get_user_by_id('${id}')`);
+    const resp = await poolSM.query(`SELECT * FROM get_user_by_id($1)`, [
+      `${id}`,
+    ]);
     return resp.rows[0];
   } catch (error) {
     throw error;
@@ -22,9 +24,9 @@ authenticationPGRepository.loginFailed = async (email_user) => {
     logger.info(`[${context}]: Checking login failed in db`);
     ObjLog.log(`[${context}]: Checking login failed in db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
-    const resp = await poolSM.query(
-      `SELECT * FROM sp_login_failed('${email_user}')`,
-    );
+    const resp = await poolSM.query(`SELECT * FROM sp_login_failed($1)`, [
+      `${email_user}`,
+    ]);
     return resp.rows[0].sp_login_failed;
   } catch (error) {
     throw error;
@@ -36,9 +38,9 @@ authenticationPGRepository.getUserByUsername = async (username) => {
     logger.info(`[${context}]: Getting user by username from db`);
     ObjLog.log(`[${context}]: Getting user by username from db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
-    const resp = await poolSM.query(
-      `SELECT * FROM get_user_by_username('${username}')`,
-    );
+    const resp = await poolSM.query(`SELECT * FROM get_user_by_username($1)`, [
+      `${username}`,
+    ]);
     return resp.rows[0];
   } catch (error) {
     throw error;
@@ -50,8 +52,10 @@ authenticationPGRepository.getUserByEmail = async (email) => {
     logger.info(`[${context}]: Getting user by email from db`);
     ObjLog.log(`[${context}]: Getting user by email from db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
+    // Parametrizado: el email llega del body del login (SQLi explotado el 2026-09-16)
     const resp = await poolSM.query(
-      `SELECT * FROM get_all_users_by_email('${email}')`,
+      `SELECT * FROM get_all_users_by_email($1)`,
+      [`${email}`],
     );
     const user = resp.rows[0];
     // El SP get_all_users_by_email no devuelve has_downgraded_level; se anexa aparte
@@ -135,10 +139,7 @@ authenticationPGRepository.updateIPSession = async (sessionID, ip) => {
     };
     await poolSM.query("SET SCHEMA 'sec_emp'");
 
-    let resp = await poolSM.query(
-      `SELECT *
-    FROM get_ip_info('${ip}')`,
-    );
+    let resp = await poolSM.query(`SELECT * FROM get_ip_info($1)`, [`${ip}`]);
 
     if (resp.rows[0] === undefined) {
       ipInfo.network = "Probably localhost";
@@ -194,10 +195,7 @@ authenticationPGRepository.updateIPUser = async (uuid_user, ip, sessionID) => {
 
     logger.silly(`ip a pasar en get_ip_info(): ${ip}`);
 
-    let resp = await poolSM.query(
-      `SELECT *
-    FROM get_ip_info('${ip}')`,
-    );
+    let resp = await poolSM.query(`SELECT * FROM get_ip_info($1)`, [`${ip}`]);
 
     // logger.silly(`pais de la ip ${resp.rows[0].country_name}`);
 
@@ -222,7 +220,8 @@ authenticationPGRepository.updateIPUser = async (uuid_user, ip, sessionID) => {
     valsArray.push(ipInfo.city_name);
 
     let userResp = await poolSM.query(
-      `SELECT * FROM sec_cust.get_user_by_id('${uuid_user}')`,
+      `SELECT * FROM sec_cust.get_user_by_id($1)`,
+      [`${uuid_user}`],
     );
 
     let fullUser = userResp.rows[0];
@@ -341,27 +340,22 @@ authenticationPGRepository.insertLogMsg = async (log) => {
       }
     }
 
+    // Todo parametrizado: ip (header Client-Ip) y route (URL) los controla el cliente
     let resp = await poolSM.query(
-      `SELECT * FROM SP_LOGS_ACTIONS_OBJ_INSERT(
-                                                                            ${log.is_auth},
-                                                                            ${log.success},
-                                                                            ${log.failed},
-                                                                            '${log.ip}',
-                                                                            '${log.country}',
-                                                                            '${log.route}',
-                                                                            ($1),
-                                                                            ($2),
-                                                                            ($3),
-                                                                            ${log.status ? log.status : null},
-                                                                            ($4),
-                                                                            ${log.session ? `'${log.session}'` : null},
-                                                                            ($5)
-                                                                        )`,
+      `SELECT * FROM SP_LOGS_ACTIONS_OBJ_INSERT($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
       [
+        typeof log.is_auth === "boolean" ? log.is_auth : null,
+        typeof log.success === "boolean" ? log.success : null,
+        typeof log.failed === "boolean" ? log.failed : null,
+        `${log.ip}`,
+        `${log.country}`,
+        `${log.route}`,
         log.params ? log.params : null,
         log.query ? log.query : null,
         log.body ? log.body : null,
+        log.status ? log.status : null,
         log.response ? log.response : null,
+        log.session ? `${log.session}` : null,
         clientInfo,
       ],
     );
@@ -378,10 +372,9 @@ authenticationPGRepository.getIpInfo = async (ip) => {
     ObjLog.log(`[${context}]: Getting ipInfo from DB`);
     await poolSM.query("SET SCHEMA 'sec_emp'");
 
-    let resp = await poolSM.query(
-      `SELECT *
-        FROM get_ip_info('${ip ? ip : "0.0.0.0"}')`,
-    );
+    let resp = await poolSM.query(`SELECT * FROM get_ip_info($1)`, [
+      ip ? `${ip}` : "0.0.0.0",
+    ]);
     if (resp.rows[0] === undefined) return "Probably localhost";
     return resp.rows[0];
   } catch (error) {
@@ -407,7 +400,8 @@ authenticationPGRepository.getSessionById = async (id) => {
     ObjLog.log(`[${context}]: Getting session from db`);
     await poolSM.query("SET SCHEMA 'basics'");
     const resp = await poolCR.query(
-      `SELECT * FROM basics.get_session_by_id('${id}')`,
+      `SELECT * FROM basics.get_session_by_id($1)`,
+      [`${id}`],
     );
     return resp.rows[0];
   } catch (error) {
@@ -421,7 +415,8 @@ authenticationPGRepository.userHasAnActiveSession = async (email) => {
     ObjLog.log(`[${context}]: Checking session on db`);
     await poolSM.query("SET SCHEMA 'basics'");
     const resp = await poolCR.query(
-      `SELECT * FROM basics.user_has_an_active_session('${email}')`,
+      `SELECT * FROM basics.user_has_an_active_session($1)`,
+      [`${email}`],
     );
     return resp.rows[0].user_has_an_active_session;
   } catch (error) {
