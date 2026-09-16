@@ -1,9 +1,10 @@
 import { logger } from "./logger";
 
 // Escudo de emergencia del incidente del 2026-09-16.
-// El atacante fue saltando de ruta: login, luego forgotPassword, newPassword y
-// full-info. Esto limita el ritmo de peticiones y cierra las rutas que permitian
-// tomar cuentas o leer datos de clientes sin autenticacion.
+// El atacante fue saltando de ruta: login, luego forgotPassword, newPassword,
+// full-info y sondeos de inyeccion SQL en otras rutas. Esto limita el ritmo de
+// peticiones y cierra las rutas que permitian tomar cuentas o leer datos de
+// clientes sin autenticacion.
 
 const contadores = new Map();
 
@@ -103,3 +104,54 @@ export function soloSuPropiaFicha(req, res, next) {
   }
   next();
 }
+
+// Filtro de patrones de inyeccion SQL en la URL. Tras cerrarle el login, el
+// atacante empezo a sondear otras rutas, por ejemplo
+// /cr/pay_methods/(SELECT current_database()::integer). En una URL legitima nunca
+// aparece sintaxis SQL, asi que se rechaza de plano.
+//
+// Los limites de palabra son imprescindibles: sin ellos "select" casaria con rutas
+// reales como /rates/selected, y por eso tampoco se incluyen verbos genericos como
+// create o update, que aparecen en /persona/create-inquiry y /webpayplus/create.
+const PATRONES_SQL = new RegExp(
+  [
+    "\\bselect\\b",
+    "\\bunion\\b",
+    "pg_sleep",
+    "pg_read_file",
+    "pg_read_binary_file",
+    "pg_shadow",
+    "pg_authid",
+    "pg_catalog",
+    "information_schema",
+    "dblink",
+    "current_database",
+    "current_user",
+    "current_schema",
+    "to\\s+program",
+    "--",
+    "\\/\\*",
+    "\\|\\|",
+    "'\\s*or\\s*'",
+  ].join("|"),
+  "i"
+);
+
+export function filtroSqlEnUrl(req, res, next) {
+  let url = req.originalUrl || "";
+  try {
+    url = decodeURIComponent(url);
+  } catch (e) {
+    // URL mal codificada: se evalua tal cual
+  }
+  if (PATRONES_SQL.test(url)) {
+    logger.warn(
+      `[proteccion]: URL con patron SQL bloqueada desde ${ipDe(req)}: ${url.slice(0, 200)}`
+    );
+    return res.status(400).json({ msg: "Peticion invalida." });
+  }
+  next();
+}
+
+// Exportado solo para poder probar el patron sin levantar el servidor.
+export const _patronSql = PATRONES_SQL;

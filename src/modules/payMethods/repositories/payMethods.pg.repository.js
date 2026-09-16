@@ -34,7 +34,8 @@ payMethodsRepository.getPayMethodById = async (idPayMethod) => {
     ObjLog.log(`[${context}]: Getting Pay Methods by id from db`);
     await poolSM.query("SET SCHEMA 'msg_app'");
     const resp = await poolSM.query(
-      `select * from msg_app.sp_ms_pay_methods_by_id_get(${idPayMethod})`
+      `select * from msg_app.sp_ms_pay_methods_by_id_get($1::integer)`,
+      [idPayMethod]
     );
     return resp.rows;
   } catch (error) {
@@ -64,7 +65,8 @@ payMethodsRepository.getPayMethodById = async (idPayMethod) => {
     ObjLog.log(`[${context}]: Getting Pay Method by id ${idPayMethod} from db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
     const resp = await poolSM.query(
-      `select * from sp_ms_pay_methods_by_id_get(${idPayMethod})`
+      `select * from msg_app.sp_ms_pay_methods_by_id_get($1::integer)`,
+      [idPayMethod]
     );
     return resp.rows[0];
   } catch (error) {

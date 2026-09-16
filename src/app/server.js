@@ -17,7 +17,7 @@ import operationRoutesRepository from "../modules/operation_routes/repositories/
 import ws from "../utils/websocketTradeAPIs";
 import bodyParser from "body-parser";
 import whatsapp from "../utils/whatsapp";
-import { limiteGlobal } from "../utils/proteccion";
+import { limiteGlobal, filtroSqlEnUrl } from "../utils/proteccion";
 import queue from "express-queue";
 import * as Sentry from "@sentry/node";
 import { createBullBoard } from "@bull-board/api";
@@ -157,7 +157,7 @@ console.log("🔵 Bull Board está corriendo en: /admin/queues");
 console.log("📊 Queues monitored: SILT, Persona, Remittance");
 
 // Red de seguridad: limite de peticiones por IP para toda la API (incidente 2026-09-16)
-app.use("/cr", limiteGlobal(120, 60000), routerIndex);
+app.use("/cr", filtroSqlEnUrl, limiteGlobal(120, 60000), routerIndex);
 
 app.use(async (req, res, next) => {
   logger.silly("DESPUES DEL REQUEST SEGUN YO");
@@ -205,9 +205,12 @@ app.use(async function (err, req, res, next) {
     error: "BUSINESS_ERROR",
     msg: "Esa dirección de correo ya está en uso. Prueba con otro.",
   };
+  // No se devuelve err.message al cliente: durante el incidente del 2026-09-16 el
+  // atacante usaba los mensajes de error de PostgreSQL como respuesta a sus sondeos
+  // de inyeccion. El detalle queda en el log del servidor, no en la respuesta.
   const serverError = {
     error: "SERVER_ERROR",
-    msg: err.message,
+    msg: "Ha ocurrido un error. Intenta de nuevo mas tarde.",
   };
 
   log.success = false;
