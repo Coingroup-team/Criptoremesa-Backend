@@ -11,6 +11,42 @@ const context = "Authentication Service";
 // Todos los emails de clientes existentes cumplen este patron (verificado en BD).
 const EMAIL_RE = /^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/;
 
+// Codigos de Google que significan "el token es malo". Cualquier otro (clave sin
+// migrar, error de configuracion) NO debe rechazar al cliente: seria dejar fuera a
+// todo el mundo por un problema nuestro.
+const CODIGOS_TOKEN_INVALIDO = [
+  "invalid-input-response",
+  "missing-input-response",
+  "timeout-or-duplicate",
+  "bad-request",
+];
+
+// Limitador de peticiones en memoria, sin dependencias nuevas. Protege el login
+// aunque el captcha no sea fiable. Una persona real no pasa de unos pocos intentos
+// por minuto; el ataque del 2026-09-16 iba a ~45 por minuto.
+const VENTANA_MS = 60000;
+const MAX_POR_IP = 15;
+const MAX_POR_CUENTA = 8;
+const contadores = new Map();
+
+function limiteSuperado(clave, maximo) {
+  const ahora = Date.now();
+  const previos = (contadores.get(clave) || []).filter((t) => ahora - t < VENTANA_MS);
+  previos.push(ahora);
+  contadores.set(clave, previos);
+  return previos.length > maximo;
+}
+
+// limpieza periodica para que el Map no crezca sin control
+setInterval(() => {
+  const ahora = Date.now();
+  for (const [clave, marcas] of contadores) {
+    const vivas = marcas.filter((t) => ahora - t < VENTANA_MS);
+    if (vivas.length === 0) contadores.delete(clave);
+    else contadores.set(clave, vivas);
+  }
+}, VENTANA_MS).unref();
+
 // IP real de la peticion (Client-Ip la pone el FE y cualquiera la puede falsear)
 function networkInfo(req) {
   return {
@@ -68,6 +104,37 @@ authenticationService.login = async (req, res, next) => {
     }
     req.body.email = email.trim();
 
+    // LIMITE DE PETICIONES. Va antes de tocar la base de datos, porque cada login
+    // cuesta una consulta muy pesada y el ataque la usaba para saturar el servicio.
+    const ipCliente =
+      log.client_info.cf_connecting_ip ||
+      log.client_info.x_forwarded_for ||
+      log.client_info.remote_address ||
+      "desconocida";
+    if (
+      limiteSuperado("ip:" + ipCliente, MAX_POR_IP) ||
+      limiteSuperado("cuenta:" + req.body.email.toLowerCase(), MAX_POR_CUENTA)
+    ) {
+      logger.warn(
+        `[${context}]: Login limitado por exceso de intentos desde ${ipCliente} para ${req.body.email}`
+      );
+      log.success = false;
+      log.failed = true;
+      log.status = 429;
+      log.response = { rejected: "rate_limited" };
+      authenticationPGRepository.insertLogMsg(log).catch((e) =>
+        logger.error(`[${context}]: insertLogMsg: ${e.message}`)
+      );
+      return res.status(429).json({
+        isAuthenticated: false,
+        loginAttempts: "NA",
+        atcPhone: "NA",
+        userExists: false,
+        captchaSuccess: true,
+        msg: "Demasiados intentos. Espera un minuto y vuelve a intentarlo.",
+      });
+    }
+
     // CAPTCHA OBLIGATORIO.
     // Evidencia del incidente 2026-09-16: en los 7 dias previos, el 100% de los
     // logins legitimos trajo este campo informado, y ninguna de las ~10.300
@@ -113,9 +180,18 @@ authenticationService.login = async (req, res, next) => {
           `[${context}]: no se pudo validar el captcha con Google (${e.message}); se deja pasar`
         );
       }
-      if (veredicto && veredicto.success === false) {
+      const codigos = (veredicto && veredicto["error-codes"]) || [];
+      const tokenMalo = codigos.some((c) => CODIGOS_TOKEN_INVALIDO.includes(c));
+      if (veredicto && veredicto.success === false && !tokenMalo) {
+        // Google dice que no, pero por un problema de configuracion (por ejemplo la
+        // clave sin migrar). Se deja pasar para no bloquear a los clientes.
+        logger.error(
+          `[${context}]: reCAPTCHA no utilizable, revisar la clave: ${JSON.stringify(codigos)}`
+        );
+      }
+      if (veredicto && veredicto.success === false && tokenMalo) {
         logger.warn(
-          `[${context}]: captcha invalido (${JSON.stringify(veredicto["error-codes"] || [])}) desde ${JSON.stringify(log.client_info)}`
+          `[${context}]: captcha invalido (${JSON.stringify(codigos)}) desde ${JSON.stringify(log.client_info)}`
         );
         log.success = false;
         log.failed = true;
