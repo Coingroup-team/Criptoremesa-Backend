@@ -1,13 +1,22 @@
 import Router from "express-promise-router";
 import usersController from "./controllers/users.controller";
 import guard from "../../utils/guard";
+import {
+  limiteEstricto,
+  deshabilitada,
+  exigirPasswordAnterior,
+  soloSuPropiaFicha,
+} from "../../utils/proteccion";
 const usersRouter = Router();
 
 // IF YOU WERE USING cg/auth/login
 usersRouter.post(
   "/createNewClient",
-  // guard.verifyAdmin("/login"),
-  usersController.createNewClient
+  // Registro deshabilitado durante el incidente del 2026-09-16: el atacante creo
+  // 8 cuentas en 40 segundos para entrar en la aplicacion.
+  deshabilitada(
+    "El registro de nuevos usuarios esta temporalmente deshabilitado."
+  )
 );
 
 usersRouter.get(
@@ -48,19 +57,20 @@ usersRouter.post(
 
 usersRouter.post(
   "/forgotPassword",
-  // guard.verifyAdmin("/login"),
+  limiteEstricto("forgotPassword", 5, 3),
   usersController.forgotPassword
 );
 
 usersRouter.post(
   "/newPassword",
-  // guard.verifyAdmin("/login"),
+  limiteEstricto("newPassword", 5, 3),
+  exigirPasswordAnterior,
   usersController.newPassword
 );
 
 usersRouter.post(
   "/sendVerificationCodeByEmail",
-  // guard.verifyAdmin("/login"),
+  limiteEstricto("codigoCorreo", 5, 3),
   usersController.sendVerificationCodeByEmail
 );
 
@@ -198,6 +208,7 @@ usersRouter.post(
 
 usersRouter.get(
   "/full-info/:email_user",
+  soloSuPropiaFicha,
   usersController.getFullInfo
 );
 
