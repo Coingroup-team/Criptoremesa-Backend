@@ -351,7 +351,8 @@ usersPGRepository.generateCode = async (email_user, mode) => {
     ObjLog.log(`[${context}]: Generating code in db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
     const resp = await poolSM.query(
-      `SELECT * FROM sp_generate_code('${email_user}','${mode}')`
+      `SELECT * FROM sec_cust.sp_generate_code($1::varchar, $2::varchar)`,
+      [email_user, mode]
     );
     return resp.rows[0].sp_generate_code;
   } catch (error) {
@@ -365,7 +366,8 @@ usersPGRepository.verifCode = async (email_user, code) => {
     ObjLog.log(`[${context}]: Verifying code in db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
     const resp = await poolSM.query(
-      `SELECT * FROM sp_verif_code('${email_user}',${code})`
+      `SELECT * FROM sec_cust.sp_verif_code($1::varchar, $2::integer)`,
+      [email_user, code]
     );
     return resp.rows[0].sp_verif_code;
   } catch (error) {
@@ -379,7 +381,8 @@ usersPGRepository.getLastPasswords = async (email_user) => {
     ObjLog.log(`[${context}]: Getting passwords from db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
     const resp = await poolSM.query(
-      `SELECT * FROM SP_GET_LAST_PASSWORDS('${email_user}')`
+      `SELECT * FROM sec_cust.sp_get_last_passwords($1::varchar)`,
+      [email_user]
     );
     return resp.rows;
   } catch (error) {
@@ -393,7 +396,8 @@ usersPGRepository.newPassword = async (body) => {
     ObjLog.log(`[${context}]: Updating password on db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
     const resp = await poolSM.query(
-      `SELECT * FROM SP_UPDATE_USER_PASSWORD('${body.new_password}','${body.email_user}')`
+      `SELECT * FROM sec_cust.sp_update_user_password($1::text, $2::varchar)`,
+      [body.new_password, body.email_user]
     );
     return resp.rows[0].sp_update_user_password;
   } catch (error) {
@@ -407,7 +411,8 @@ usersPGRepository.getusersClientByEmail = async (email) => {
     ObjLog.log(`[${context}]: Getting user from db`);
     await poolSM.query("SET SCHEMA 'sec_cust'");
     const resp = await poolSM.query(
-      `SELECT * FROM get_user_by_email(${email})`
+      `SELECT * FROM sec_cust.get_user_by_email($1::varchar)`,
+      [email]
     );
     return resp.rows;
   } catch (error) {
@@ -473,9 +478,8 @@ usersPGRepository.getATCNumberByIdCountry = async (id) => {
     ObjLog.log(`[${context}]: Looking for ATC Number in db`);
     await poolSM.query("SET SCHEMA 'msg_app'");
     const resp = await poolSM.query(
-      `SELECT * FROM msg_app.get_atc_number_by_id_resid_country(
-        ${id}
-        )`
+      `SELECT * FROM msg_app.get_atc_number_by_id_resid_country($1::integer)`,
+      [id]
     );
     if (resp.rows[0]) return resp.rows[0].get_atc_number_by_id_resid_country;
     else return null;

@@ -894,7 +894,7 @@ usersService.forgotPassword = async (req, res, next) => {
     ObjLog.log(`[${context}]: Forgot password request`);
 
     let user = await usersPGRepository.getusersClientByEmail(
-      `'${req.body.email_user.toLowerCase()}'`
+      String(req.body.email_user || "").toLowerCase()
     );
     let data = await usersPGRepository.generateCode(
       req.body.email_user,
